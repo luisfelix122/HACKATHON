@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-01 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo (actualizado por CC-03)
+- Estado: en curso (actualizado por CC-03; ajustes en CC-04, pendiente de confirmar)
 - Rama: `cu-01/acceso-acreditacion`
 
 ## Objetivo
@@ -54,12 +54,17 @@ Es el criterio 1 del reto: el vendedor queda acreditado con una validación bás
 | crear | `src/compartido/dominio/lugares.ts` | lista preliminar de lugares |
 | crear | `src/acceso/sesion.ts` | Google (web), correo y contraseña (APK), cierre de sesión, sesión actual |
 | crear | `src/acceso/perfil.ts`, `src/acceso/perfil.test.ts` | leer y hacer `upsert` del perfil; validaciones (E.164, lugar, RNA, contraseña ≥ 8) |
+| modificar | `src/compartido/supabase.ts` | clave fija de la sesión (`costearte.auth`) para leerla sin conexión (CC-04) |
+| crear | `src/acceso/sesion.test.ts` | ingreso de la APK: artesano, credenciales inválidas, rol incorrecto, registro incompleto |
+| crear | `src/acceso/usePerfil.ts` | perfil de la sesión con copia local, para abrir la APK sin conexión |
 | crear | `src/acceso/PantallaIngresoWeb.tsx` | botón «Continuar con Google» |
 | crear | `src/acceso/RegistroArtesano.tsx` | web: Google → contraseña → perfil |
 | crear | `src/acceso/IngresoArtesano.tsx` | APK: correo y contraseña, enlace «¿Olvidaste tu contraseña?» |
 | crear | `src/acceso/EstadoAcreditacion.tsx` | aviso pendiente / aprobada / rechazada con su nota |
 | crear | `src/admin/PanelAcreditacion.tsx` | lista de pendientes; Aprobar y Rechazar |
-| modificar | `src/app/AppWeb.tsx`, `src/app/AppArtesano.tsx` | rutas protegidas |
+| modificar | `src/app/AppWeb.tsx`, `src/app/AppArtesano.tsx`, `src/app/app.test.tsx` | rutas protegidas; pruebas con Supabase simulado |
+| modificar | `src/compartido/ui/estilos.css` | formularios, avisos y tarjetas |
+| modificar | `docs/contratos.md`, `README.md` | variable `VITE_WEB_URL` |
 
 Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 

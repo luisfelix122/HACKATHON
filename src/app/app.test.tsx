@@ -1,7 +1,18 @@
 import { render, screen } from '@testing-library/react'
-import { describe, expect, it } from 'vitest'
-import { AppArtesano } from './AppArtesano'
-import { AppWeb } from './AppWeb'
+import { describe, expect, it, vi } from 'vitest'
+
+// Sin sesión guardada: el cliente real de Supabase no se usa en estas pruebas.
+vi.mock('../compartido/supabase', () => ({
+  supabase: {
+    auth: {
+      getSession: () => Promise.resolve({ data: { session: null } }),
+      onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } }),
+    },
+  },
+}))
+
+const { AppWeb } = await import('./AppWeb')
+const { AppArtesano } = await import('./AppArtesano')
 
 describe('salidas de la app', () => {
   it('la web muestra la vitrina en la ruta raíz', () => {
@@ -9,8 +20,9 @@ describe('salidas de la app', () => {
     expect(screen.getByRole('heading', { name: 'CosteARTE' })).toBeInTheDocument()
   })
 
-  it('la APK del artesano abre en «Mis productos»', () => {
+  it('la APK sin sesión pide correo y contraseña (CC-03)', async () => {
     render(<AppArtesano />)
-    expect(screen.getByRole('heading', { name: 'Mis productos' })).toBeInTheDocument()
+    expect(await screen.findByLabelText('Tu correo de Google')).toBeInTheDocument()
+    expect(screen.getByLabelText('Contraseña')).toBeInTheDocument()
   })
 })
