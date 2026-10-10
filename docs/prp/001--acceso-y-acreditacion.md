@@ -65,7 +65,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Tareas (en orden)
 1. Escribir la migración y la prueba pgTAP, y aplicarlas.
-2. Configurar el proveedor Google (Client ID y Secret en el panel) y activar Email/Password en Supabase. Es un paso manual de Cristopher; no se commitean valores.
+2. Configurar el proveedor Google y Email/Password. Desde CC-05 se hace en el `.env` y el override de Supabase self-hosted (PRP 010), no en un panel de Supabase Cloud. Es un paso manual de Cristopher; no se commitean valores.
 3. `sesion.ts`, `perfil.ts` y sus pruebas.
 4. Web: `PantallaIngresoWeb`, `RegistroArtesano` y `PanelAcreditacion`.
 5. APK: `IngresoArtesano` y `EstadoAcreditacion`; probar en modo avión tras el login.

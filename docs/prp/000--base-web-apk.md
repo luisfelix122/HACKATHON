@@ -7,7 +7,7 @@
 
 ## Objetivo
 Un solo proyecto React + TypeScript + Vite que produce dos salidas, más la verificación de calidad y Supabase inicializado:
-- **Web del comprador y del administrador:** desplegada en Vercel con HTTPS.
+- **Web del comprador y del administrador:** desplegada con HTTPS (antes Vercel; desde CC-05 en el servidor propio, PRP 010).
 - **APK de debug del artesano:** generada con Capacitor, que se instala en un Android y abre **sin conexión**.
 
 Al terminar, `make verify` ejecuta comprobaciones reales y pasa.
@@ -22,7 +22,7 @@ Es la base de todos los PRP. También comprueba temprano los dos riesgos de infr
 - [ ] El subagente `reviewer` se puede invocar con este PRP y el diff.
 - [ ] `make apk` genera `android/app/build/outputs/apk/debug/app-debug.apk`.
 - [ ] La APK instalada en un Android real (≥ 7) **en modo avión** abre la pantalla «Mis productos» (vacía).
-- [ ] La web desplegada en Vercel responde por HTTPS. Una ruta profunda (`/producto/x`) no da 404, gracias al rewrite de la SPA.
+- [ ] La web desplegada (PRP 010 desde CC-05) responde por HTTPS. Una ruta profunda (`/producto/x`) no da 404, gracias al rewrite de la SPA.
 - [ ] `supabase/` existe, inicializado con `supabase init`. `.env.example` lista `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` y `OPENROUTER_API_KEY`, sin valores.
 - [ ] Queda anotado en este PRP (sección Notas) el resultado de la prueba de humo de audio en OpenRouter: qué formato graba el WebView de Android y si OpenRouter lo acepta.
 
