@@ -2,14 +2,14 @@
 
 - Caso de uso: CU-05 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo
+- Estado: listo (actualizado por CC-09)
 - Rama: `cu-05/pedido-despacho`
 
 ## Objetivo
 1. Desde la ficha de un producto, el comprador pulsa «Pedir» e inicia sesión con Google si no la tenía.
 2. Elige la cantidad, escribe un detalle de personalización y elige recojo o envío. Si elige envío, completa un formulario guiado con los datos de despacho.
 3. Se crea la orden en estado `solicitada`.
-4. Comprador y artesano ven la orden y pueden escribirse en su hilo: el comprador desde la web, el artesano desde la APK en «Mis pedidos».
+4. Comprador y artesano ven la orden y pueden escribirse en su hilo en tiempo real (Supabase Realtime): el comprador desde la web, el artesano desde la APK en «Mis pedidos».
 
 ## Por qué
 Es el criterio 4 del reto: estructurar la orden y los datos de despacho por agencia. También cubre el camino de «necesita orientación» mediante el hilo de la orden, en lugar de un chat libre (`revision-alcance.md` §2).
@@ -22,9 +22,11 @@ Es el criterio 4 del reto: estructurar la orden y los datos de despacho por agen
   - Si la modalidad es `envio`, que estén todos los campos obligatorios de `datos_envio`.
   - Que el comprador no sea el artesano dueño del producto.
   - Si falla, devuelve `datos_incompletos` o `transicion_invalida`.
-- [ ] Crear una orden **no** descuenta stock: la reserva ocurre al aceptarla (PRP 006).
+- [ ] Crear una orden **no** reserva stock; la orden es una solicitud de cotización (CC-09).
 - [ ] El comprador ve «Mis pedidos» en la web y el artesano ve «Mis pedidos» en la APK, cada uno con su estado. Nadie ve órdenes ajenas; hay una prueba RLS que lo verifica.
-- [ ] Solo las dos partes de una orden pueden escribir y leer su hilo. Los mensajes tienen entre 1 y 1000 caracteres.
+- [ ] Solo las dos partes de una orden pueden escribir y leer su hilo. Los mensajes tienen entre 1 y 1000 caracteres y `autor_id` se toma de `auth.uid()`, nunca de la entrada.
+- [ ] Un mensaje nuevo y un cambio de estado de la orden aparecen en la pantalla de la otra parte sin recargar, por Realtime. Si la suscripción falla, se ve «Actualizar» (CC-09).
+- [ ] La tabla `orden` no tiene `artesano_id`: el artesano se obtiene de `producto.artesano_id` en RLS, RPC y consultas (3FN, CC-09).
 - [ ] El formulario de envío explica cada campo con lenguaje simple y no pide DNI, porque es un requisito no verificado.
 - [ ] El total y los datos de envío se muestran desde los campos de la orden, no desde los mensajes (regla 12).
 
@@ -36,20 +38,23 @@ Es el criterio 4 del reto: estructurar la orden y los datos de despacho por agen
 - **Documentación externa:**
   - https://supabase.com/docs/guides/database/functions: funciones `security definer` y `search_path`.
   - https://supabase.com/docs/reference/javascript/rpc.
-  - https://supabase.com/docs/guides/realtime: opcional, para refrescar el hilo. Si complica, se refresca al enviar y con un botón.
+  - https://supabase.com/docs/guides/realtime/postgres-changes: suscripción a `INSERT` en `mensaje_orden` y `UPDATE` en `orden`, filtrada por `orden_id`; respeta RLS.
 - **Trampas conocidas:**
   - **Funciones `security definer`:** deben fijar `set search_path = public` y validar `auth.uid()` dentro de la función.
   - **Fecha de creación:** no confiar en `creado_en` enviado por el cliente; usar `default now()`.
-  - **Copia del artesano:** `artesano_id` se copia del producto dentro de la RPC, nunca se toma de la entrada.
+  - **Artesano de la orden:** se obtiene de `producto.artesano_id` dentro de la RPC y de las políticas, nunca de la entrada ni de una columna copiada.
+  - **Realtime self-hosted:** comprobar que el contenedor `realtime` del PRP 010 está activo y que la tabla está en la publicación `supabase_realtime`.
+  - **Suscripciones:** cancelarlas al salir de la pantalla para no acumular canales.
 
 ## Archivos (alcance cerrado)
 | Acción | Ruta | Responsabilidad |
 | --- | --- | --- |
-| crear | `supabase/migrations/0005_orden.sql` | tipos `modalidad` y `estado_orden`; tablas `orden` y `mensaje_orden`; RLS; RPC `crear_orden` |
+| crear | `supabase/migrations/0005_orden.sql` | tipos `modalidad` y `estado_orden`; tablas `orden` (sin `artesano_id`) y `mensaje_orden`; RLS por unión con `producto`; RPC `crear_orden`; `alter publication supabase_realtime add table orden, mensaje_orden` |
 | crear | `supabase/tests/orden_crear.test.sql` | pgTAP: validaciones de `crear_orden`; RLS de órdenes y mensajes |
 | crear | `src/compartido/dominio/orden.ts` | tipos TS de Orden, DatosEnvio y MensajeOrden |
 | crear | `src/pedidos/datosEnvio.ts`, `src/pedidos/datosEnvio.test.ts` | validación de los datos de envío |
 | crear | `src/pedidos/consultas.ts` | crear la orden, listar, obtener, enviar y leer mensajes |
+| crear | `src/pedidos/tiempoReal.ts` | suscripción y cancelación de los canales de la orden y su hilo |
 | crear | `src/pedidos/FormularioPedido.tsx` | cantidad, detalle, modalidad y datos de envío |
 | crear | `src/pedidos/MisPedidos.tsx` | lista compartida entre la web y la APK |
 | crear | `src/pedidos/DetalleOrden.tsx` | datos estructurados más el hilo |
@@ -76,8 +81,8 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Fuera de alcance
 - Traducción de mensajes (PRP 008).
-- Notificaciones push o por correo.
+- Notificaciones push o por correo (Realtime solo actualiza la pantalla abierta).
 - Integración con Shalom.
 
 ## Notas / riesgos
-- Sin notificaciones, el artesano debe abrir la APK para ver pedidos nuevos. Para la demo se acepta; anotarlo como siguiente paso.
+- Sin notificaciones push, el artesano debe tener la APK abierta para ver pedidos nuevos al instante. Para la demo se acepta; anotarlo como siguiente paso.

@@ -50,6 +50,7 @@ Es la decisión `0002-proxy-ia-litellm.md` (CC-02).
 - [ ] Tras el despliegue, que hace el operador y registra en `docs/traspasos/CU-09-cristopher.md`:
   - Llamada sin clave → 401.
   - Llamada con clave a `ayllu-texto` → 200.
+  - Llamada con clave a `ayllu-texto` con una imagen de entrada (`image_url` con data URI base64) → 200, porque el PRP 003 envía la foto original para el filtro de artesanía (CC-09).
   - Con una llave inválida en la lista, las llamadas siguen respondiendo 200.
   - El proxy vuelve a funcionar tras un reinicio.
 - [ ] La Edge Function sigue funcionando con OpenRouter directo si el proxy está apagado (lo prueba el PRP 003).

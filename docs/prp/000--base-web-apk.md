@@ -2,12 +2,12 @@
 
 - Caso de uso: CU-00 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo. Implementación anterior en la etiqueta `respaldo-implementacion`
+- Estado: listo (sin Vercel desde CC-05; ajustado en CC-09). Implementación anterior en la etiqueta `respaldo-implementacion`
 - Rama: `cu-00/base-web-apk`
 
 ## Objetivo
 Un solo proyecto React + TypeScript + Vite que produce dos salidas, más la verificación de calidad y Supabase inicializado:
-- **Web del comprador y del administrador:** desplegada con HTTPS (antes Vercel; desde CC-05 en el servidor propio, PRP 010).
+- **Web del comprador y del administrador:** `dist-web/` lista para publicarse; el despliegue con HTTPS en el servidor propio lo hace el PRP 010 (CC-05).
 - **APK de debug del artesano:** generada con Capacitor, que se instala en un Android y abre **sin conexión**.
 
 Al terminar, `make verify` ejecuta comprobaciones reales y pasa.
@@ -22,7 +22,7 @@ Es la base de todos los PRP. También comprueba temprano los dos riesgos de infr
 - [ ] El subagente `reviewer` se puede invocar con este PRP y el diff.
 - [ ] `make apk` genera `android/app/build/outputs/apk/debug/app-debug.apk`.
 - [ ] La APK instalada en un Android real (≥ 7) **en modo avión** abre la pantalla «Mis productos» (vacía).
-- [ ] La web desplegada (PRP 010 desde CC-05) responde por HTTPS. Una ruta profunda (`/producto/x`) no da 404, gracias al rewrite de la SPA.
+- [ ] `npm run preview -- --mode web` sirve `dist-web/` y una ruta profunda (`/producto/x`) no da 404. El despliegue por HTTPS se comprueba en el PRP 010.
 - [ ] `supabase/` existe, inicializado con `supabase init`. `.env.example` lista `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` y `OPENROUTER_API_KEY`, sin valores.
 - [ ] Queda anotado en este PRP (sección Notas) el resultado de la prueba de humo de audio en OpenRouter: qué formato graba el WebView de Android y si OpenRouter lo acepta.
 
@@ -38,7 +38,7 @@ Es la base de todos los PRP. También comprueba temprano los dos riesgos de infr
   - https://openrouter.ai/docs/features/multimodal/audio: `input_audio` en base64.
   - https://supabase.com/docs/guides/local-development/cli/getting-started: `supabase init`.
 - **Trampas conocidas:**
-  - **Java:** no está en el PATH. Android Studio trae JDK 25 en `C:/Program Files/Android/Android Studio/jbr`. Exportar `JAVA_HOME` y `ANDROID_HOME=$LOCALAPPDATA/Android/Sdk` solo para `make apk`. Si el Gradle que genera Capacitor rechaza JDK 25, **detenerse y pedir permiso** para instalar el JDK que exija la versión de Capacitor.
+  - **Java:** no está en el PATH. Usar Temurin JDK 21 (`C:/Program Files/Eclipse Adoptium/jdk-21.0.12.101-hotspot`, ver Notas): el JDK 25 de Android Studio no sirve con Capacitor 8. Exportar `JAVA_HOME` y `ANDROID_HOME=$LOCALAPPDATA/Android/Sdk` solo en la receta de `make apk`.
   - **SDK instalado:** `platforms/android-37.0` y `build-tools/36.0.0`. Si el proyecto generado pide otro `compileSdk`, ajustarlo en `android/variables.gradle` o instalar el paquete, pidiendo permiso antes.
   - **Secretos:** nunca escribir valores en `.env.example` ni en `capacitor.config.ts`.
   - **Herramientas del shell:** `python` y `sd` no están instalados. Usar Node para los scripts.
@@ -62,7 +62,6 @@ Es la base de todos los PRP. También comprueba temprano los dos riesgos de infr
 | crear | `capacitor.config.ts` | `appId` (`pe.ayllu.artesano`, **supuesto**), `appName`, `webDir: 'dist-artesano'` |
 | crear | `android/**` | lo genera `npx cap add android`; no se edita a mano salvo `variables.gradle` |
 | crear | `supabase/config.toml` | lo genera `supabase init` |
-| crear | `vercel.json` | comando de build `build:web`, salida `dist-web` y rewrite de la SPA |
 | modificar | `Makefile` | comandos reales de `verify` más los objetivos `build`, `apk` y `test-db` |
 | crear | `.github/workflows/ci.yml` | en cada PR y en cada push a `main`: `npm ci`, `make verify`, `npm run build:web` y `npm run build:artesano` |
 | modificar | `README.md` | sección inicial «Ayllu — arranque» (requisitos, variables, comandos y despliegue). No borrar el contenido existente |
@@ -84,7 +83,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
    - `npx cap sync android`
    - `cd android && ./gradlew assembleDebug`, con `JAVA_HOME` y `ANDROID_HOME` exportados en la receta.
 5. Compilar la APK e instalarla en el Android. Probar en modo avión.
-6. Ejecutar `supabase init`, actualizar `.env.example` y `.gitignore`, crear `vercel.json` y desplegar en Vercel. El despliegue lo hace Cristopher con su cuenta.
+6. Ejecutar `supabase init` y actualizar `.env.example` y `.gitignore`. El despliegue de la web queda para el PRP 010.
 7. Prueba de humo de audio, sin commitear código:
    - En la APK, ejecutar `MediaRecorder.isTypeSupported(...)` para `audio/webm;codecs=opus`, `audio/mp4` y `audio/ogg;codecs=opus`.
    - Con la clave en una variable local, hacer una llamada a OpenRouter (`google/gemini-2.5-flash`) con un audio de 5 s en el formato soportado.
@@ -96,7 +95,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 3. **Prueba manual:**
    - Instalar `app-debug.apk` (`adb install` o copiándola al celular).
    - Activar el modo avión, abrir la app y ver «Mis productos».
-   - Abrir la URL de Vercel en el celular y en la laptop.
+   - Abrir `npm run preview -- --mode web` en la laptop y probar una ruta profunda.
 
 ## Fuera de alcance
 - Login (PRP 001), pantallas reales (PRP 002–006), firma de release y Play Store.

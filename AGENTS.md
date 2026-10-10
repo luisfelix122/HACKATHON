@@ -35,11 +35,19 @@ modifican archivos fuera del PRP aunque parezca "una mejora rápida".
 - Fuente única: `docs/contratos.md` (API, eventos, esquemas, nombres de entidades del glosario).
 - Cambiar un contrato requiere: PR propio, aviso a todo el equipo y entrada en `docs/cambios/`.
 - Los nombres del dominio salen de `docs/dominio.md`; no inventar sinónimos en el código.
+- **Base de datos en 3FN como mínimo:** sin datos derivados ni dependencias transitivas; `jsonb` solo para objetos
+  de valor que se escriben y leen completos (detalle en `docs/contratos.md`).
+- **Datos de prueba solo en `supabase/seed.sql`.** Prohibido escribirlos en el código de la app o en este archivo.
 
 ## 4. Calidad
 
 - `make verify` debe pasar antes de abrir PR. Hasta implementar el PRP 000 falla a propósito:
   no se declara "verde" algo que no se ejecutó.
+- **SDD:** se escribe el PRP y se ajustan los contratos antes del código; el agente no inventa campos, rutas ni
+  dependencias fuera de ellos.
+- **TDD en la lógica dura** (costeo, validaciones, esquemas de la IA, transiciones en SQL): primero la prueba que
+  falla, luego el código mínimo que la pasa, luego el refactor. La prueba manual queda para la UX y el hardware
+  (APK en un Android real).
 - Cada PRP incluye criterios de aceptación comprobables y sus pruebas.
 - No desactivar lint, tipos ni tests para "pasar". No dejar código muerto ni `TODO` sin dueño.
 - Toda PR pasa por revisión: una persona del equipo + revisor IA con el prompt de `.claude/agents/reviewer.md` (ver §6).
@@ -49,7 +57,11 @@ modifican archivos fuera del PRP aunque parezca "una mejora rápida".
 - Nunca commitear `.env`, llaves, tokens ni credenciales. Solo `.env.example` con nombres sin valores.
 - No pegar secretos en prompts, PRP, issues ni logs.
 - No desplegar ni acceder a servidores/VPS sin autorización explícita del equipo para ese paso.
-- Validar toda entrada externa; no confiar en datos del cliente.
+- Validar toda entrada externa; no confiar en datos del cliente. Estados, precios y totales solo cambian por RPC
+  de Postgres o Edge Functions, protegidos con RLS; nunca desde el frontend.
+- **IA y prompt injection:** el texto o audio del usuario va delimitado y se trata como dato, nunca como
+  instrucción; la salida se valida contra su esquema y se muestra como texto plano. La IA no publica ni cambia
+  estados por su cuenta.
 - Dependencias nuevas: justificar en el PR (motivo, licencia, mantenimiento).
 
 ## 6. Herramientas de IA

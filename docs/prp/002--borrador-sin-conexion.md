@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-02 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo
+- Estado: listo (actualizado por CC-09)
 - Rama: `cu-02/borrador-sin-conexion`
 
 ## Objetivo
@@ -11,7 +11,7 @@ En la APK, aun en modo avión, el artesano completa un borrador y lo guarda en e
 2. Toma o adjunta una foto.
 3. Graba la descripción en audio, o la dicta o la escribe si hay conexión.
 4. Llena la calculadora y obtiene un precio sugerido; luego fija el precio final.
-5. Define la disponibilidad.
+5. Define la disponibilidad: pieza lista (`en_stock`) o a pedido con un plazo.
 
 Al recuperar la conexión, el borrador se sincroniza a Supabase y queda como `producto` en estado `borrador`.
 
@@ -20,17 +20,20 @@ Es el criterio 2 del reto («digitalizar en pocos pasos») y responde a la conec
 
 ## Criterios de aceptación
 - [ ] En modo avión se crea un borrador con nombre, foto y audio. Se cierra la app, se reabre y el borrador sigue completo.
-- [ ] La calculadora muestra el precio sugerido = materiales + horas × pago por hora + gastos + ganancia, con 2 decimales. El precio final es editable, debe ser > 0 y puede diferir del sugerido.
-- [ ] Disponibilidad: `en_stock` exige una cantidad ≥ 0 y `a_pedido` exige un plazo en días > 0.
+- [ ] La calculadora muestra el precio sugerido = materiales + horas × pago por hora + gastos + ganancia, con 2 decimales. El precio final es editable, debe ser > 0 y puede diferir del sugerido. El precio sugerido se calcula en el cliente y no se guarda (3FN, CC-09).
+- [ ] Si el precio final es menor que el costo (materiales + horas × pago por hora + gastos), la calculadora muestra «Con este precio pierdes dinero» sin bloquear (CC-09).
+- [ ] Disponibilidad: `en_stock` no pide cantidad y `a_pedido` exige un plazo en días > 0 (CC-09).
 - [ ] Con conexión, «Dictar» transcribe en vivo (español) al campo de descripción. Sin conexión, ese botón se oculta y se ofrece «Grabar audio».
-- [ ] Al sincronizar, la foto (comprimida, lado mayor de 1600 px) y el audio se suben a Storage, y el `producto` queda con el mismo `id` local. Repetir la sincronización no duplica nada (idempotente).
+- [ ] Al sincronizar, la foto (comprimida, lado mayor de 1600 px) y el audio se suben a Storage, el `producto` queda con el mismo `id` local y la foto queda como fila `original` de `foto_producto` (con `publicada = true`). Repetir la sincronización no duplica nada (idempotente).
 - [ ] Si la subida falla a medias, el borrador local sigue `pendiente` y se reintenta. Solo se borra del celular tras la confirmación del servidor.
-- [ ] La base de datos rechaza pasar un producto a `publicado` si el artesano no tiene la acreditación `aprobada`. Hay una prueba pgTAP que lo verifica.
+- [ ] La base de datos rechaza pasar un producto a `publicado` si el artesano no tiene la acreditación `aprobada`, si `revision_ia = rechazada` o si no tiene ninguna foto publicada. Hay pruebas pgTAP que lo verifican.
+- [ ] El artesano no puede escribir `revision_ia`, `comentario_precio_ia`, `ia_error` ni `ia_intentos`, ni borrar su foto original. Hay una prueba pgTAP que lo verifica.
+- [ ] `descripcion_texto` tiene un máximo de 2000 caracteres en la base y en el formulario.
 - [ ] Cada borrador muestra su estado en «Mis productos»: «Guardado en el celular», «Sincronizado» o «Error al sincronizar».
 
 ## Contexto necesario
 - **Dominio:** Borrador local, Producto, Costeo, Precio sugerido o final, Disponibilidad, Descripción hablada; reglas 1, 5, 6, 7 y 14.
-- **Contratos:** `docs/contratos.md` §`producto`, §Archivos, §Sincronización del borrador local.
+- **Contratos:** `docs/contratos.md` §`producto`, §`foto_producto`, §Archivos, §Sincronización del borrador local, §Normalización.
 - **Decisiones:** `0001-stack.md` (vía combinada de voz; IndexedDB/Dexie).
 - **Código existente a imitar:** `src/acceso/perfil.ts` (PRP 001): acceso a Supabase y validación.
 - **Documentación externa:**
@@ -49,17 +52,17 @@ Es el criterio 2 del reto («digitalizar en pocos pasos») y responde a la conec
 ## Archivos (alcance cerrado)
 | Acción | Ruta | Responsabilidad |
 | --- | --- | --- |
-| crear | `supabase/migrations/0002_producto.sql` | tipos `estado_producto` y `disponibilidad`; tabla `producto` (incluye `ia_error` e `ia_intentos`); RLS; trigger `exigir_acreditacion_para_publicar`; buckets `fotos` y `audios` con sus políticas |
-| crear | `supabase/tests/producto.test.sql` | pgTAP: publicar sin acreditación falla; un artesano no edita productos ajenos |
-| crear | `src/compartido/dominio/producto.ts` | tipos TS de Producto, Costeo y Disponibilidad (de `contratos.md`) |
-| crear | `src/borradores/costeo.ts`, `src/borradores/costeo.test.ts` | cálculo del precio sugerido y validaciones |
+| crear | `supabase/migrations/0002_producto.sql` | tipos `estado_producto`, `disponibilidad`, `revision_ia`, `origen_foto` y `variante_foto`; tablas `producto` (incluye `revision_ia`, `comentario_precio_ia`, `ia_error` e `ia_intentos`) y `foto_producto` (una sola `original` por producto); RLS; trigger `proteger_producto` (columnas de la IA y foto original); trigger `exigir_acreditacion_para_publicar` (acreditación, `revision_ia` y al menos una foto publicada); buckets `fotos` y `audios` con sus políticas |
+| crear | `supabase/tests/producto.test.sql` | pgTAP: publicar sin acreditación, con `revision_ia = rechazada` o sin fotos publicadas falla; un artesano no edita productos ajenos ni columnas de la IA; la original es única y no se borra |
+| crear | `src/compartido/dominio/producto.ts` | tipos TS de Producto, FotoProducto, Ficha, Costeo y Disponibilidad (de `contratos.md`) |
+| crear | `src/borradores/costeo.ts`, `src/borradores/costeo.test.ts` | cálculo del costo y del precio sugerido, aviso de pérdida y validaciones |
 | crear | `src/borradores/db.ts` | esquema Dexie `borrador_local` |
 | crear | `src/borradores/comprimirFoto.ts` | redimensiona y convierte a JPEG 0,8 |
 | crear | `src/borradores/audio.ts` | grabar y detener con MediaRecorder; dictado con el plugin |
-| crear | `src/borradores/sincronizar.ts`, `src/borradores/sincronizar.test.ts` | cola de subida idempotente (Supabase simulado en las pruebas) |
+| crear | `src/borradores/sincronizar.ts`, `src/borradores/sincronizar.test.ts` | cola de subida idempotente: archivos, `producto` y foto `original` (Supabase simulado en las pruebas) |
 | crear | `src/borradores/MisProductos.tsx` | lista con estados y botón «Nuevo» |
 | crear | `src/borradores/EditorBorrador.tsx` | pasos: nombre → foto → descripción → calculadora → disponibilidad → guardar |
-| crear | `src/borradores/Calculadora.tsx` | campos grandes, en soles, con el resultado visible |
+| crear | `src/borradores/Calculadora.tsx` | campos grandes, en soles, con el resultado y el aviso de pérdida visibles |
 | modificar | `src/app/AppArtesano.tsx` | rutas `/`, `/nuevo`, `/borrador/:id` |
 | modificar | `package.json`, `package-lock.json` | `@capacitor-community/speech-recognition`, `@capacitor/camera`, `@capacitor/network` |
 | modificar | `android/app/src/main/AndroidManifest.xml` | permisos `RECORD_AUDIO` y `CAMERA` |
@@ -78,8 +81,8 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 ## Validación
 1. `make verify` y `supabase test db` (o pgTAP en remoto).
 2. **Pruebas a crear:**
-   - `costeo`: caso feliz; valores negativos o vacíos; redondeo de .005.
-   - `sincronizar`: éxito; falla la foto; falla el upsert; reintento sin duplicar.
+   - `costeo`: caso feliz; valores negativos o vacíos; redondeo de .005; precio final menor que el costo.
+   - `sincronizar`: éxito; falla la foto; falla el upsert del producto; falla el upsert de la foto original; reintento sin duplicar.
 3. **Prueba manual en el Android:**
    - Modo avión → crear un borrador completo → cerrar y reabrir → sigue ahí.
    - Quitar el modo avión → pasa a «Sincronizado» → la fila y los archivos aparecen en Supabase.
@@ -87,7 +90,8 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 ## Fuera de alcance
 - Procesamiento con IA y publicación (PRP 003).
 - Edición en varios dispositivos y resolución de conflictos.
-- Más de una foto por producto.
+- Más de una foto tomada por el artesano: las variantes las genera la IA (PRP 003).
+- Cantidad en stock y reservas (CC-09).
 
 ## Notas / riesgos
 - Si el dictado no funciona en español en el dispositivo de prueba, el artesano escribe a mano y se avisa para ajustar la demo.

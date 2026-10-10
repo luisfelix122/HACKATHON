@@ -36,10 +36,10 @@ Que el artesano publique una pieza desde su celular en pocos pasos, aun sin señ
   - Login con Google.
   - Acreditación RNA manual.
   - Borrador sin conexión con calculadora de costos.
-  - Ficha y foto asistidas por IA, con la foto original conservada.
+  - Ficha, etiquetas y hasta 4 fotos asistidas por IA, con filtro de artesanía y la foto original conservada (CC-09).
   - Vitrina pública con filtros y WhatsApp.
   - Pedido con datos de despacho.
-  - Confirmación, reserva de stock y pago por enlace con verificación manual.
+  - Confirmación como cotización (sin reserva de stock, CC-09) y pago por enlace con verificación manual.
 - **No incluye:**
   - Pasarela integrada ni comisión por venta.
   - Integración con Shalom.

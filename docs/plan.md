@@ -14,21 +14,23 @@ Aprobado: <AAAA-MM-DD> (alcance revisado en `docs/revision-alcance.md`)
 
 ## Arquitectura
 - **Web (navegador, celular o laptop):** vitrina, pedidos del comprador y panel del administrador.
-- **APK del artesano (Capacitor):** borradores, publicación y gestión de sus órdenes. La interfaz viaja dentro de la APK y abre sin conexión. El artesano usa **solo la APK** (CC-08): crea su cuenta con Google dentro de la app, define una contraseña y vuelve a entrar con correo y contraseña; la sesión queda guardada y la app abre sin conexión (CC-06).
+- **APK del artesano (Capacitor):** borradores, publicación y gestión de sus órdenes. La interfaz viaja dentro de la APK y abre sin conexión. El artesano usa **solo la APK** (CC-08): crea su cuenta con correo y contraseña (CC-09) o con Google y una contraseña (CC-06), y vuelve a entrar con correo y contraseña; la sesión queda guardada y la app abre sin conexión.
 - **Borrador local:** se guarda en IndexedDB y se sincroniza al servidor cuando hay conexión. Un borrador pertenece a un solo dispositivo.
 - **Supabase:**
-  - Auth (Google).
-  - Postgres (perfiles, productos, órdenes, mensajes de la orden).
-  - Storage (fotos originales y mejoradas, audios).
-- **Edge Function `procesar-producto`:** recibe el texto dictado (o el audio, como respaldo), genera la ficha con el proxy LiteLLM (o, si el proxy falla, con OpenRouter directo) y propone la foto mejorada mediante OpenRouter. Guarda el resultado sin borrar la foto original.
+  - Auth (Google y correo con contraseña).
+  - Postgres (perfiles, productos, fotos del producto, órdenes, mensajes de la orden), en 3FN como mínimo (CC-09).
+  - Realtime para el hilo y el estado de la orden (CC-09).
+  - Storage (fotos originales y de IA, audios).
+- **Edge Function `procesar-producto`:** recibe la foto original y el texto dictado (o el audio, como respaldo). En una llamada al proxy LiteLLM (o, si el proxy falla, a OpenRouter directo) evalúa si es artesanía y si el contenido es apropiado, genera la ficha con título y etiquetas, y comenta el precio. Propone hasta 4 fotos mediante OpenRouter. Guarda el resultado sin borrar la foto original (CC-09).
 - **Pago:** fuera del sistema. El vendedor pega un enlace de pago (por ejemplo, un link individual de Izipay) y confirma el abono a mano.
 - **Despacho:** fuera del sistema. La orden guarda los datos estructurados que se entregan a la agencia (por ejemplo, Shalom).
 
 ## Modelo de datos
 Preliminar; el detalle va en `docs/contratos.md`.
 - **Perfil:** rol (comprador / artesano / admin), nombre, WhatsApp, playa, asociación (texto), historia, número RNA declarado, estado de acreditación — relación 1:1 con el usuario de Auth.
-- **Producto:** artesano, nombre, foto original, foto mejorada, foto elegida, audio, transcripción, ficha (descripción, materiales, técnica, tipo), costos (materiales, horas, pago por hora, gastos, ganancia en S/), precio final, disponibilidad (stock + cantidad | a pedido + plazo), estado — pertenece a un Perfil artesano.
-- **Orden:** producto, comprador, vendedor, modalidad (recojo / envío), datos de envío, costo de envío, total, enlace de pago, vencimiento de la reserva, número de guía, estado — relaciona un Producto con un comprador.
+- **Producto:** artesano, nombre, audio, transcripción, ficha (título, descripción, materiales, técnica, tipo, historia, etiquetas), costos (materiales, horas, pago por hora, gastos, ganancia en S/), precio final, disponibilidad (en stock | a pedido + plazo), revisión de la IA, estado — pertenece a un Perfil artesano.
+- **FotoProducto:** producto, origen (original / IA), variante, ruta, publicada, posición — pertenece a un Producto (CC-09).
+- **Orden:** producto, comprador, modalidad (recojo / envío), datos de envío, costo de envío, total, fecha estimada, enlace de pago, número de guía, estado — relaciona un Producto con un comprador; el vendedor sale del producto.
 - **MensajeOrden:** orden, autor, texto original, texto traducido (opcional) — pertenece a una Orden.
 
 ## Casos de uso (en orden de construcción)
@@ -37,13 +39,13 @@ Dueño de todos los CU: Cristopher (implementación). Imprescindibles: CU-00 a C
 | # | Caso de uso | Actor | Depende de | Hito |
 | --- | --- | --- | --- | --- |
 | CU-00 | Base: web desplegada con HTTPS y APK del artesano con Capacitor que se instala en un Android | equipo | — | H1 |
-| CU-01 | Acceder con Google y solicitar acreditación con RNA; el admin aprueba o rechaza | artesano, admin, comprador | CU-00 | H1 |
+| CU-01 | Acceder (comprador con Google; artesano con correo o Google) y solicitar acreditación con RNA; el admin aprueba o rechaza | artesano, admin, comprador | CU-00 | H1 |
 | CU-02 | Crear un borrador de producto sin conexión (nombre, foto, audio, calculadora, disponibilidad) y sincronizarlo | artesano | CU-00, CU-01 | H1 |
-| CU-03 | Procesar el borrador con IA, revisarlo, corregirlo y publicarlo | artesano | CU-02 | H2 |
-| CU-04 | Explorar la vitrina pública: búsqueda, filtros, ficha, perfil y WhatsApp | comprador | CU-00 (con datos semilla) | H1 |
+| CU-03 | Procesar el borrador con IA (filtro de artesanía, ficha, etiquetas y 4 fotos), revisarlo, corregirlo y publicarlo | artesano | CU-02 | H2 |
+| CU-04 | Explorar la vitrina pública: búsqueda, filtros y etiquetas, ficha con carrusel, perfil y WhatsApp | comprador | CU-00 (con datos semilla) | H1 |
 | CU-05 | Pedir un producto con recojo o envío y escribir en el hilo de la orden | comprador, artesano | CU-01, CU-04 | H2 |
-| CU-06 | Confirmar el pedido, reservar stock, enviar el enlace de pago, verificar el abono y marcar el envío | artesano, comprador | CU-05 | H3 |
-| CU-07 | Datos semilla ficticios y guion de demo | equipo | CU-04 a CU-06 | H3 |
+| CU-06 | Confirmar el pedido, enviar el enlace de pago, verificar el abono y marcar el envío con enlace de rastreo | artesano, comprador | CU-05 | H3 |
+| CU-07 | Datos semilla ficticios de la demo (`supabase/seed.sql`); el guion y el video son tareas de entrega (`docs/entrega/demo.md`, CC-09) | equipo | CU-04 a CU-06 | H3 |
 | CU-09 | Proxy de IA con LiteLLM en el servidor (infraestructura de CU-03 y CU-08) | equipo | CU-00 | H1 |
 | CU-10 | Supabase self-hosted y web en el servidor (infraestructura) | equipo | CU-00 | H1 |
 | CU-08 | (Opcional) Traducir el hilo de la orden con "Ver original" | comprador, artesano | CU-05 | H3 |
@@ -51,11 +53,14 @@ Dueño de todos los CU: Cristopher (implementación). Imprescindibles: CU-00 a C
 ## Hitos
 - **H1 (≈ hora 5):** la APK se instala en un Android; el catálogo muestra datos semilla; el artesano entra con Google y guarda un borrador en modo avión.
 - **H2 (≈ hora 10):** el borrador se procesa con IA y se publica; el comprador crea una orden.
-- **H3 (≈ hora 13):** el flujo completo de orden y pago manual funciona; la demo está ensayada y hay un video de respaldo. Las últimas 2 h, solo integración y ensayo.
+- **H3 (≈ hora 13):** el flujo completo de orden y pago manual funciona; la demo de 3 minutos está ensayada y hay un video de respaldo (`docs/entrega/demo.md`). Las últimas 2 h, solo integración y ensayo.
 
 ## Riesgos
 Detalle completo en `docs/revision-alcance.md` §5.
-- La IA altera la foto del producto → la original queda por defecto y la mejorada solo se usa si el artesano la acepta.
+- La IA altera la foto del producto → la original nunca se borra, la ficha siempre enlaza a ella y las fotos de IA solo se publican si el artesano las elige.
+- 4 fotos de IA por intento son lentas o caras → se generan en paralelo, cada falla es una advertencia y el límite es de 3 intentos por producto; medir el tiempo en la primera prueba (CC-09).
+- El filtro de artesanía rechaza una pieza legítima → el artesano reintenta con otra foto o el administrador reinicia `revision_ia` por SQL (CC-09).
+- Registro por correo sin confirmación (sin SMTP) → alguien podría usar el correo de otra persona; publicar exige la aprobación del administrador. Riesgo aceptado para la hackatón (CC-09).
 - Falla la red o se agota la cuota en la demo → video de respaldo y clave de OpenRouter con saldo.
 - Servidor propio caído (sin UPS ni internet de respaldo confirmados) → con 0003 cae **todo** el producto, no solo la IA: revisar el servidor antes de presentar y tener el video de respaldo.
 - Servidor del proxy apagado o sin internet → la Edge Function cae a OpenRouter directo tras `IA_TIMEOUT_MS`; probarlo apagando el contenedor.
@@ -64,5 +69,5 @@ Detalle completo en `docs/revision-alcance.md` §5.
 - La compilación de Android se traba (Android Studio/JDK, firma) → la APK se compila en la máquina de Cristopher, a cargo de Claude Code. Ahí hay Android Studio con su JDK 25, el SDK con la plataforma android-37 y build-tools 36. En la hora 1 se compila una APK de debug vacía y se instala en un celular. Si el Gradle que genera Capacitor no admite JDK 25, se instala el JDK que pida Capacitor.
 - Descripción hablada → con conexión se dicta en vivo con el reconocimiento de voz nativo y a OpenRouter va solo texto. Sin conexión se graba el audio; al volver la señal se dicta de nuevo o, si la prueba de formato de la hora 1 funciona, se envía el audio. Siempre se puede escribir a mano.
 - Se pierde un borrador local → no borrarlo hasta que el servidor confirme la subida.
-- Doble venta o reserva vencida → la reserva se crea al aceptar y vence a las 24 h tras enviar el enlace; el vencimiento se calcula al leer la orden.
+- Doble venta de una pieza única (no hay reserva, CC-09) → el artesano acepta una orden y rechaza las demás desde «Mis pedidos».
 - Datos personales del padrón → no cargarlos en la app; datos semilla ficticios.
