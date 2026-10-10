@@ -23,7 +23,7 @@ Vitrina digital para artesanos de las playas del norte de Piura y Talara (Hackat
 - Para la APK: Android Studio (SDK con API ≥ 24) y **JDK 21**. El Gradle de Capacitor 8 no acepta el JDK 25 que trae Android Studio.
 - Para las pruebas de base de datos: Docker Desktop.
 
-**Variables:** copia `.env.example` a `.env.local` y completa `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY`. Los secretos de las Edge Functions (`OPENROUTER_API_KEY`, `IA_BASE_URL`, `IA_API_KEY`, `IA_TIMEOUT_MS`) se configuran con `npx supabase secrets set`, nunca en el repositorio.
+**Variables:** copia `.env.example` a `.env.local` y completa `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` y, opcionalmente, `VITE_WEB_URL` (URL pública de la web). Los secretos de las Edge Functions (`OPENROUTER_API_KEY`, `IA_BASE_URL`, `IA_API_KEY`, `IA_TIMEOUT_MS`) se configuran con `npx supabase secrets set`, nunca en el repositorio.
 
 | Comando | Qué hace |
 | --- | --- |
