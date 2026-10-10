@@ -11,7 +11,7 @@ La orden recorre su ciclo completo como un acuerdo entre comprador y artesano, c
 2. El comprador confirma el total.
 3. El artesano pega su enlace de pago (por ejemplo, Izipay, Yape o Plin).
 4. El comprador abre el enlace y paga fuera del sistema.
-5. El artesano verifica el abono y marca la orden como enviada (con número de guía y enlace de rastreo) o lista para recojo; luego, entregada.
+5. El artesano verifica el abono y marca la orden como enviada (con número de guía; el comprador lo rastrea con un botón) o lista para recojo; luego, entregada.
 
 No se reserva stock: si dos compradores piden la misma pieza, el artesano acepta una orden y rechaza la otra (CC-09).
 
@@ -27,17 +27,17 @@ Cierra los criterios 3 y 4 del reto (confirmación de abono digital y despacho).
 - [ ] Solo el artesano puede ejecutar `verificar_abono`. El comprador **no tiene** ningún botón «Ya pagué» que cambie el estado: puede escribirlo en el hilo, pero no es prueba (regla 10).
 - [ ] En la interfaz, cada parte ve solo las acciones válidas para el estado actual, con textos simples y fechas en hora de Lima.
 - [ ] Al aceptar, la fecha estimada se prellena con la regla de «Estimación de entrega» de `contratos.md` y el artesano la puede corregir.
-- [ ] En una orden `enviada`, el comprador ve el número de guía como enlace a la página de rastreo de Shalom y un botón «Copiar número».
+- [ ] En una orden `enviada`, el comprador ve el número de guía y un botón «Rastrear envío» que abre `https://shalom.com.pe/rastrea` en una pestaña nueva (enlace fijo).
 - [ ] Los cambios de estado llegan a la otra parte por Realtime (PRP 005).
 
 ## Contexto necesario
 - **Dominio:** Orden, Enlace de pago, Abono verificado, Número de guía; estados de la Orden; reglas 8–12.
 - **Contratos:** `docs/contratos.md` §Transiciones de orden (concurrencia, Realtime), §`orden`, §Seguimiento del envío, §Estimación de entrega, §Convenciones (fechas en `America/Lima`).
-- **Decisiones:** `revision-alcance.md` §2 (pago manual); `CC-09.md` (sin reserva, rastreo, estimación).
+- **Decisiones:** `revision-alcance.md` §2 (pago manual); `CC-09.md` (sin reserva, botón de rastreo, estimación).
 - **Código existente a imitar:** `supabase/migrations/0005_orden.sql` (`crear_orden`); `src/pedidos/DetalleOrden.tsx`.
 - **Documentación externa:**
   - https://www.izipay.pe/link-de-pago/: link individual por orden; sin API ni webhook documentados.
-  - https://rastreo.shalom.pe/: página de rastreo **sin verificar**; comprobar al empezar si acepta el número en la URL.
+  - https://shalom.com.pe/rastrea: página de rastreo de Shalom, abierta desde un botón con enlace fijo.
 - **Trampas conocidas:**
   - **Reglas solo en SQL:** la interfaz no decide las transiciones, solo oculta botones. La fuente de verdad son las RPC.
   - **Artesano de la orden:** se obtiene de `producto.artesano_id` (3FN, CC-09).
@@ -51,18 +51,17 @@ Cierra los criterios 3 y 4 del reto (confirmación de abono digital y despacho).
 | crear | `supabase/tests/orden_transiciones.test.sql` | pgTAP: cada transición válida e inválida; actor incorrecto; datos incompletos; doble transición |
 | crear | `src/pedidos/estadoOrden.ts`, `src/pedidos/estadoOrden.test.ts` | etiquetas y acciones visibles por rol y estado |
 | crear | `src/pedidos/estimarEntrega.ts`, `src/pedidos/estimarEntrega.test.ts` | fecha estimada por plazo, modalidad y departamento |
-| crear | `src/pedidos/rastreo.ts`, `src/pedidos/rastreo.test.ts` | enlace de rastreo de Shalom a partir del número de guía |
 | crear | `src/pedidos/acciones.ts` | invocaciones de las RPC y mensajes de error legibles |
 | crear | `src/pedidos/AccionesArtesano.tsx` | aceptar (total, envío y fecha prellenada), rechazar, enlace, verificar, enviado/recojo, entregado |
 | crear | `src/pedidos/AccionesComprador.tsx` | confirmar el total, abrir el enlace, cancelar, rastrear el envío |
-| modificar | `src/pedidos/DetalleOrden.tsx` | integrar las acciones y el rastreo |
+| modificar | `src/pedidos/DetalleOrden.tsx` | integrar las acciones y el botón «Rastrear envío» |
 
 Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Tareas (en orden)
 1. Las pruebas pgTAP de las transiciones, escritas primero (TDD).
 2. La migración 0006 hasta que pasen.
-3. `estadoOrden.ts`, `estimarEntrega.ts` y `rastreo.ts`, con sus pruebas primero.
+3. `estadoOrden.ts` y `estimarEntrega.ts`, con sus pruebas primero.
 4. `acciones.ts` y los componentes de acciones.
 5. Recorrido completo con dos dispositivos.
 
@@ -74,7 +73,6 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
    - Transición desde un estado incorrecto y doble transición.
    - Enlace de pago sin `https`; envío sin número de guía.
    - `estimarEntrega`: `a_pedido` con envío a Lima; `en_stock` con recojo; departamento fuera de la tabla.
-   - `rastreo`: número con espacios; número vacío.
 3. **Prueba manual:**
    - Dos compradores piden la misma pieza → el artesano acepta uno y rechaza al otro → el rechazado ve el estado al instante.
    - Recorrido completo hasta `entregada` con un enlace de prueba y un número de guía de prueba.

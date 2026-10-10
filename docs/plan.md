@@ -44,7 +44,7 @@ Dueño de todos los CU: Cristopher (implementación). Imprescindibles: CU-00 a C
 | CU-03 | Procesar el borrador con IA (filtro de artesanía, ficha, etiquetas y 4 fotos), revisarlo, corregirlo y publicarlo | artesano | CU-02 | H2 |
 | CU-04 | Explorar la vitrina pública: búsqueda, filtros y etiquetas, ficha con carrusel, perfil y WhatsApp | comprador | CU-00 (con datos semilla) | H1 |
 | CU-05 | Pedir un producto con recojo o envío y escribir en el hilo de la orden | comprador, artesano | CU-01, CU-04 | H2 |
-| CU-06 | Confirmar el pedido, enviar el enlace de pago, verificar el abono y marcar el envío con enlace de rastreo | artesano, comprador | CU-05 | H3 |
+| CU-06 | Confirmar el pedido, enviar el enlace de pago, verificar el abono y marcar el envío con botón de rastreo | artesano, comprador | CU-05 | H3 |
 | CU-07 | Datos semilla ficticios de la demo (`supabase/seed.sql`); el guion y el video son tareas de entrega (`docs/entrega/demo.md`, CC-09) | equipo | CU-04 a CU-06 | H3 |
 | CU-09 | Proxy de IA con LiteLLM en el servidor (infraestructura de CU-03 y CU-08) | equipo | CU-00 | H1 |
 | CU-10 | Supabase self-hosted y web en el servidor (infraestructura) | equipo | CU-00 | H1 |

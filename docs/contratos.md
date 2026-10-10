@@ -89,7 +89,7 @@ La foto original nunca se borra ni se sobrescribe. Si el artesano no la publica,
 | `total` | numeric(10,2) | al aceptar | Precio × cantidad + envío |
 | `fecha_entrega_estimada` | date | al aceptar | La interfaz la prellena (ver «Estimación de entrega»); el artesano la puede corregir |
 | `enlace_pago` | text | en `pago_pendiente` | URL `https` |
-| `numero_guia` | text | en `enviada` | Se muestra con enlace de rastreo (ver «Seguimiento del envío») |
+| `numero_guia` | text | en `enviada` | Se muestra junto al botón de rastreo (ver «Seguimiento del envío») |
 | `estado` | ver `docs/dominio.md` | sí | |
 | `creado_en` / `actualizado_en` | timestamptz | sí | |
 
@@ -99,7 +99,7 @@ La foto original nunca se borra ni se sobrescribe. Si el artesano no la publica,
 Los requisitos de identificación de Shalom (por ejemplo, el DNI del destinatario) **no están verificados**. No se piden hasta confirmarlos.
 
 #### Seguimiento del envío (CC-09)
-El `numero_guia` se muestra como enlace a `https://rastreo.shalom.pe/` y con un botón «Copiar número». **Sin verificar** si la página acepta el número en la URL; si no lo acepta, el enlace abre la página y el comprador pega el número.
+En una orden `enviada`, el comprador ve el `numero_guia` como texto y un botón «Rastrear envío» que abre `https://shalom.com.pe/rastrea` en una pestaña nueva. Es un enlace fijo: no se le pasa el número.
 
 #### Estimación de entrega (CC-09)
 Al aceptar, la interfaz propone `fecha_entrega_estimada = hoy + plazo_dias (si a_pedido) + días de envío`. Días de envío desde Piura por departamento de destino **(supuesto)**: Piura 1, Tumbes y Lambayeque 2, Lima y La Libertad 3, resto 5. Con `recojo` no se suman días de envío.

@@ -36,7 +36,7 @@ Las marcas **(supuesto)** indican decisiones del equipo que aún no se han valid
 | Datos de envío | Datos estructurados para despachar por una agencia de encomiendas (por ejemplo, Shalom). | `datos_envio` | Dirección del artesano |
 | Enlace de pago | URL de cobro que genera el artesano en su proveedor (por ejemplo, un link individual de Izipay) y pega en la orden. | `enlace_pago` | Pasarela integrada (fuera de alcance) |
 | Abono verificado | Confirmación del artesano de que el dinero llegó a su cuenta. | estado `pagada` | Captura de pantalla del comprador |
-| Número de guía | Código que da la agencia al despachar. Se muestra con un enlace de rastreo. | `numero_guia` | ID de la orden |
+| Número de guía | Código que da la agencia al despachar. Se muestra junto al botón «Rastrear envío». | `numero_guia` | ID de la orden |
 | Mensaje de la orden | Texto que intercambian comprador y artesano dentro de una orden. | `mensaje_orden` | Chat libre (pospuesto) |
 
 ## Estados
