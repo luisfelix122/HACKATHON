@@ -17,7 +17,6 @@ Vitrina digital para artesanos de las playas del norte de Piura y Talara (Hackat
 | `docs/decisiones/`, `docs/cambios/` | decisiones (0001 a 0004) y cambios de alcance (CC-01 a CC-08) |
 | `docs/prp/` | PRP 000–011, uno por caso de uso |
 | `PRODUCT.md`, `DESIGN.md` | datos del producto y sistema visual (skill impeccable) |
-| `docs/traspasos/estado-general.md` | estado actual y siguiente paso |
 
 ## Estado
 Aún no hay código: cada PRP se implementa uno por uno, empezando por el PRP 000 (base web + APK). Una implementación anterior de los PRP 000, 001 y 011 quedó guardada en la etiqueta de git `respaldo-implementacion` como referencia; para recuperar un archivo: `git checkout respaldo-implementacion -- <ruta>`.
