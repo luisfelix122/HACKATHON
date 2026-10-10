@@ -1,32 +1,53 @@
 import { useState, type FormEvent } from 'react'
 import { Aviso, Boton, Campo } from '../compartido/ui/componentes'
+import { crearCuentaConGoogle } from './googleApk'
 import { ingresarArtesano, type ErrorIngreso } from './sesion'
 
 const URL_WEB = import.meta.env.VITE_WEB_URL as string | undefined
 const REGISTRO = URL_WEB ? `${URL_WEB}/artesano/registro` : 'la web de Aylly (/artesano/registro)'
 
-const MENSAJES: Record<ErrorIngreso, string> = {
+export type MotivoIngreso = ErrorIngreso | 'google_fallo'
+
+const MENSAJES: Record<MotivoIngreso, string> = {
   credenciales_invalidas: 'Correo o contraseña incorrectos.',
-  sin_conexion: 'Necesitas internet para ingresar la primera vez.',
-  rol_incorrecto: `Esta app es para artesanos. Regístrate en ${REGISTRO}.`,
-  sin_registro: `Aún no completaste tu registro de artesano. Termínalo en ${REGISTRO}.`,
+  sin_conexion: 'Necesitas internet para ingresar o crear tu cuenta.',
+  rol_incorrecto:
+    'Esta cuenta es de comprador. Para vender, crea tu cuenta con otro correo de Google.',
+  sin_registro: 'Aún no completaste tu registro. Crea tu cuenta con Google para terminarlo.',
+  google_fallo: `Google no volvió a la app. Vuelve a intentarlo o regístrate en ${REGISTRO}.`,
   desconocido: 'No se pudo ingresar. Vuelve a intentarlo.',
 }
 
-/** APK: ingreso con el correo de Google y la contraseña elegida al registrarse. */
-export function IngresoArtesano({ motivo }: { motivo?: ErrorIngreso }) {
+/**
+ * APK: crear la cuenta con Google (CC-06) o volver a entrar con el correo de
+ * Google y la contraseña elegida al registrarse.
+ */
+export function IngresoArtesano({ motivo }: { motivo?: MotivoIngreso }) {
   const [correo, setCorreo] = useState('')
   const [contrasena, setContrasena] = useState('')
   const [error, setError] = useState<string | null>(motivo ? MENSAJES[motivo] : null)
-  const [enCurso, setEnCurso] = useState(false)
+  const [enCurso, setEnCurso] = useState<'clave' | 'google' | null>(null)
 
   async function enviar(evento: FormEvent) {
     evento.preventDefault()
-    setEnCurso(true)
+    setEnCurso('clave')
     setError(null)
     const resultado = await ingresarArtesano(correo, contrasena)
     if (resultado) setError(MENSAJES[resultado])
-    setEnCurso(false)
+    setEnCurso(null)
+  }
+
+  async function crearCuenta() {
+    if (!navigator.onLine) return setError(MENSAJES.sin_conexion)
+    setEnCurso('google')
+    setError(null)
+    try {
+      await crearCuentaConGoogle()
+    } catch {
+      setError(MENSAJES.google_fallo)
+    } finally {
+      setEnCurso(null)
+    }
   }
 
   return (
@@ -58,15 +79,28 @@ export function IngresoArtesano({ motivo }: { motivo?: ErrorIngreso }) {
           )}
         </Campo>
         {error && <Aviso tono="error">{error}</Aviso>}
-        <Boton type="submit" ancho cargando={enCurso}>
+        <Boton type="submit" ancho cargando={enCurso === 'clave'} disabled={enCurso === 'google'}>
           Ingresar
         </Boton>
       </form>
-      <p className="nota">
-        ¿No tienes cuenta u olvidaste tu contraseña? Entra con Google en{' '}
-        {URL_WEB ? <a href={`${URL_WEB}/artesano/registro`}>{REGISTRO}</a> : REGISTRO} y elige una
-        nueva.
-      </p>
+      <section className="formulario" aria-labelledby="nueva-cuenta">
+        <h2 id="nueva-cuenta">¿Primera vez?</h2>
+        <p>Crea tu cuenta con Google. Después eliges la contraseña para volver a entrar.</p>
+        <Boton
+          variante="destacado"
+          ancho
+          onClick={crearCuenta}
+          cargando={enCurso === 'google'}
+          disabled={enCurso === 'clave'}
+        >
+          Crear mi cuenta con Google
+        </Boton>
+        <p className="nota">
+          ¿Olvidaste tu contraseña? Entra con Google en{' '}
+          {URL_WEB ? <a href={`${URL_WEB}/artesano/registro`}>{REGISTRO}</a> : REGISTRO} y elige una
+          nueva.
+        </p>
+      </section>
     </main>
   )
 }

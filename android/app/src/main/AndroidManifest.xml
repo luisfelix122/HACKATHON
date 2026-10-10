@@ -22,6 +22,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
 
+            <!-- Regreso del registro con Google (CC-06): pe.aylly.artesano://auth -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="pe.aylly.artesano" android:host="auth" />
+            </intent-filter>
+
         </activity>
 
         <provider

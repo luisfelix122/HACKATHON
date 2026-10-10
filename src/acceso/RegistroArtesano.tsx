@@ -136,7 +136,8 @@ function NuevaContrasena() {
   )
 }
 
-function FormularioArtesano(props: {
+/** Formulario de registro del artesano; lo usan la web y la APK (CC-06). */
+export function FormularioArtesano(props: {
   id: string
   correo: string
   nombreInicial: string

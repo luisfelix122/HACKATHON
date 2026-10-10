@@ -18,7 +18,7 @@ Es la decisión `0003` (CC-05).
 - [ ] `infra/supabase/README.md` documenta todo el despliegue:
   - Cómo obtener `supabase/supabase` en `self-hosted/v0.8.2` con clonado disperso de `docker/`.
   - Cómo generar los secretos (`sh utils/generate-keys.sh`, `sh utils/add-new-auth-keys.sh`) y que ningún valor por defecto queda en uso.
-  - Las variables de URL: `SUPABASE_PUBLIC_URL`, `API_EXTERNAL_URL=https://aylly-api.likadev.com/auth/v1`, `SITE_URL=https://aylly.likadev.com` y `ADDITIONAL_REDIRECT_URLS`.
+  - Las variables de URL: `SUPABASE_PUBLIC_URL`, `API_EXTERNAL_URL=https://aylly-api.likadev.com/auth/v1`, `SITE_URL=https://aylly.likadev.com` y `ADDITIONAL_REDIRECT_URLS`, que debe incluir `pe.aylly.artesano://auth**` (deep link de la APK, CC-06; el patrón con `**` cubre parámetros añadidos como `sb_flow_id`). Si no coincide, Auth redirige a `SITE_URL` y el registro en la APK falla.
 - [ ] `infra/supabase/docker-compose.override.yml`:
   - Activa `GOTRUE_EXTERNAL_GOOGLE_*`, que en el `docker-compose.yml` oficial viene comentado.
   - Publica el gateway solo en `127.0.0.1:8000`.
