@@ -25,7 +25,7 @@ Es la decisión `0003` (CC-05).
   - Publica Postgres y el pooler solo en `127.0.0.1` (o no los publica).
 - [ ] Studio **no** es accesible desde internet; solo por Tailscale.
 - [ ] `infra/supabase/.env.example` lista **solo los nombres** de las variables que cambian respecto al oficial; ningún valor.
-- [ ] `infra/web/`: un `compose.yaml` y la configuración del servidor estático (Caddy o nginx) que sirven `dist-web` con fallback a `index.html`, en `127.0.0.1` y con un puerto que no sea 8080 (ocupado por Filebrowser) ni 4000 (LiteLLM).
+- [ ] `infra/web/`: un `compose.yaml` y la configuración del servidor estático (Caddy o nginx) que sirven `dist-web` con fallback a `index.html`, en `127.0.0.1:8090` (puerto acordado con Johann; 8080 está ocupado por Filebrowser y 4000 es de LiteLLM).
 - [ ] Tras el despliegue (lo ejecuta el operador y lo registra en `docs/traspasos/CU-10-cristopher.md`):
   - `https://ayllu-api.likadev.com/rest/v1/` responde 401 sin clave.
   - La web carga y una ruta profunda no da 404.
@@ -82,7 +82,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
    1. Clonar `supabase/supabase` (v0.8.2, solo `docker/`) en `/datos/trabajo/proyectos/ayllu/supabase/` y copiar el override. La web va en `/datos/trabajo/proyectos/ayllu/web/` y los respaldos en `/datos/trabajo/proyectos/ayllu/respaldos/`.
    2. Generar los secretos y llenar el `.env`.
    3. `docker compose pull` y `docker compose up -d`.
-4. **Operador:** agregar al túnel `ayllu-api` → `http://localhost:8000` y `ayllu` → `http://localhost:<puerto web>`.
+4. **Operador:** agregar al túnel `ayllu-api` → `http://localhost:8000` y `ayllu` → `http://localhost:8090`.
 5. **Operador:** aplicar las migraciones (`npx supabase db push --db-url ...` por Tailscale); activar Google y registrar la URI de callback en Google Cloud.
 6. Compilar la web y la APK con `VITE_SUPABASE_URL=https://ayllu-api.likadev.com`. Publicar `dist-web`.
 7. Ejecutar las pruebas de los criterios y programar el respaldo.
