@@ -8,7 +8,7 @@
 ## Objetivo
 - **Comprador:** entra a la web con Google.
 - **Artesano:**
-  1. En la APK pulsa «Crear mi cuenta con Google» (CC-06). Google se abre en el navegador del sistema y vuelve a la app por `pe.ayllu.artesano://auth`. El artesano no usa la web (CC-08).
+  1. En la APK pulsa «Entrar con Google» (CC-06). Google se abre en el navegador del sistema y vuelve a la app por `pe.ayllu.artesano://auth`. El artesano no usa la web (CC-08).
   2. Define una contraseña y completa su perfil: WhatsApp, lugar, asociación, historia y número RNA. Su acreditación queda `pendiente`.
   3. Para volver a entrar usa su correo y su contraseña; si la olvidó, entra con Google y la cambia en «Tu cuenta». La sesión queda guardada y la app abre sin señal.
 - **Administrador:** en `/admin` ve las solicitudes y las aprueba o rechaza con una nota.
@@ -88,7 +88,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
    - Error: WhatsApp sin `+51`, lugar inválido, sin RNA, contraseña corta o que no coincide.
    - Borde: autoasignarse admin.
 3. **Prueba manual:**
-   - Registro en la web desde un celular.
+   - Registro desde la APK con Google en un Android real.
    - Login en la APK.
    - Modo avión y reabrir la app.
    - Aprobación desde `/admin`.
@@ -97,7 +97,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 - Consulta automática del RNA.
 - Asociaciones y líderes.
 - Preferencias del comprador.
-- Recuperación de contraseña por correo (se usa Google en la web).
+- Recuperación de contraseña por correo (se usa Google en la APK, CC-08).
 - Login sin conexión: no es posible; solo se mantiene la sesión.
 
 ## Notas / riesgos
