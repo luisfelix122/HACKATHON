@@ -39,3 +39,15 @@ CLAUDE.local.md
 
 # Stack: PENDIENTE. Al elegirlo, agregar sus artefactos locales
 # (dependencias, builds, caches, coverage, entornos virtuales).
+
+# CosteARTE: builds y Android
+dist-web/
+dist-artesano/
+android/app/build/
+android/build/
+android/.gradle/
+android/local.properties
+*.apk
+*.aab
+*.keystore
+*.jks
