@@ -1,6 +1,6 @@
 # 0001 — Stack del MVP
 
-- Fecha: 2026-10-10 (revisada por `docs/cambios/CC-01.md`)
+- Fecha: 2026-10-10 (revisada por `docs/cambios/CC-01.md`; Supabase Cloud y Vercel reemplazados por `0003` / CC-05)
 - Estado: aceptada
 - Decide: equipo · Consultados: <mentor, si se consulta>
 
@@ -32,7 +32,7 @@ Alcance aprobado: `docs/revision-alcance.md`.
 
 ## Decisión
 - **Código:** un solo proyecto React + TypeScript + Vite.
-  - **Comprador y administrador:** se despliega como web en **Vercel Hobby** (HTTPS).
+  - **Comprador y administrador:** se despliega como web en ~~Vercel Hobby~~ el servidor propio (**reemplazado por 0003 / CC-05**).
   - **Artesano:** se empaqueta como **APK de Android con Capacitor**, que incluye solo las rutas del artesano. Mínimo Android 7 (API 24).
 - **Borrador sin conexión (APK):** IndexedDB mediante Dexie, dentro del WebView, para los datos y la foto. Si el tamaño de los archivos da problemas, se evalúa el plugin Filesystem de Capacitor.
 - **Backend:** Supabase.
