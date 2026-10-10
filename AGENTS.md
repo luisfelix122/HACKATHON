@@ -1,7 +1,7 @@
 # AGENTS.md — Reglas para agentes y personas
 
 Hackatón de 24 h · 5 personas · Claude Code + PRP.
-Stack: **por definir** (registrar en `docs/decisiones/0001-stack.md` y `docs/plan.md`).
+Producto: **Ayllu**. Stack: React + TypeScript + Vite (web) y Capacitor (APK Android), Supabase self-hosted y proxy de IA LiteLLM (ver `docs/decisiones/0001` a `0004` y `docs/plan.md`).
 
 ## 1. Alcance por PRP
 
@@ -24,8 +24,8 @@ Equipo: Cristopher, Chero, Luis, Marvin, Johann.
 | `docs/plan.md`, `docs/contratos.md` | <por asignar> | todo el equipo |
 | `docs/prp/NNN--*.md` | responsable indicado en cada PRP | revisor del PR |
 | `docs/entrega/` | <por asignar> | <por asignar> |
-| `<codigo>/` (pendiente de stack) | <por asignar por módulo> | <por asignar> |
-| `<tests>/` (pendiente de stack) | autor del PRP | revisor del PR |
+| `src/`, `android/`, `supabase/`, `infra/` | Cristopher | revisor del PR |
+| pruebas (`*.test.ts(x)`, `supabase/tests/`) | autor del PRP | revisor del PR |
 
 Regla: nadie edita un archivo ajeno sin avisar a su responsable. Los agentes no
 modifican archivos fuera del PRP aunque parezca "una mejora rápida".
@@ -38,7 +38,7 @@ modifican archivos fuera del PRP aunque parezca "una mejora rápida".
 
 ## 4. Calidad
 
-- `make verify` debe pasar antes de abrir PR. Mientras no haya stack, falla a propósito:
+- `make verify` debe pasar antes de abrir PR. Hasta implementar el PRP 000 falla a propósito:
   no se declara "verde" algo que no se ejecutó.
 - Cada PRP incluye criterios de aceptación comprobables y sus pruebas.
 - No desactivar lint, tipos ni tests para "pasar". No dejar código muerto ni `TODO` sin dueño.
