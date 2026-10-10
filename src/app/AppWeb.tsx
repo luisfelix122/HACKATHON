@@ -2,7 +2,6 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import { PantallaIngresoWeb } from '../acceso/PantallaIngresoWeb'
 import { asegurarPerfilComprador } from '../acceso/perfil'
-import { RegistroArtesano } from '../acceso/RegistroArtesano'
 import { cerrarSesion, useSesion } from '../acceso/sesion'
 import { usePerfil } from '../acceso/usePerfil'
 import { PanelAcreditacion } from '../admin/PanelAcreditacion'
@@ -29,7 +28,7 @@ function Marco({ children }: { children: ReactNode }) {
           <Logotipo como="a" />
           <nav className="nav" aria-label="Principal">
             <Link to="/ingresar">Ingresar</Link>
-            <Link to="/artesano/registro">Soy artesano</Link>
+            <a href="/#artesanos">Soy artesano</a>
           </nav>
         </div>
       </header>
@@ -68,9 +67,6 @@ function Inicio() {
               <Link className="boton boton-destacado" to="/ingresar">
                 Ingresar para pedir
               </Link>
-              <Link className="boton boton-secundario" to="/artesano/registro">
-                Soy artesano: vender aquí
-              </Link>
             </div>
           </div>
           <div className="portada-pieza">
@@ -94,6 +90,14 @@ function Inicio() {
             </ol>
             <p className="ruta-nota">De norte a sur, las caletas donde trabajan los artesanos.</p>
           </div>
+        </section>
+        <section id="artesanos" className="pagina" aria-labelledby="artesanos-titulo">
+          <h2 id="artesanos-titulo">¿Eres artesano?</h2>
+          <p>
+            Vendes con la app Ayllu para Android: creas tu cuenta con Google, registras tus piezas
+            aunque no tengas señal y recibes los pedidos en tu celular.
+          </p>
+          <p className="nota">El enlace de descarga se publicará aquí cuando la app esté lista.</p>
         </section>
       </main>
     </Marco>
@@ -181,14 +185,6 @@ export function AppWeb() {
       <Routes>
         <Route path="/" element={<Inicio />} />
         <Route path="/ingresar" element={<Ingresar />} />
-        <Route
-          path="/artesano/registro"
-          element={
-            <Marco>
-              <RegistroArtesano />
-            </Marco>
-          }
-        />
         <Route path="/producto/:id" element={<ProductoPendiente />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<Inicio />} />

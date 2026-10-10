@@ -96,7 +96,8 @@ La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y cali
 
 ## Acceso (CC-03)
 - **Comprador (web):** `signInWithOAuth({ provider: "google" })`. En el primer ingreso se crea `perfil` con `rol = comprador`.
-- **Artesano, registro (web `/artesano/registro`):** Google → `updateUser({ password })` (mínimo 8 caracteres) → `insert` del `perfil` con `rol = artesano` y `acreditacion = pendiente` (sin `acreditacion_nota`).
+- **Artesano, registro (solo APK, CC-08):** Google → `updateUser({ password })` (mínimo 8 caracteres) → `insert` del `perfil` con `rol = artesano` y `acreditacion = pendiente` (sin `acreditacion_nota`). La web no tiene registro de artesanos.
+- **Artesano, cambio de contraseña (APK, «Tu cuenta»):** `updateUser({ password })` con la sesión iniciada; si la olvidó, entra con Google y la cambia.
 - **Artesano, registro en la APK (CC-06):** Google por deep link (`redirectTo: pe.ayllu.artesano://auth`, navegador del sistema) → contraseña → perfil, igual que en la web. La ruta web queda como respaldo.
 - **Artesano, ingreso (APK):** `signInWithPassword({ email, password })`. El usuario es el **correo de Google**. Si el perfil no es `artesano`, la APK cierra la sesión.
 - **Sesión:** persistente (`persistSession: true`). Tras el primer ingreso, la APK abre sin conexión con la sesión guardada.
@@ -212,4 +213,4 @@ La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y cali
 - **Nombres:** `snake_case` en la base de datos y en JSON, tomados de `docs/dominio.md`. Sin sinónimos.
 - **Lugares (filtro, preliminar):** Máncora, Lobitos, Cabo Blanco, El Ñuro, Los Órganos, El Alto, Pariñas, Colán, Punta Sal. **Pendiente** confirmar con La Vaca Loca la lista definitiva y si Punta Sal tiene artesanos.
 - **Errores de la Edge Function:** `{ error: "<codigo>", mensaje: "<texto para mostrar>" }`.
-- **Variables de entorno** (solo nombres, en `.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (cliente; es la "publishable key" que nombra la guía actual de Supabase), `VITE_WEB_URL` (cliente, opcional: URL pública de la web, que la APK usa para enlazar al registro) y `OPENROUTER_API_KEY`, `IA_BASE_URL`, `IA_API_KEY`, `IA_TIMEOUT_MS` (solo en las Edge Functions). En el servidor del proxy (`infra/litellm/.env.example`): `LITELLM_MASTER_KEY` e `IA_KEY_1…n`.
+- **Variables de entorno** (solo nombres, en `.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (cliente; es la "publishable key" que nombra la guía actual de Supabase) y `OPENROUTER_API_KEY`, `IA_BASE_URL`, `IA_API_KEY`, `IA_TIMEOUT_MS` (solo en las Edge Functions). En el servidor del proxy (`infra/litellm/.env.example`): `LITELLM_MASTER_KEY` e `IA_KEY_1…n`.

@@ -14,7 +14,7 @@ Aprobado: <AAAA-MM-DD> (alcance revisado en `docs/revision-alcance.md`)
 
 ## Arquitectura
 - **Web (navegador, celular o laptop):** vitrina, pedidos del comprador y panel del administrador.
-- **APK del artesano (Capacitor):** borradores, publicación y gestión de sus órdenes. La interfaz viaja dentro de la APK y abre sin conexión. El artesano crea su cuenta con Google en la web (`/artesano/registro`), define una contraseña y en la APK entra con correo y contraseña; la sesión queda guardada y la app abre sin conexión (CC-03).
+- **APK del artesano (Capacitor):** borradores, publicación y gestión de sus órdenes. La interfaz viaja dentro de la APK y abre sin conexión. El artesano usa **solo la APK** (CC-08): crea su cuenta con Google dentro de la app, define una contraseña y vuelve a entrar con correo y contraseña; la sesión queda guardada y la app abre sin conexión (CC-06).
 - **Borrador local:** se guarda en IndexedDB y se sincroniza al servidor cuando hay conexión. Un borrador pertenece a un solo dispositivo.
 - **Supabase:**
   - Auth (Google).

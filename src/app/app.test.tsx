@@ -36,6 +36,12 @@ beforeEach(() => {
 })
 
 describe('web', () => {
+  it('no ofrece registro de artesanos en la web (CC-08)', () => {
+    render(<AppWeb />)
+    expect(screen.queryByRole('link', { name: /vender aquí/ })).not.toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: '¿Eres artesano?' })).toBeInTheDocument()
+  })
+
   it('abre en la portada con la ruta de las caletas', () => {
     render(<AppWeb />)
     expect(
@@ -47,11 +53,11 @@ describe('web', () => {
 })
 
 describe('APK del artesano (CC-06)', () => {
-  it('sin sesión ofrece ingresar con contraseña o crear la cuenta con Google', async () => {
+  it('sin sesión ofrece ingresar con contraseña o entrar con Google', async () => {
     render(<AppArtesano />)
     expect(await screen.findByLabelText('Tu correo de Google')).toBeInTheDocument()
     expect(screen.getByLabelText('Contraseña')).toBeInTheDocument()
-    expect(screen.getByRole('button', { name: 'Crear mi cuenta con Google' })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: 'Entrar con Google' })).toBeInTheDocument()
   })
 
   it('con sesión de Google y sin perfil muestra el registro, no «Mis productos»', async () => {
@@ -74,5 +80,6 @@ describe('APK del artesano (CC-06)', () => {
     perfil = { rol: 'artesano', nombre: 'Rosa', acreditacion: 'pendiente' }
     render(<AppArtesano />)
     expect(await screen.findByRole('heading', { name: 'Mis productos' })).toBeInTheDocument()
+    expect(screen.getByRole('heading', { name: 'Cambiar tu contraseña' })).toBeInTheDocument()
   })
 })

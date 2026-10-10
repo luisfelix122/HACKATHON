@@ -3,9 +3,6 @@ import { Aviso, Boton, Campo } from '../compartido/ui/componentes'
 import { crearCuentaConGoogle } from './googleApk'
 import { ingresarArtesano, type ErrorIngreso } from './sesion'
 
-const URL_WEB = import.meta.env.VITE_WEB_URL as string | undefined
-const REGISTRO = URL_WEB ? `${URL_WEB}/artesano/registro` : 'la web de Ayllu (/artesano/registro)'
-
 export type MotivoIngreso = ErrorIngreso | 'google_fallo'
 
 const MENSAJES: Record<MotivoIngreso, string> = {
@@ -13,8 +10,8 @@ const MENSAJES: Record<MotivoIngreso, string> = {
   sin_conexion: 'Necesitas internet para ingresar o crear tu cuenta.',
   rol_incorrecto:
     'Esta cuenta es de comprador. Para vender, crea tu cuenta con otro correo de Google.',
-  sin_registro: 'Aún no completaste tu registro. Crea tu cuenta con Google para terminarlo.',
-  google_fallo: `Google no volvió a la app. Vuelve a intentarlo o regístrate en ${REGISTRO}.`,
+  sin_registro: 'Aún no completaste tu registro. Entra con Google para terminarlo.',
+  google_fallo: 'Google no volvió a la app. Revisa tu conexión y vuelve a intentarlo.',
   desconocido: 'No se pudo ingresar. Vuelve a intentarlo.',
 }
 
@@ -84,8 +81,11 @@ export function IngresoArtesano({ motivo }: { motivo?: MotivoIngreso }) {
         </Boton>
       </form>
       <section className="formulario" aria-labelledby="nueva-cuenta">
-        <h2 id="nueva-cuenta">¿Primera vez?</h2>
-        <p>Crea tu cuenta con Google. Después eliges la contraseña para volver a entrar.</p>
+        <h2 id="nueva-cuenta">¿Primera vez u olvidaste tu contraseña?</h2>
+        <p>
+          Entra con Google. La primera vez completas tus datos y eliges una contraseña; si la
+          olvidaste, la cambias en «Tu cuenta».
+        </p>
         <Boton
           variante="destacado"
           ancho
@@ -93,13 +93,8 @@ export function IngresoArtesano({ motivo }: { motivo?: MotivoIngreso }) {
           cargando={enCurso === 'google'}
           disabled={enCurso === 'clave'}
         >
-          Crear mi cuenta con Google
+          Entrar con Google
         </Boton>
-        <p className="nota">
-          ¿Olvidaste tu contraseña? Entra con Google en{' '}
-          {URL_WEB ? <a href={`${URL_WEB}/artesano/registro`}>{REGISTRO}</a> : REGISTRO} y elige una
-          nueva.
-        </p>
       </section>
     </main>
   )

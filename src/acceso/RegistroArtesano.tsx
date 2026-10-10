@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { LUGARES } from '../compartido/dominio/lugares'
 import { Aviso, Boton, Campo, Casilla } from '../compartido/ui/componentes'
-import { EstadoAcreditacion } from './EstadoAcreditacion'
 import {
   cambiarContrasena,
   registrarArtesano,
@@ -9,10 +8,7 @@ import {
   validarDatosArtesano,
   type DatosArtesano,
   type ErroresFormulario,
-  type Perfil,
 } from './perfil'
-import { ingresarConGoogle, useSesion } from './sesion'
-import { usePerfil } from './usePerfil'
 
 const VACIO: DatosArtesano = {
   nombre: '',
@@ -23,64 +19,13 @@ const VACIO: DatosArtesano = {
   rna_numero: '',
 }
 
-/** Web `/artesano/registro`: Google → contraseña → perfil pendiente. */
-export function RegistroArtesano() {
-  const sesion = useSesion()
-  const { perfil, cargando, recargar } = usePerfil(sesion?.user.id)
+/**
+ * Registro y cuenta del artesano, solo en la APK (CC-08): formulario inicial
+ * tras crear la cuenta con Google y cambio de contraseña dentro de la app.
+ */
 
-  if (sesion === undefined || cargando) return <p className="pagina cargando">Cargando…</p>
-
-  if (!sesion) {
-    return (
-      <main className="pagina">
-        <section className="formulario" aria-labelledby="registro-titulo">
-          <h1 id="registro-titulo">Vende tus piezas en Ayllu</h1>
-          <p>
-            Primero crea tu cuenta con Google. Después eliges la contraseña con la que entrarás a la
-            app y cuentas quién eres.
-          </p>
-          <Boton variante="destacado" onClick={() => ingresarConGoogle('/artesano/registro')}>
-            Continuar con Google
-          </Boton>
-        </section>
-      </main>
-    )
-  }
-
-  if (perfil) return <RegistroTerminado perfil={perfil} />
-
-  return (
-    <FormularioArtesano
-      id={sesion.user.id}
-      correo={sesion.user.email ?? ''}
-      nombreInicial={(sesion.user.user_metadata?.full_name as string | undefined) ?? ''}
-      alTerminar={recargar}
-    />
-  )
-}
-
-function RegistroTerminado({ perfil }: { perfil: Perfil }) {
-  if (perfil.rol !== 'artesano') {
-    return (
-      <main className="pagina">
-        <Aviso tono="alerta">
-          Esta cuenta ya está registrada como {perfil.rol}. Usa otra cuenta de Google para vender.
-        </Aviso>
-      </main>
-    )
-  }
-  return (
-    <main className="pagina">
-      <h1>Listo, {perfil.nombre}</h1>
-      <EstadoAcreditacion perfil={perfil} />
-      <p>Abre la app Ayllu en tu celular e ingresa con tu correo y tu contraseña.</p>
-      <NuevaContrasena />
-    </main>
-  )
-}
-
-/** Para el artesano que olvidó su contraseña: ya entró con Google y define otra. */
-function NuevaContrasena() {
+/** Para el artesano que olvidó su contraseña: entró con Google y define otra. */
+export function NuevaContrasena() {
   const [contrasena, setContrasena] = useState('')
   const [confirmacion, setConfirmacion] = useState('')
   const [mensaje, setMensaje] = useState<{ texto: string; error: boolean } | null>(null)
@@ -105,7 +50,7 @@ function NuevaContrasena() {
 
   return (
     <form className="formulario panel" onSubmit={enviar} noValidate>
-      <h2>¿Olvidaste tu contraseña?</h2>
+      <h2>Cambiar tu contraseña</h2>
       <Campo etiqueta="Nueva contraseña" ayuda="Mínimo 8 caracteres.">
         {(a) => (
           <input
@@ -136,7 +81,7 @@ function NuevaContrasena() {
   )
 }
 
-/** Formulario de registro del artesano; lo usan la web y la APK (CC-06). */
+/** Formulario de registro del artesano en la APK, tras crear la cuenta con Google. */
 export function FormularioArtesano(props: {
   id: string
   correo: string

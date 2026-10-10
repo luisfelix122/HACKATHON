@@ -4,7 +4,7 @@ import { EstadoAcreditacion } from '../acceso/EstadoAcreditacion'
 import { escucharRetornoDeGoogle } from '../acceso/googleApk'
 import { IngresoArtesano, type MotivoIngreso } from '../acceso/IngresoArtesano'
 import type { Perfil } from '../acceso/perfil'
-import { FormularioArtesano } from '../acceso/RegistroArtesano'
+import { FormularioArtesano, NuevaContrasena } from '../acceso/RegistroArtesano'
 import { cerrarSesion, useSesion } from '../acceso/sesion'
 import { usePerfil } from '../acceso/usePerfil'
 import { Aviso, Boton, Logotipo } from '../compartido/ui/componentes'
@@ -20,6 +20,12 @@ function MisProductos(props: { perfil: Perfil; sinConexion: boolean; salir: () =
       <EstadoAcreditacion perfil={perfil} />
       <h2>Mis productos</h2>
       <p>Aún no tienes productos. Toma la foto de tu primera pieza para empezar.</p>
+      <h2>Tu cuenta</h2>
+      {sinConexion ? (
+        <p className="nota">Para cambiar tu contraseña necesitas señal.</p>
+      ) : (
+        <NuevaContrasena />
+      )}
       <div>
         <Boton variante="secundario" onClick={salir}>
           Cerrar sesión
