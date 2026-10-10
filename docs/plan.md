@@ -3,13 +3,13 @@ Aprobado: <AAAA-MM-DD> (alcance revisado en `docs/revision-alcance.md`)
 
 ## Tecnología
 - Lenguaje / framework: TypeScript, React y Vite, con un solo código (ver `decisiones/0001-stack.md` y `cambios/CC-01.md`)
-- Comprador y administrador: web desplegada en Vercel
+- Comprador y administrador: web estática servida desde el servidor propio por Cloudflare Tunnel (`costearte.likadev.com`, propuesto; 0003 / CC-05)
 - Artesano: APK de Android empaquetada con Capacitor (mínimo Android 7 / API 24), instalada directamente en el celular
 - Sin conexión: IndexedDB (Dexie) dentro de la APK para los borradores
 - Voz: plugin `@capacitor-community/speech-recognition` (dictado con conexión)
-- Base de datos: Supabase (Postgres con RLS, Auth Google, Storage, Edge Functions)
+- Base de datos: Supabase **self-hosted** (Postgres con RLS, Auth con Google y contraseña, Storage, Edge Functions)
 - IA: Gemini, llamado solo desde Edge Functions a través del proxy LiteLLM en el servidor del equipo (Cloudflare Tunnel), con OpenRouter directo como respaldo (ver `decisiones/0002-proxy-ia-litellm.md` y `cambios/CC-02.md`)
-- Despliegue: Vercel Hobby (HTTPS; uso no comercial, válido solo para la hackatón)
+- Despliegue: servidor de Johann (Debian, Docker) con Supabase self-hosted v0.8.2, la web y LiteLLM, publicados por Cloudflare Tunnel; lo opera una laptop autorizada (PRP 009 y PRP 010)
 - Verificación: ESLint, Prettier `--check`, `tsc --noEmit` y Vitest (se conectan a `make verify` en el PRP 000)
 
 ## Arquitectura
@@ -45,6 +45,7 @@ Dueño de todos los CU: Cristopher (implementación). Imprescindibles: CU-00 a C
 | CU-06 | Confirmar el pedido, reservar stock, enviar el enlace de pago, verificar el abono y marcar el envío | artesano, comprador | CU-05 | H3 |
 | CU-07 | Datos semilla ficticios y guion de demo | equipo | CU-04 a CU-06 | H3 |
 | CU-09 | Proxy de IA con LiteLLM en el servidor (infraestructura de CU-03 y CU-08) | equipo | CU-00 | H1 |
+| CU-10 | Supabase self-hosted y web en el servidor (infraestructura) | equipo | CU-00 | H1 |
 | CU-08 | (Opcional) Traducir el hilo de la orden con "Ver original" | comprador, artesano | CU-05 | H3 |
 
 ## Hitos
@@ -56,6 +57,7 @@ Dueño de todos los CU: Cristopher (implementación). Imprescindibles: CU-00 a C
 Detalle completo en `docs/revision-alcance.md` §5.
 - La IA altera la foto del producto → la original queda por defecto y la mejorada solo se usa si el artesano la acepta.
 - Falla la red o se agota la cuota en la demo → video de respaldo y clave de OpenRouter con saldo.
+- Servidor propio caído (sin UPS ni internet de respaldo confirmados) → con 0003 cae **todo** el producto, no solo la IA: revisar el servidor antes de presentar y tener el video de respaldo.
 - Servidor del proxy apagado o sin internet → la Edge Function cae a OpenRouter directo tras `IA_TIMEOUT_MS`; probarlo apagando el contenedor.
 - Llaves de Gemini directo en el proxy → confirmar con los organizadores la restricción «Gemini con OpenRouter».
 - Contraseña sobre una cuenta de Google (`updateUser({ password })`, CC-03) → probarlo en la hora 2; si exige reautenticación, aplicarla inmediatamente después del login con Google.
