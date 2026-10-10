@@ -190,11 +190,11 @@ export function Etiqueta(props: {
 export function Logotipo({ como = 'span' }: { como?: 'span' | 'a' }) {
   const contenido = (
     <>
-      Ayll<span>y</span>
+      Ayll<span>u</span>
     </>
   )
   return como === 'a' ? (
-    <a className="logotipo" href="/" aria-label="Aylly, inicio">
+    <a className="logotipo" href="/" aria-label="Ayllu, inicio">
       {contenido}
     </a>
   ) : (

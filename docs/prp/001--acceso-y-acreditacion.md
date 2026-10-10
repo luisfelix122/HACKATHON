@@ -8,7 +8,7 @@
 ## Objetivo
 - **Comprador:** entra a la web con Google.
 - **Artesano:**
-  1. En la APK pulsa «Crear mi cuenta con Google» (CC-06). Google se abre en el navegador del sistema y vuelve a la app por `pe.aylly.artesano://auth`. Respaldo: la web `/artesano/registro`.
+  1. En la APK pulsa «Crear mi cuenta con Google» (CC-06). Google se abre en el navegador del sistema y vuelve a la app por `pe.ayllu.artesano://auth`. Respaldo: la web `/artesano/registro`.
   2. Define una contraseña y completa su perfil: WhatsApp, lugar, asociación, historia y número RNA. Su acreditación queda `pendiente`.
   3. Para volver a entrar usa su correo y su contraseña. La sesión queda guardada y la app abre sin señal.
 - **Administrador:** en `/admin` ve las solicitudes y las aprueba o rechaza con una nota.
@@ -21,7 +21,7 @@ Es el criterio 1 del reto: el vendedor queda acreditado con una validación bás
 - [ ] En la web, `/artesano/registro`, después de Google, crea un `perfil` con `rol = artesano` y `acreditacion = pendiente`, y pide una contraseña de al menos 8 caracteres con confirmación. La contraseña se guarda con `supabase.auth.updateUser({ password })`.
 - [ ] En la APK, la pantalla de ingreso muestra correo y contraseña, y el botón «Crear mi cuenta con Google». Con datos válidos entra; con datos inválidos muestra «Correo o contraseña incorrectos», sin revelar cuál de los dos falla.
 - [ ] En la APK, una sesión de Google sin perfil muestra el formulario de registro (con «Usar otra cuenta de Google»), nunca «Mis productos».
-- [ ] En la APK, si Google se cancela o el intercambio falla, se cierra el navegador y aparece «Google no volvió a la app…» con la ruta web de respaldo. Solo se acepta el deep link exacto `pe.aylly.artesano://auth`.
+- [ ] En la APK, si Google se cancela o el intercambio falla, se cierra el navegador y aparece «Google no volvió a la app…» con la ruta web de respaldo. Solo se acepta el deep link exacto `pe.ayllu.artesano://auth`.
 - [ ] En la APK, si quien entra no tiene `rol = artesano`, se cierra la sesión y aparece «Esta cuenta es de comprador. Para vender, crea tu cuenta con otro correo de Google.»
 - [ ] La sesión de la APK persiste al cerrarla y reabrirla, también **en modo avión**: tras el primer login, abre «Mis productos» sin pedir datos.
 - [ ] Si olvidó la contraseña, la APK muestra un enlace a la web, donde el artesano entra con Google y define una nueva.
@@ -56,9 +56,9 @@ Es el criterio 1 del reto: el vendedor queda acreditado con una validación bás
 | crear | `src/compartido/dominio/lugares.ts` | lista preliminar de lugares |
 | crear | `src/acceso/sesion.ts` | Google (web), correo y contraseña (APK), cierre de sesión, sesión actual |
 | crear | `src/acceso/perfil.ts`, `src/acceso/perfil.test.ts` | leer y hacer `upsert` del perfil; validaciones (E.164, lugar, RNA, contraseña ≥ 8) |
-| modificar | `src/compartido/supabase.ts` | clave fija de la sesión (`aylly.auth`) para leerla sin conexión (CC-04) |
+| modificar | `src/compartido/supabase.ts` | clave fija de la sesión (`ayllu.auth`) para leerla sin conexión (CC-04) |
 | crear | `src/acceso/googleApk.ts`, `src/acceso/googleApk.test.ts` | registro con Google en la APK (CC-06): abrir el navegador del sistema, leer el deep link exacto y canjear el código PKCE |
-| modificar | `android/app/src/main/AndroidManifest.xml` | `intent-filter` del scheme `pe.aylly.artesano`, host `auth` (CC-06) |
+| modificar | `android/app/src/main/AndroidManifest.xml` | `intent-filter` del scheme `pe.ayllu.artesano`, host `auth` (CC-06) |
 | modificar | `src/main.tsx` | carga cada app con import dinámico por modo, para que la web no incluya Capacitor |
 | crear | `src/acceso/sesion.test.ts` | ingreso de la APK: artesano, credenciales inválidas, rol incorrecto, registro incompleto |
 | crear | `src/acceso/usePerfil.ts` | perfil de la sesión con copia local, para abrir la APK sin conexión |

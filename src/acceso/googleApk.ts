@@ -5,16 +5,16 @@ import { supabase } from '../compartido/supabase'
 /**
  * Registro con Google dentro de la APK (CC-06). Google bloquea el OAuth en un
  * WebView embebido, así que se abre el navegador del sistema y Supabase vuelve
- * a la app por el deep link `pe.aylly.artesano://auth` (intent-filter en
+ * a la app por el deep link `pe.ayllu.artesano://auth` (intent-filter en
  * AndroidManifest.xml). Este módulo solo se importa desde la APK.
  */
-export const RETORNO_GOOGLE = 'pe.aylly.artesano://auth'
+export const RETORNO_GOOGLE = 'pe.ayllu.artesano://auth'
 
 export type Retorno = { codigo: string } | { error: string }
 
 /**
  * Lee la URL de retorno. `null` si no es exactamente nuestro deep link
- * (esquema `pe.aylly.artesano:`, host `auth`, sin ruta). El código solo sirve
+ * (esquema `pe.ayllu.artesano:`, host `auth`, sin ruta). El código solo sirve
  * con el verificador PKCE guardado en esta app, así que uno inyectado no abre
  * sesión; el filtro estricto evita además consumir el flujo con URLs ajenas.
  */
@@ -26,7 +26,7 @@ export function leerRetorno(url: string): Retorno | null {
     return null
   }
   const ruta = destino.pathname
-  if (destino.protocol !== 'pe.aylly.artesano:' || destino.host !== 'auth') return null
+  if (destino.protocol !== 'pe.ayllu.artesano:' || destino.host !== 'auth') return null
   if (ruta !== '' && ruta !== '/') return null
   const codigo = destino.searchParams.get('code')
   if (codigo) return { codigo }

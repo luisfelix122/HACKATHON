@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">Aylly</string>
-    <string name="title_activity_main">Aylly</string>
-    <string name="package_name">pe.aylly.artesano</string>
-    <string name="custom_url_scheme">pe.aylly.artesano</string>
+    <string name="app_name">Ayllu</string>
+    <string name="title_activity_main">Ayllu</string>
+    <string name="package_name">pe.ayllu.artesano</string>
+    <string name="custom_url_scheme">pe.ayllu.artesano</string>
 </resources>

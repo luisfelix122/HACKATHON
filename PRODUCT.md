@@ -40,7 +40,7 @@ Ser una vitrina digital para pequeños artesanos que hoy venden solo en persona 
 
 ## Brand Commitments
 
-- Nombre: **Aylly**.
+- Nombre: **Ayllu**.
 - Sin logo, colores ni tipografía previos: el equipo confirmó (2026-10-10) que la identidad parte de cero.
 - No usar la marca de La Vaca Loca Tours sin su permiso.
 

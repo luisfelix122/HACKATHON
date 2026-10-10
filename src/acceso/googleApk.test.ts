@@ -21,19 +21,19 @@ const { escucharRetornoDeGoogle, leerRetorno } = await import('./googleApk')
 
 describe('leerRetorno (CC-06)', () => {
   it('extrae el código del deep link de la app', () => {
-    expect(leerRetorno('pe.aylly.artesano://auth?code=abc123')).toEqual({ codigo: 'abc123' })
+    expect(leerRetorno('pe.ayllu.artesano://auth?code=abc123')).toEqual({ codigo: 'abc123' })
   })
 
   it('ignora URLs que no son exactamente el retorno de la app', () => {
     expect(leerRetorno('https://evil.example/auth?code=abc123')).toBeNull()
     expect(leerRetorno('pe.otra.app://auth?code=abc123')).toBeNull()
-    expect(leerRetorno('pe.aylly.artesano://auth.otro?code=abc123')).toBeNull()
-    expect(leerRetorno('pe.aylly.artesano://authx?code=abc123')).toBeNull()
-    expect(leerRetorno('pe.aylly.artesano://auth/extra?code=abc123')).toBeNull()
+    expect(leerRetorno('pe.ayllu.artesano://auth.otro?code=abc123')).toBeNull()
+    expect(leerRetorno('pe.ayllu.artesano://authx?code=abc123')).toBeNull()
+    expect(leerRetorno('pe.ayllu.artesano://auth/extra?code=abc123')).toBeNull()
   })
 
   it('reporta el error cuando Google se cancela', () => {
-    expect(leerRetorno('pe.aylly.artesano://auth?error=access_denied')).toEqual({
+    expect(leerRetorno('pe.ayllu.artesano://auth?error=access_denied')).toEqual({
       error: 'access_denied',
     })
   })
@@ -49,7 +49,7 @@ describe('escucharRetornoDeGoogle', () => {
     const alFallar = vi.fn()
     escucharRetornoDeGoogle(alFallar)
     exchangeCodeForSession.mockResolvedValue({ error: null })
-    await oyente?.({ url: 'pe.aylly.artesano://auth?code=abc' })
+    await oyente?.({ url: 'pe.ayllu.artesano://auth?code=abc' })
     expect(exchangeCodeForSession).toHaveBeenCalledWith('abc')
     expect(close).toHaveBeenCalled()
     expect(alFallar).not.toHaveBeenCalled()
@@ -59,16 +59,16 @@ describe('escucharRetornoDeGoogle', () => {
     const alFallar = vi.fn()
     escucharRetornoDeGoogle(alFallar)
     exchangeCodeForSession.mockResolvedValueOnce({ error: { message: 'x' } })
-    await oyente?.({ url: 'pe.aylly.artesano://auth?code=abc' })
+    await oyente?.({ url: 'pe.ayllu.artesano://auth?code=abc' })
     exchangeCodeForSession.mockRejectedValueOnce(new Error('red'))
-    await oyente?.({ url: 'pe.aylly.artesano://auth?code=def' })
+    await oyente?.({ url: 'pe.ayllu.artesano://auth?code=def' })
     expect(alFallar).toHaveBeenCalledTimes(2)
   })
 
   it('avisa y cierra el navegador si Google se cancela', async () => {
     const alFallar = vi.fn()
     escucharRetornoDeGoogle(alFallar)
-    await oyente?.({ url: 'pe.aylly.artesano://auth?error=access_denied' })
+    await oyente?.({ url: 'pe.ayllu.artesano://auth?error=access_denied' })
     expect(close).toHaveBeenCalled()
     expect(alFallar).toHaveBeenCalled()
     expect(exchangeCodeForSession).not.toHaveBeenCalled()

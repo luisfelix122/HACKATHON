@@ -40,7 +40,7 @@ CLAUDE.local.md
 # Stack: PENDIENTE. Al elegirlo, agregar sus artefactos locales
 # (dependencias, builds, caches, coverage, entornos virtuales).
 
-# Aylly: builds y Android
+# Ayllu: builds y Android
 dist-web/
 dist-artesano/
 android/app/build/

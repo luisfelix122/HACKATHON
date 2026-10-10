@@ -1,9 +1,9 @@
-# Plan — Aylly
+# Plan — Ayllu
 Aprobado: <AAAA-MM-DD> (alcance revisado en `docs/revision-alcance.md`)
 
 ## Tecnología
 - Lenguaje / framework: TypeScript, React y Vite, con un solo código (ver `decisiones/0001-stack.md` y `cambios/CC-01.md`)
-- Comprador y administrador: web estática servida desde el servidor propio por Cloudflare Tunnel (`aylly.likadev.com`, propuesto; 0003 / CC-05)
+- Comprador y administrador: web estática servida desde el servidor propio por Cloudflare Tunnel (`ayllu.likadev.com`, propuesto; 0003 / CC-05)
 - Artesano: APK de Android empaquetada con Capacitor (mínimo Android 7 / API 24), instalada directamente en el celular
 - Sin conexión: IndexedDB (Dexie) dentro de la APK para los borradores
 - Voz: plugin `@capacitor-community/speech-recognition` (dictado con conexión)

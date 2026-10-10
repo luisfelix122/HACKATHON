@@ -7,8 +7,8 @@
 
 ## Objetivo
 Entregar en `infra/supabase/` e `infra/web/` lo necesario para que la laptop autorizada levante en el servidor:
-1. **Supabase self-hosted** v0.8.2 con Google OAuth y Email/Password. El gateway queda en `127.0.0.1:8000`, publicado como `https://aylly-api.likadev.com`.
-2. **La web estática** (`dist-web`), servida por un contenedor ligero en `127.0.0.1:<puerto libre>` y publicada como `https://aylly.likadev.com`, con la reescritura de la SPA.
+1. **Supabase self-hosted** v0.8.2 con Google OAuth y Email/Password. El gateway queda en `127.0.0.1:8000`, publicado como `https://ayllu-api.likadev.com`.
+2. **La web estática** (`dist-web`), servida por un contenedor ligero en `127.0.0.1:<puerto libre>` y publicada como `https://ayllu.likadev.com`, con la reescritura de la SPA.
 3. **Las migraciones** de `supabase/migrations/` aplicadas, y un **respaldo** diario de Postgres en `/datos`.
 
 ## Por qué
@@ -18,7 +18,7 @@ Es la decisión `0003` (CC-05).
 - [ ] `infra/supabase/README.md` documenta todo el despliegue:
   - Cómo obtener `supabase/supabase` en `self-hosted/v0.8.2` con clonado disperso de `docker/`.
   - Cómo generar los secretos (`sh utils/generate-keys.sh`, `sh utils/add-new-auth-keys.sh`) y que ningún valor por defecto queda en uso.
-  - Las variables de URL: `SUPABASE_PUBLIC_URL`, `API_EXTERNAL_URL=https://aylly-api.likadev.com/auth/v1`, `SITE_URL=https://aylly.likadev.com` y `ADDITIONAL_REDIRECT_URLS`, que debe incluir `pe.aylly.artesano://auth**` (deep link de la APK, CC-06; el patrón con `**` cubre parámetros añadidos como `sb_flow_id`). Si no coincide, Auth redirige a `SITE_URL` y el registro en la APK falla.
+  - Las variables de URL: `SUPABASE_PUBLIC_URL`, `API_EXTERNAL_URL=https://ayllu-api.likadev.com/auth/v1`, `SITE_URL=https://ayllu.likadev.com` y `ADDITIONAL_REDIRECT_URLS`, que debe incluir `pe.ayllu.artesano://auth**` (deep link de la APK, CC-06; el patrón con `**` cubre parámetros añadidos como `sb_flow_id`). Si no coincide, Auth redirige a `SITE_URL` y el registro en la APK falla.
 - [ ] `infra/supabase/docker-compose.override.yml`:
   - Activa `GOTRUE_EXTERNAL_GOOGLE_*`, que en el `docker-compose.yml` oficial viene comentado.
   - Publica el gateway solo en `127.0.0.1:8000`.
@@ -27,7 +27,7 @@ Es la decisión `0003` (CC-05).
 - [ ] `infra/supabase/.env.example` lista **solo los nombres** de las variables que cambian respecto al oficial; ningún valor.
 - [ ] `infra/web/`: un `compose.yaml` y la configuración del servidor estático (Caddy o nginx) que sirven `dist-web` con fallback a `index.html`, en `127.0.0.1` y con un puerto que no sea 8080 (ocupado por Filebrowser) ni 4000 (LiteLLM).
 - [ ] Tras el despliegue (lo ejecuta el operador y lo registra en `docs/traspasos/CU-10-cristopher.md`):
-  - `https://aylly-api.likadev.com/rest/v1/` responde 401 sin clave.
+  - `https://ayllu-api.likadev.com/rest/v1/` responde 401 sin clave.
   - La web carga y una ruta profunda no da 404.
   - El login con Google vuelve a la web.
   - `make test-db` pasa contra la instancia, o las pruebas pgTAP pasan en una copia local.
@@ -82,9 +82,9 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
    1. Clonar `supabase/supabase` (v0.8.2, solo `docker/`) en la ruta elegida y copiar el override.
    2. Generar los secretos y llenar el `.env`.
    3. `docker compose pull` y `docker compose up -d`.
-4. **Operador:** agregar al túnel `aylly-api` → `http://localhost:8000` y `aylly` → `http://localhost:<puerto web>`.
+4. **Operador:** agregar al túnel `ayllu-api` → `http://localhost:8000` y `ayllu` → `http://localhost:<puerto web>`.
 5. **Operador:** aplicar las migraciones (`npx supabase db push --db-url ...` por Tailscale); activar Google y registrar la URI de callback en Google Cloud.
-6. Compilar la web y la APK con `VITE_SUPABASE_URL=https://aylly-api.likadev.com`. Publicar `dist-web`.
+6. Compilar la web y la APK con `VITE_SUPABASE_URL=https://ayllu-api.likadev.com`. Publicar `dist-web`.
 7. Ejecutar las pruebas de los criterios y programar el respaldo.
 
 ## Validación
@@ -100,7 +100,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 ## Notas / riesgos
 **Datos pendientes:**
 1. **Johann:**
-   - Confirmar los subdominios `aylly-api` y `aylly` en `likadev.com`.
+   - Confirmar los subdominios `ayllu-api` y `ayllu` en `likadev.com`.
    - Ruta de instalación (`/opt` o `/datos`) y espacio para respaldos.
    - Quién opera la laptop autorizada.
 2. **Equipo:** Client ID y Secret de Google OAuth (los escribe el operador en el `.env` del servidor).

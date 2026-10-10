@@ -7,7 +7,7 @@ let perfil: { rol: string; nombre: string; acreditacion: string | null } | null 
 const signOut = vi.fn().mockResolvedValue({ error: null })
 
 vi.mock('../compartido/supabase', () => ({
-  CLAVE_SESION: 'aylly.auth',
+  CLAVE_SESION: 'ayllu.auth',
   supabase: {
     auth: {
       getSession: () => Promise.resolve({ data: { session: sesion }, error: null }),
@@ -42,7 +42,7 @@ describe('web', () => {
       screen.getByRole('heading', { level: 1, name: /Piezas hechas a mano/ }),
     ).toBeInTheDocument()
     expect(screen.getByRole('list', { name: 'Caletas de norte a sur' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Aylly, inicio' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Ayllu, inicio' })).toBeInTheDocument()
   })
 })
 

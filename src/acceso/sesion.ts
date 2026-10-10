@@ -51,7 +51,7 @@ export async function ingresarArtesano(
 export async function cerrarSesion(): Promise<void> {
   try {
     for (const clave of Object.keys(localStorage)) {
-      if (clave.startsWith('aylly.perfil.')) localStorage.removeItem(clave)
+      if (clave.startsWith('ayllu.perfil.')) localStorage.removeItem(clave)
     }
   } catch {
     // Sin almacenamiento disponible: no hay copias que borrar.

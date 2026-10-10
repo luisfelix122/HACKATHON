@@ -97,7 +97,7 @@ La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y cali
 ## Acceso (CC-03)
 - **Comprador (web):** `signInWithOAuth({ provider: "google" })`. En el primer ingreso se crea `perfil` con `rol = comprador`.
 - **Artesano, registro (web `/artesano/registro`):** Google → `updateUser({ password })` (mínimo 8 caracteres) → `insert` del `perfil` con `rol = artesano` y `acreditacion = pendiente` (sin `acreditacion_nota`).
-- **Artesano, registro en la APK (CC-06):** Google por deep link (`redirectTo: pe.aylly.artesano://auth`, navegador del sistema) → contraseña → perfil, igual que en la web. La ruta web queda como respaldo.
+- **Artesano, registro en la APK (CC-06):** Google por deep link (`redirectTo: pe.ayllu.artesano://auth`, navegador del sistema) → contraseña → perfil, igual que en la web. La ruta web queda como respaldo.
 - **Artesano, ingreso (APK):** `signInWithPassword({ email, password })`. El usuario es el **correo de Google**. Si el perfil no es `artesano`, la APK cierra la sesión.
 - **Sesión:** persistente (`persistSession: true`). Tras el primer ingreso, la APK abre sin conexión con la sesión guardada.
 - **Errores visibles:** `credenciales_invalidas` → «Correo o contraseña incorrectos»; `rol_incorrecto` → «Esta app es para artesanos».
@@ -168,8 +168,8 @@ La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y cali
 - **Tipo:** HTTP, compatible con OpenAI. Solo lo llaman las Edge Functions, nunca el cliente.
 - **Ruta:** `${IA_BASE_URL}/v1/chat/completions`, con la cabecera `Authorization: Bearer ${IA_API_KEY}`.
 - **Alias de modelo** (definidos en `infra/litellm/config.yaml`):
-  - `aylly-texto`: ficha y traducción.
-  - `aylly-audio`: audio como bloque `file` con data URI base64.
+  - `ayllu-texto`: ficha y traducción.
+  - `ayllu-audio`: audio como bloque `file` con data URI base64.
 - **Respaldo:** si el proxy excede `IA_TIMEOUT_MS` (por defecto 8000), devuelve 5xx o `IA_BASE_URL` no está definida, la misma petición va a OpenRouter (`https://openrouter.ai/api/v1/chat/completions`, `OPENROUTER_API_KEY`) con el modelo equivalente.
 - **Imagen:** la mejora de la foto va siempre directo a OpenRouter (`POST /api/v1/images`, `google/gemini-2.5-flash-image`).
 - **Usado por:** CU-03, CU-08.

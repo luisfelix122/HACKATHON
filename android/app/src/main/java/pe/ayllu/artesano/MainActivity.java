@@ -1,4 +1,4 @@
-package pe.aylly.artesano;
+package pe.ayllu.artesano;
 
 import com.getcapacitor.BridgeActivity;
 

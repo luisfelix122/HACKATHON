@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { obtenerPerfil, type Perfil } from './perfil'
 
-const clave = (id: string) => `aylly.perfil.${id}`
+const clave = (id: string) => `ayllu.perfil.${id}`
 
 function leerCopia(id: string): Perfil | null {
   try {

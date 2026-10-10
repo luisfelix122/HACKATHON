@@ -59,13 +59,13 @@ Es la base de todos los PRP. También comprueba temprano los dos riesgos de infr
 | crear | `src/compartido/supabase.ts` | cliente Supabase a partir de las variables de entorno |
 | crear | `src/compartido/ui/estilos.css` | estilos base adaptables (de 360 px a 1440 px) |
 | crear | `src/app/app.test.tsx` | prueba de humo de que monta cada App |
-| crear | `capacitor.config.ts` | `appId` (`pe.aylly.artesano`, **supuesto**), `appName`, `webDir: 'dist-artesano'` |
+| crear | `capacitor.config.ts` | `appId` (`pe.ayllu.artesano`, **supuesto**), `appName`, `webDir: 'dist-artesano'` |
 | crear | `android/**` | lo genera `npx cap add android`; no se edita a mano salvo `variables.gradle` |
 | crear | `supabase/config.toml` | lo genera `supabase init` |
 | crear | `vercel.json` | comando de build `build:web`, salida `dist-web` y rewrite de la SPA |
 | modificar | `Makefile` | comandos reales de `verify` más los objetivos `build`, `apk` y `test-db` |
 | crear | `.github/workflows/ci.yml` | en cada PR y en cada push a `main`: `npm ci`, `make verify`, `npm run build:web` y `npm run build:artesano` |
-| modificar | `README.md` | sección inicial «Aylly — arranque» (requisitos, variables, comandos y despliegue). No borrar el contenido existente |
+| modificar | `README.md` | sección inicial «Ayllu — arranque» (requisitos, variables, comandos y despliegue). No borrar el contenido existente |
 | modificar | `.env.example` | nombres de las variables |
 | modificar | `.gitignore` | `dist-*/`, `android/app/build/`, `android/.gradle/`, `*.apk`, `*.keystore` |
 

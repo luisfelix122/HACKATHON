@@ -34,7 +34,7 @@ export function RegistroArtesano() {
     return (
       <main className="pagina">
         <section className="formulario" aria-labelledby="registro-titulo">
-          <h1 id="registro-titulo">Vende tus piezas en Aylly</h1>
+          <h1 id="registro-titulo">Vende tus piezas en Ayllu</h1>
           <p>
             Primero crea tu cuenta con Google. Después eliges la contraseña con la que entrarás a la
             app y cuentas quién eres.
@@ -73,7 +73,7 @@ function RegistroTerminado({ perfil }: { perfil: Perfil }) {
     <main className="pagina">
       <h1>Listo, {perfil.nombre}</h1>
       <EstadoAcreditacion perfil={perfil} />
-      <p>Abre la app Aylly en tu celular e ingresa con tu correo y tu contraseña.</p>
+      <p>Abre la app Ayllu en tu celular e ingresa con tu correo y tu contraseña.</p>
       <NuevaContrasena />
     </main>
   )

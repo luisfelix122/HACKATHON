@@ -22,7 +22,7 @@ Es el criterio 2 del reto: optimizar con IA la imagen, la ficha y el precio. Red
 - [ ] El artesano puede editar todos los campos de la ficha y el precio antes de publicar. Si su acreditación no está `aprobada`, «Publicar» se ve deshabilitado con el motivo, y la base de datos también lo rechaza.
 - [ ] Si la IA falla, la pantalla ofrece «Reintentar» y «Completar a mano». Si no hay conexión, el reintento se hace solo al volver la red.
 - [ ] Las claves (`IA_API_KEY`, `OPENROUTER_API_KEY`) solo existen como secretos de la función. Una búsqueda de `OPENROUTER` o `IA_API_KEY` en `src/` y `dist-*/` no encuentra nada.
-- [ ] El texto y el audio van al proxy LiteLLM (`${IA_BASE_URL}/v1/chat/completions`, alias `aylly-texto` o `aylly-audio`). Si el proxy no responde en `IA_TIMEOUT_MS` o devuelve 5xx, se reintenta **una vez** directo con OpenRouter. Si `IA_BASE_URL` no está definida, se usa OpenRouter directo. Hay pruebas para los tres caminos.
+- [ ] El texto y el audio van al proxy LiteLLM (`${IA_BASE_URL}/v1/chat/completions`, alias `ayllu-texto` o `ayllu-audio`). Si el proxy no responde en `IA_TIMEOUT_MS` o devuelve 5xx, se reintenta **una vez** directo con OpenRouter. Si `IA_BASE_URL` no está definida, se usa OpenRouter directo. Hay pruebas para los tres caminos.
 - [ ] La mejora de la foto va directo a OpenRouter (`/api/v1/images`), según la decisión 0002.
 
 ## Contexto necesario

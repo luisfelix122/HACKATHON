@@ -1,4 +1,4 @@
-# Aylly
+# Ayllu
 
 Vitrina digital para artesanos de las playas del norte de Piura y Talara (Hackatón, Reto 17).
 

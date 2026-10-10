@@ -4,7 +4,7 @@ import { crearCuentaConGoogle } from './googleApk'
 import { ingresarArtesano, type ErrorIngreso } from './sesion'
 
 const URL_WEB = import.meta.env.VITE_WEB_URL as string | undefined
-const REGISTRO = URL_WEB ? `${URL_WEB}/artesano/registro` : 'la web de Aylly (/artesano/registro)'
+const REGISTRO = URL_WEB ? `${URL_WEB}/artesano/registro` : 'la web de Ayllu (/artesano/registro)'
 
 export type MotivoIngreso = ErrorIngreso | 'google_fallo'
 
