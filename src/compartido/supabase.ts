@@ -10,7 +10,7 @@ if (!url || !clavePublica) {
 }
 
 /** Clave fija de la sesión guardada: la APK la lee sin conexión (src/acceso/sesion.ts). */
-export const CLAVE_SESION = 'costearte.auth'
+export const CLAVE_SESION = 'aylly.auth'
 
 /** Cliente único de Supabase. Solo usa la clave publicable; los permisos los imponen las reglas RLS. */
 export const supabase = createClient(url, clavePublica, {

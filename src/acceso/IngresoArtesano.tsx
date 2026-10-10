@@ -3,9 +3,7 @@ import { Aviso, Boton, Campo } from '../compartido/ui/componentes'
 import { ingresarArtesano, type ErrorIngreso } from './sesion'
 
 const URL_WEB = import.meta.env.VITE_WEB_URL as string | undefined
-const REGISTRO = URL_WEB
-  ? `${URL_WEB}/artesano/registro`
-  : 'la web de CosteARTE (/artesano/registro)'
+const REGISTRO = URL_WEB ? `${URL_WEB}/artesano/registro` : 'la web de Aylly (/artesano/registro)'
 
 const MENSAJES: Record<ErrorIngreso, string> = {
   credenciales_invalidas: 'Correo o contraseña incorrectos.',

@@ -1,4 +1,4 @@
-# DESIGN — CosteARTE
+# DESIGN — Aylly
 
 Sistema construido en el PRP 011 (decisión `docs/decisiones/0004-sistema-visual.md`). Describe lo que existe en `src/compartido/ui/`; si el código cambia, este archivo se actualiza.
 
@@ -37,7 +37,7 @@ Sistema construido en el PRP 011 (decisión `docs/decisiones/0004-sistema-visual
 | `Aviso` | `info`, `exito`, `alerta`, `error` (`role="alert"`) y `sin-senal` (azul noche). Cada uno con su ícono SVG propio, de trazo 2 |
 | `Etiqueta` | Pieza: lugar en rótulo, título, «Hecho por…», precio opcional. Forma colgante con las esquinas superiores cortadas y el ojal centrado |
 | `SelloRna` | `aprobada`: tinta azul con doble anillo, girado -8°, animación «sellar» de 240 ms. `pendiente`: punteado y gris |
-| `Logotipo` | «Coste» en blanco y «ARTE» en sol, en Barlow Condensed. Es provisional: todavía no hay logo |
+| `Logotipo` | «Ayll» en blanco y la «y» final en sol, en Barlow Condensed. Es provisional: todavía no hay logo |
 
 ## Composición
 - **Web:**

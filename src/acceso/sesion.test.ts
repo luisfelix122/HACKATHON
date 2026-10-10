@@ -5,7 +5,7 @@ const signOut = vi.fn().mockResolvedValue({ error: null })
 let perfilDevuelto: { rol: string } | null = null
 
 vi.mock('../compartido/supabase', () => ({
-  CLAVE_SESION: 'costearte.auth',
+  CLAVE_SESION: 'aylly.auth',
   supabase: {
     auth: { signInWithPassword, signOut },
     from: () => ({

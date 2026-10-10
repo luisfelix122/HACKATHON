@@ -1,4 +1,4 @@
-# CosteARTE — Vitrina digital para artesanos de las playas del norte
+# Aylly — Vitrina digital para artesanos de las playas del norte
 
 Fuentes:
 - Reto 17 (texto oficial).

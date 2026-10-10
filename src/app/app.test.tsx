@@ -21,7 +21,7 @@ describe('salidas de la app', () => {
       screen.getByRole('heading', { level: 1, name: /Piezas hechas a mano/ }),
     ).toBeInTheDocument()
     expect(screen.getByRole('list', { name: 'Caletas de norte a sur' })).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'CosteARTE, inicio' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'Aylly, inicio' })).toBeInTheDocument()
   })
 
   it('la APK sin sesión pide correo y contraseña (CC-03)', async () => {

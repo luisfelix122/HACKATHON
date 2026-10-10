@@ -11,9 +11,9 @@ Entregar en `infra/litellm/` un paquete listo para que la **laptop autorizada** 
 
 Al aplicarlo, LiteLLM Proxy:
 - Corre en Docker y escucha solo en `127.0.0.1:4000`.
-- Se publica por el túnel existente de Cloudflare en `https://costearte-ia.likadev.com` (**subdominio propuesto, pendiente de confirmar**).
+- Se publica por el túnel existente de Cloudflare en `https://aylly-ia.likadev.com` (**subdominio propuesto, pendiente de confirmar**).
 - Exige la clave de LiteLLM en cada llamada.
-- Reparte los alias `costearte-texto` y `costearte-audio` entre las llaves configuradas.
+- Reparte los alias `aylly-texto` y `aylly-audio` entre las llaves configuradas.
 
 ## Por qué
 Es la decisión `0002-proxy-ia-litellm.md` (CC-02).
@@ -26,7 +26,7 @@ Es la decisión `0002-proxy-ia-litellm.md` (CC-02).
 | Puertos | 4000 libre; **8080 ocupado** por Filebrowser (no usar) |
 | Acceso de administración | Solo por Tailscale y con permisos del propietario. La laptop autorizada hace el despliegue; **este agente no accede al servidor** |
 | Cloudflare | Dominio `likadev.com`; túnel `homelab-johann-prueba` (configuración remota); conector Docker `homelab-cloudflare-prueba-cloudflared-1` |
-| Ubicación propuesta | `/opt/costearte-ia` (compose y configuración no secreta; requiere permisos de administrador) o `/datos/produccion/datos/costearte-ia` (persistencia y respaldos). La decide Johann |
+| Ubicación propuesta | `/opt/aylly-ia` (compose y configuración no secreta; requiere permisos de administrador) o `/datos/produccion/datos/aylly-ia` (persistencia y respaldos). La decide Johann |
 | Disponibilidad | Encendido desde 2026-10-01. Sin UPS ni internet de respaldo confirmados. Problema de arranque sin monitor reportado |
 
 ## Criterios de aceptación
@@ -38,18 +38,18 @@ Es la decisión `0002-proxy-ia-litellm.md` (CC-02).
   - `restart: unless-stopped`.
   - `healthcheck` contra el endpoint de salud del proxy (verificar la ruta en la documentación de LiteLLM al escribirlo).
   - Sin Postgres ni interfaz de administración.
-- [ ] `config.yaml` define los alias `costearte-texto` y `costearte-audio` con una deployment por llave (`api_key: os.environ/IA_KEY_n`). `router_settings` usa `routing_strategy: simple-shuffle`, `num_retries` y cooldown ante 429.
+- [ ] `config.yaml` define los alias `aylly-texto` y `aylly-audio` con una deployment por llave (`api_key: os.environ/IA_KEY_n`). `router_settings` usa `routing_strategy: simple-shuffle`, `num_retries` y cooldown ante 429.
 - [ ] `README.md` documenta:
   - Requisitos.
   - Ruta elegida y permisos del `.env` (`chmod 600`).
   - `docker compose up -d`.
-  - La ruta del túnel (`costearte-ia.likadev.com` → `http://localhost:4000`).
+  - La ruta del túnel (`aylly-ia.likadev.com` → `http://localhost:4000`).
   - La autenticación máquina a máquina.
   - La verificación con curl (sin clave → 401; con clave → 200).
   - La prueba tras reiniciar el servidor, la rotación de llaves, los logs y la retención.
 - [ ] Tras el despliegue, que hace el operador y registra en `docs/traspasos/CU-09-cristopher.md`:
   - Llamada sin clave → 401.
-  - Llamada con clave a `costearte-texto` → 200.
+  - Llamada con clave a `aylly-texto` → 200.
   - Con una llave inválida en la lista, las llamadas siguen respondiendo 200.
   - El proxy vuelve a funcionar tras un reinicio.
 - [ ] La Edge Function sigue funcionando con OpenRouter directo si el proxy está apagado (lo prueba el PRP 003).
@@ -99,13 +99,13 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Notas / riesgos
 **Decisiones pendientes:**
-1. **Equipo CosteARTE:**
+1. **Equipo Aylly:**
    - Proveedor (OpenRouter, Gemini directo o ambos).
    - Cuentas o proyectos **distintos** y a qué cuenta pertenece cada llave.
    - Modelos exactos de texto y audio.
    - Presupuesto o cuota por cuenta y qué pasa cuando se agota.
 2. **Johann:**
-   - Confirmar el subdominio `costearte-ia.likadev.com`.
+   - Confirmar el subdominio `aylly-ia.likadev.com`.
    - Autenticación: solo la clave de LiteLLM, o además un service token de Access.
    - Ruta (`/opt` o `/datos`).
    - Política de logs y respaldos.
