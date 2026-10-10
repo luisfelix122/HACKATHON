@@ -1,6 +1,6 @@
 # DESIGN — Ayllu
 
-Sistema construido en el PRP 011 (decisión `docs/decisiones/0004-sistema-visual.md`). Describe lo que existe en `src/compartido/ui/`; si el código cambia, este archivo se actualiza.
+Especificación del sistema visual (decisión `docs/decisiones/0004-sistema-visual.md`). Se implementa en el PRP 011 en `src/compartido/ui/`; una versión anterior está en la etiqueta de git `respaldo-implementacion`. Al implementarlo, este archivo debe actualizarse para reflejar lo construido.
 
 ## Mundo
 **Guía de encomienda en la costa de Piura.**

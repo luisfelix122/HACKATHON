@@ -3,48 +3,29 @@
 #   macOS:   xcode-select --install   (o brew install make)
 #   Linux:   sudo apt install make
 #
-# Stack: React + TypeScript + Vite, Supabase y Capacitor (docs/decisiones/0001-stack.md).
-# Ningún objetivo se reemplaza por un comando que "pase" sin verificar nada.
+# Stack: POR DEFINIR. Cada check falla a propósito hasta reemplazar su comando
+# por el real (p. ej. lint, chequeo de formato, verificación de tipos, tests).
+# No sustituir por un comando que "pase" sin verificar nada.
 
-.PHONY: help verify lint format-check typecheck test build apk test-db
-
-# Rutas para compilar Android. Gradle 8.14 (Capacitor 8) requiere JDK 17-24; el JBR
-# de Android Studio es JDK 25 y no sirve. Instalar JDK 21:
-#   winget install EclipseAdoptium.Temurin.21.JDK   (define JAVA_HOME del sistema)
-# Se pueden sobrescribir: make apk JAVA_HOME=/ruta ANDROID_HOME=/ruta
-JAVA_HOME ?= $(error JAVA_HOME no definido: instala JDK 21 (ver comentario en Makefile))
-ANDROID_HOME ?= $(LOCALAPPDATA)/Android/Sdk
+.PHONY: help verify lint format-check typecheck test
 
 help:
 	@echo "make verify        lint + format-check + typecheck + test"
-	@echo "make build         build de la web y de la app del artesano"
-	@echo "make apk           APK de debug del artesano (requiere Android Studio/SDK)"
-	@echo "make test-db       pruebas pgTAP (requiere Docker y 'npx supabase start')"
+	@echo "make lint          PENDIENTE: definir con el stack"
+	@echo "make format-check  PENDIENTE: definir con el stack"
+	@echo "make typecheck     PENDIENTE: definir con el stack"
+	@echo "make test          PENDIENTE: definir con el stack"
 
 verify: lint format-check typecheck test
 
 lint:
-	npm run lint
+	@echo "PENDIENTE: comando de lint no definido (stack por definir)" && exit 1
 
 format-check:
-	npm run format:check
+	@echo "PENDIENTE: comando de comprobacion de formato no definido (stack por definir)" && exit 1
 
 typecheck:
-	npm run typecheck
+	@echo "PENDIENTE: comando de verificacion de tipos no definido (stack por definir)" && exit 1
 
 test:
-	npm run test -- --run
-
-build:
-	npm run build:web
-	npm run build:artesano
-
-apk:
-	npm run build:artesano
-	npx cap sync android
-	cd android && JAVA_HOME="$(JAVA_HOME)" ANDROID_HOME="$(ANDROID_HOME)" ./gradlew assembleDebug
-	@echo "APK: android/app/build/outputs/apk/debug/app-debug.apk"
-
-test-db:
-	@docker info >/dev/null 2>&1 || { echo "Docker no está corriendo: inicia Docker Desktop y luego 'npx supabase start'."; exit 1; }
-	npx supabase test db
+	@echo "PENDIENTE: comando de tests no definido (stack por definir)" && exit 1

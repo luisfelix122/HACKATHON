@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-11 (transversal; aplica a CU-01 y sirve de base a CU-02 a CU-07)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: en curso
+- Estado: listo. Implementación anterior en la etiqueta `respaldo-implementacion`
 - Rama: `cu-11/sistema-visual`
 
 ## Objetivo

@@ -1,3 +1,5 @@
+> **Nota (2026-10-10):** el código de este traspaso se retiró de `main` para implementar los PRP uno por uno. Está en la etiqueta de git `respaldo-implementacion`. Los resultados de abajo describen esa versión.
+
 # Traspaso CU-01 — Acceso y acreditación
 
 - Rama: `cu-01/acceso-acreditacion` (sobre `cu-00/base-web-apk`)

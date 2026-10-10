@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-00 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo
+- Estado: listo. Implementación anterior en la etiqueta `respaldo-implementacion`
 - Rama: `cu-00/base-web-apk`
 
 ## Objetivo
@@ -104,4 +104,4 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Notas / riesgos
 - Resultado de la prueba de audio: <pendiente>.
-- Versión del JDK usada en la compilación: <pendiente>.
+- JDK comprobado el 2026-10-10: Capacitor 8 genera Gradle 8.14.3, que no acepta el JDK 25 de Android Studio. Con Temurin JDK 21 (`C:/Program Files/Eclipse Adoptium/jdk-21.0.12.101-hotspot`) la APK compila.
