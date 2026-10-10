@@ -97,6 +97,7 @@ La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y cali
 ## Acceso (CC-03)
 - **Comprador (web):** `signInWithOAuth({ provider: "google" })`. En el primer ingreso se crea `perfil` con `rol = comprador`.
 - **Artesano, registro (web `/artesano/registro`):** Google → `updateUser({ password })` (mínimo 8 caracteres) → `insert` del `perfil` con `rol = artesano` y `acreditacion = pendiente` (sin `acreditacion_nota`).
+- **Artesano, registro en la APK (CC-06):** Google por deep link (`redirectTo: pe.costearte.artesano://auth`, navegador del sistema) → contraseña → perfil, igual que en la web. La ruta web queda como respaldo.
 - **Artesano, ingreso (APK):** `signInWithPassword({ email, password })`. El usuario es el **correo de Google**. Si el perfil no es `artesano`, la APK cierra la sesión.
 - **Sesión:** persistente (`persistSession: true`). Tras el primer ingreso, la APK abre sin conexión con la sesión guardada.
 - **Errores visibles:** `credenciales_invalidas` → «Correo o contraseña incorrectos»; `rol_incorrecto` → «Esta app es para artesanos».
