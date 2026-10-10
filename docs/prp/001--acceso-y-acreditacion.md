@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-01 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo (actualizado por CC-03, CC-06 y CC-08; ajustes de CC-04 pendientes de confirmar). Implementación anterior en la etiqueta `respaldo-implementacion`
+- Estado: listo (actualizado por CC-03, CC-06 y CC-08, CC-04 aprobado). Implementación anterior en la etiqueta `respaldo-implementacion`
 - Rama: `cu-01/acceso-acreditacion`
 
 ## Objetivo

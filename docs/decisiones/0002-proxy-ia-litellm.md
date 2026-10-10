@@ -21,7 +21,7 @@ Hay disponible un servidor Linux personal (16 GB de RAM y 500 GB de SSD). Se adm
 ## Decisión
 - Se despliega **LiteLLM Proxy** (Docker, sin base de datos, autenticado con la clave maestra) en el servidor y se expone por **Cloudflare Tunnel** en un subdominio HTTPS.
 - La administración del servidor se hace solo por Tailscale y con permisos del propietario (Johann). El despliegue lo ejecuta una **laptop autorizada**, a partir de los archivos de `infra/litellm/` del repositorio. Este agente no accede al servidor.
-- **Servidor:** Debian 13.7, Docker 29.8.2 y Compose v5.5.1, ya instalados. Se usa el túnel existente `homelab-johann-prueba` del dominio `likadev.com`. Subdominio propuesto: `costearte-ia.likadev.com`, pendiente de confirmar. Detalle en el PRP 009.
+- **Servidor:** Debian 13.7, Docker 29.8.2 y Compose v5.5.1, ya instalados. Se usa el túnel existente `homelab-johann-prueba` del dominio `likadev.com`. Subdominio confirmado: `ayllu-ia.likadev.com` (CC-07). Detalle en el PRP 009.
 - La Edge Function llama al proxy a través de `IA_BASE_URL`, en formato compatible con OpenAI (`/v1/chat/completions`). Si el proxy no responde dentro de `IA_TIMEOUT_MS` o devuelve un 5xx, llama **directo a OpenRouter** con `OPENROUTER_API_KEY`.
 - La **mejora de foto** va directo a OpenRouter (`/api/v1/images`): no está verificado que LiteLLM soporte `gemini-2.5-flash-image`.
 - El proxy publica **alias de modelo** propios. El código usa solo esos alias y nunca nombres de proveedor.

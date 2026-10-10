@@ -11,7 +11,7 @@ Entregar en `infra/litellm/` un paquete listo para que la **laptop autorizada** 
 
 Al aplicarlo, LiteLLM Proxy:
 - Corre en Docker y escucha solo en `127.0.0.1:4000`.
-- Se publica por el túnel existente de Cloudflare en `https://ayllu-ia.likadev.com` (**subdominio propuesto, pendiente de confirmar**).
+- Se publica por el túnel existente de Cloudflare en `https://ayllu-ia.likadev.com` (subdominio confirmado).
 - Exige la clave de LiteLLM en cada llamada.
 - Reparte los alias `ayllu-texto` y `ayllu-audio` entre las llaves configuradas.
 
@@ -26,7 +26,7 @@ Es la decisión `0002-proxy-ia-litellm.md` (CC-02).
 | Puertos | 4000 libre; **8080 ocupado** por Filebrowser (no usar) |
 | Acceso de administración | Solo por Tailscale y con permisos del propietario. La laptop autorizada hace el despliegue; **este agente no accede al servidor** |
 | Cloudflare | Dominio `likadev.com`; túnel `homelab-johann-prueba` (configuración remota); conector Docker `homelab-cloudflare-prueba-cloudflared-1` |
-| Ubicación propuesta | `/opt/ayllu-ia` (compose y configuración no secreta; requiere permisos de administrador) o `/datos/produccion/datos/ayllu-ia` (persistencia y respaldos). La decide Johann |
+| Ubicación (confirmada por Johann) | `/datos/trabajo/proyectos/ayllu/litellm/` |
 | Disponibilidad | Encendido desde 2026-10-01. Sin UPS ni internet de respaldo confirmados. Problema de arranque sin monitor reportado |
 
 ## Criterios de aceptación
@@ -105,7 +105,6 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
    - Modelos exactos de texto y audio.
    - Presupuesto o cuota por cuenta y qué pasa cuando se agota.
 2. **Johann:**
-   - Confirmar el subdominio `ayllu-ia.likadev.com`.
    - Autenticación: solo la clave de LiteLLM, o además un service token de Access.
    - Ruta (`/opt` o `/datos`).
    - Política de logs y respaldos.

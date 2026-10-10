@@ -79,7 +79,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 1. Recibir los datos de la sección Notas.
 2. Escribir los archivos de `infra/supabase/` e `infra/web/`. Validarlos en local con `docker compose config` (Docker Desktop encendido).
 3. **Operador:**
-   1. Clonar `supabase/supabase` (v0.8.2, solo `docker/`) en la ruta elegida y copiar el override.
+   1. Clonar `supabase/supabase` (v0.8.2, solo `docker/`) en `/datos/trabajo/proyectos/ayllu/supabase/` y copiar el override. La web va en `/datos/trabajo/proyectos/ayllu/web/` y los respaldos en `/datos/trabajo/proyectos/ayllu/respaldos/`.
    2. Generar los secretos y llenar el `.env`.
    3. `docker compose pull` y `docker compose up -d`.
 4. **Operador:** agregar al túnel `ayllu-api` → `http://localhost:8000` y `ayllu` → `http://localhost:<puerto web>`.
@@ -100,8 +100,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 ## Notas / riesgos
 **Datos pendientes:**
 1. **Johann:**
-   - Confirmar los subdominios `ayllu-api` y `ayllu` en `likadev.com`.
-   - Ruta de instalación (`/opt` o `/datos`) y espacio para respaldos.
+   - Subdominios (`ayllu-api`, `ayllu`) y ruta (`/datos/trabajo/proyectos/ayllu/`): **confirmados** el 2026-10-10.
    - Quién opera la laptop autorizada.
 2. **Equipo:** Client ID y Secret de Google OAuth (los escribe el operador en el `.env` del servidor).
 3. **RAM:** Supabase recomienda 8 GB; el servidor tiene 16 GB compartidos con LiteLLM, Filebrowser y otros servicios. Revisar el consumo tras el arranque.
