@@ -51,3 +51,6 @@ android/local.properties
 *.aab
 *.keystore
 *.jks
+
+# Estado temporal de la skill impeccable (páginas de decisión)
+.impeccable/questions/

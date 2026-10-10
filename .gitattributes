@@ -1,0 +1,4 @@
+# Normaliza texto; los scripts que corren en Linux deben conservar LF.
+* text=auto
+*.sh text eol=lf
+android/gradlew text eol=lf

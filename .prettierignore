@@ -17,3 +17,6 @@ scripts
 .github
 CosteARTE_Contexto_VSCode
 supabase/.temp
+
+# Estado temporal de la skill impeccable
+.impeccable
