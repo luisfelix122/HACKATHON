@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { Aviso, Boton, Campo } from '../compartido/ui/componentes'
 import { ingresarArtesano, type ErrorIngreso } from './sesion'
 
 const URL_WEB = import.meta.env.VITE_WEB_URL as string | undefined
@@ -11,10 +12,10 @@ const MENSAJES: Record<ErrorIngreso, string> = {
   sin_conexion: 'Necesitas internet para ingresar la primera vez.',
   rol_incorrecto: `Esta app es para artesanos. Regístrate en ${REGISTRO}.`,
   sin_registro: `Aún no completaste tu registro de artesano. Termínalo en ${REGISTRO}.`,
-  desconocido: 'No pudimos ingresar. Inténtalo de nuevo.',
+  desconocido: 'No se pudo ingresar. Vuelve a intentarlo.',
 }
 
-/** APK: ingreso con el correo de Google y la contraseña elegida en la web (CC-03). */
+/** APK: ingreso con el correo de Google y la contraseña elegida al registrarse. */
 export function IngresoArtesano({ motivo }: { motivo?: ErrorIngreso }) {
   const [correo, setCorreo] = useState('')
   const [contrasena, setContrasena] = useState('')
@@ -32,32 +33,36 @@ export function IngresoArtesano({ motivo }: { motivo?: ErrorIngreso }) {
 
   return (
     <main className="pagina">
-      <h1>CosteARTE</h1>
+      <h1>Ingresa a tu taller</h1>
       <form className="formulario" onSubmit={enviar}>
-        <label className="campo">
-          <span>Tu correo de Google</span>
-          <input
-            type="email"
-            autoComplete="username"
-            value={correo}
-            onChange={(e) => setCorreo(e.target.value)}
-            required
-          />
-        </label>
-        <label className="campo">
-          <span>Contraseña</span>
-          <input
-            type="password"
-            autoComplete="current-password"
-            value={contrasena}
-            onChange={(e) => setContrasena(e.target.value)}
-            required
-          />
-        </label>
-        {error && <p className="error">{error}</p>}
-        <button type="submit" disabled={enCurso}>
+        <Campo etiqueta="Tu correo de Google">
+          {(a) => (
+            <input
+              {...a}
+              type="email"
+              autoComplete="username"
+              value={correo}
+              onChange={(e) => setCorreo(e.target.value)}
+              required
+            />
+          )}
+        </Campo>
+        <Campo etiqueta="Contraseña">
+          {(a) => (
+            <input
+              {...a}
+              type="password"
+              autoComplete="current-password"
+              value={contrasena}
+              onChange={(e) => setContrasena(e.target.value)}
+              required
+            />
+          )}
+        </Campo>
+        {error && <Aviso tono="error">{error}</Aviso>}
+        <Boton type="submit" ancho cargando={enCurso}>
           Ingresar
-        </button>
+        </Boton>
       </form>
       <p className="nota">
         ¿No tienes cuenta u olvidaste tu contraseña? Entra con Google en{' '}

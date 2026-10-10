@@ -1,140 +1,550 @@
-:root {
-  --color-fondo: #fffaf5;
-  --color-texto: #1c1917;
-  --color-suave: #57534e;
-  --color-marca: #9a3412;
-  --color-borde: #e7e5e4;
-  --radio: 12px;
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
-  font-size: 18px;
-  line-height: 1.5;
-  color: var(--color-texto);
-  background: var(--color-fondo);
+/* Base y componentes de CosteARTE. Tokens en tokens.css. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
-* {
-  box-sizing: border-box;
+html {
+  font-family: var(--letra-texto);
+  font-size: 100%;
+  line-height: 1.5;
+  color: var(--noche);
+  background: var(--espuma);
+  -webkit-text-size-adjust: 100%;
 }
 
 body {
   margin: 0;
   min-width: 320px;
-  background: var(--color-fondo);
+  font-size: var(--tam-base);
+  background: var(--espuma);
 }
 
-.pagina {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 16px;
+::selection {
+  background: var(--sol);
+  color: var(--noche);
+}
+
+:focus-visible {
+  outline: 3px solid var(--pacifico);
+  outline-offset: 3px;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
 }
 
 h1 {
-  color: var(--color-marca);
-  font-size: 1.6rem;
-  margin: 0 0 8px;
+  font-size: var(--tam-h1);
 }
 
-/* Botones grandes y claros para usuarios con poca experiencia digital. */
-button,
-.boton {
-  min-height: 48px;
-  padding: 12px 20px;
-  border: 0;
-  border-radius: var(--radio);
-  background: var(--color-marca);
-  color: #fff;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
+h2 {
+  font-size: var(--tam-h2);
 }
 
-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+h3 {
+  font-size: var(--tam-h3);
 }
 
-@media (min-width: 768px) {
-  .pagina {
-    padding: 24px 32px;
-  }
-}
-
-button.secundario {
-  background: transparent;
-  color: var(--color-marca);
-  border: 2px solid var(--color-marca);
+p {
+  margin: 0;
+  max-width: var(--ancho-lectura);
 }
 
 a {
-  color: var(--color-marca);
+  color: var(--pacifico);
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 2px;
 }
 
-.tarjeta {
-  background: #fff;
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio);
-  padding: 16px;
+a:hover {
+  color: var(--pacifico-hondo);
 }
+
+/* ---------- Estructura ---------- */
+
+.pagina {
+  width: 100%;
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--e5) var(--e4) var(--e7);
+  display: grid;
+  gap: var(--e5);
+  align-content: start;
+}
+
+.barra {
+  background: var(--pacifico);
+  color: var(--blanco);
+}
+
+.barra-interior {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--e3) var(--e4);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e4);
+  min-height: 4rem;
+}
+
+.barra a {
+  color: var(--blanco);
+}
+
+.logotipo {
+  font-family: var(--letra-rotulo);
+  font-weight: 700;
+  font-size: 1.75rem;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  line-height: 1;
+}
+
+.logotipo span {
+  color: var(--sol);
+}
+
+.nav {
+  display: flex;
+  gap: var(--e4);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.nota {
+  color: var(--noche-suave);
+  font-size: var(--tam-chico);
+}
+
+.cargando {
+  color: var(--noche-suave);
+}
+
+/* ---------- Botones ---------- */
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e2);
+  min-height: var(--tactil);
+  padding: var(--e3) var(--e5);
+  border: 2px solid var(--pacifico);
+  border-radius: var(--radio-control);
+  background: var(--pacifico);
+  color: var(--blanco);
+  font: inherit;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--rapido) var(--salida),
+    transform var(--rapido) var(--salida);
+}
+
+.boton:hover {
+  background: var(--pacifico-hondo);
+  border-color: var(--pacifico-hondo);
+  color: var(--blanco);
+}
+
+.boton:active {
+  transform: translateY(1px);
+}
+
+.boton[disabled],
+.boton[aria-busy='true'] {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.boton-secundario {
+  background: transparent;
+  color: var(--pacifico);
+}
+
+.boton-secundario:hover {
+  background: var(--ola-clara);
+  color: var(--pacifico-hondo);
+}
+
+.boton-destacado {
+  background: var(--sol);
+  border-color: var(--sol);
+  color: var(--noche);
+}
+
+.boton-destacado:hover {
+  background: #e0a800;
+  border-color: #e0a800;
+  color: var(--noche);
+}
+
+.boton-ancho {
+  width: 100%;
+}
+
+/* ---------- Formularios ---------- */
 
 .formulario {
   display: grid;
-  gap: 16px;
-  max-width: 480px;
+  gap: var(--e5);
+  max-width: 34rem;
 }
 
 .campo {
   display: grid;
-  gap: 4px;
+  gap: var(--e2);
+}
+
+.campo-etiqueta {
+  font-weight: 700;
 }
 
 .campo input,
 .campo select,
 .campo textarea {
+  width: 100%;
+  min-height: var(--tactil);
+  padding: var(--e3) var(--e4);
+  border: 2px solid var(--noche-suave);
+  border-radius: var(--radio-control);
+  background: var(--blanco);
+  color: var(--noche);
   font: inherit;
-  padding: 12px;
-  min-height: 48px;
-  border: 1px solid var(--color-borde);
-  border-radius: var(--radio);
-  background: #fff;
 }
 
-.error {
-  color: #b91c1c;
+.campo input:focus-visible,
+.campo select:focus-visible,
+.campo textarea:focus-visible {
+  outline: none;
+  border-color: var(--pacifico);
+  box-shadow: 0 0 0 3px var(--ola-clara);
 }
 
-.nota {
-  color: var(--color-suave);
+.campo[data-error='true'] input,
+.campo[data-error='true'] select,
+.campo[data-error='true'] textarea {
+  border-color: var(--error);
 }
+
+.campo-error {
+  color: var(--error);
+  font-size: var(--tam-chico);
+  font-weight: 700;
+}
+
+.campo-ayuda {
+  color: var(--noche-suave);
+  font-size: var(--tam-chico);
+}
+
+/* Casilla numerada de la guía: un paso del formulario del artesano. */
+.casilla {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--e4);
+  align-items: start;
+  padding: var(--e4);
+  border: 2px solid var(--pacifico);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
+}
+
+.casilla-numero {
+  font-family: var(--letra-rotulo);
+  font-weight: 700;
+  font-size: 2.6rem;
+  line-height: 1;
+  min-width: 2.2ch;
+  color: var(--pacifico);
+  text-align: center;
+}
+
+/* ---------- Avisos ---------- */
 
 .aviso {
-  padding: 12px;
-  border-radius: var(--radio);
-  background: #fef3c7;
+  display: flex;
+  gap: var(--e3);
+  align-items: flex-start;
+  padding: var(--e3) var(--e4);
+  border-radius: var(--radio-control);
+  background: var(--ola-clara);
+  color: var(--noche);
 }
 
-.aviso-aprobada {
-  background: #dcfce7;
+.aviso svg {
+  flex: none;
+  margin-top: 0.15em;
 }
 
-.aviso-rechazada {
-  background: #fee2e2;
+.aviso-exito {
+  background: var(--ola-clara);
 }
+
+.aviso-alerta {
+  background: var(--sol-claro);
+}
+
+.aviso-error {
+  background: var(--error-claro);
+  color: #7a1a12;
+}
+
+.aviso-sin-senal {
+  background: var(--noche);
+  color: var(--blanco);
+}
+
+/* ---------- Etiqueta de pieza ---------- */
+
+.etiqueta {
+  position: relative;
+  display: grid;
+  gap: var(--e2);
+  padding: var(--e7) var(--e5) var(--e5);
+  background: var(--arena);
+  color: var(--noche);
+  /* Esquinas superiores cortadas: etiqueta colgante con el ojal arriba. */
+  clip-path: polygon(1.6rem 0, calc(100% - 1.6rem) 0, 100% 1.6rem, 100% 100%, 0 100%, 0 1.6rem);
+  filter: drop-shadow(0 10px 14px rgb(8 58 80 / 0.28));
+}
+
+.etiqueta::before {
+  /* Ojal reforzado. */
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 1.1rem;
+  width: 1.1rem;
+  height: 1.1rem;
+  margin-left: -0.55rem;
+  border-radius: 50%;
+  background: var(--espuma);
+  box-shadow: 0 0 0 4px var(--arena-clara);
+}
+
+.etiqueta-titulo {
+  font-size: var(--tam-h3);
+  font-weight: 700;
+}
+
+.etiqueta-lugar {
+  font-family: var(--letra-rotulo);
+  font-weight: 600;
+  font-size: 1.35rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--pacifico-hondo);
+}
+
+.etiqueta-precio {
+  font-size: var(--tam-h2);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Sello RNA ---------- */
+
+.sello {
+  display: inline-grid;
+  place-items: center;
+  width: 7.5rem;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  border: 3px solid var(--pacifico);
+  box-shadow:
+    inset 0 0 0 5px var(--arena),
+    inset 0 0 0 7px var(--pacifico);
+  color: var(--pacifico);
+  font-family: var(--letra-rotulo);
+  font-weight: 700;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 1;
+  rotate: -8deg;
+  animation: sellar 240ms var(--salida) both;
+}
+
+.sello-rna {
+  font-size: 1.9rem;
+  letter-spacing: 0.06em;
+}
+
+.sello-texto {
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+}
+
+.sello-pendiente {
+  border-style: dashed;
+  color: var(--noche-suave);
+  border-color: var(--noche-suave);
+  box-shadow: none;
+  animation: none;
+}
+
+@keyframes sellar {
+  from {
+    scale: 1.25;
+    opacity: 0;
+  }
+  to {
+    scale: 1;
+    opacity: 1;
+  }
+}
+
+/* ---------- Listas del panel ---------- */
 
 .lista {
   list-style: none;
+  margin: 0;
   padding: 0;
   display: grid;
-  gap: 12px;
+  gap: var(--e4);
+}
+
+.panel {
+  padding: var(--e5);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
+  border: 1px solid #cfe0e4;
+  display: grid;
+  gap: var(--e3);
 }
 
 .acciones {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: var(--e3);
+}
+
+/* ---------- Portada de la web ---------- */
+
+.portada {
+  display: grid;
+  gap: var(--e6);
+  align-items: center;
+  padding-block: var(--e6);
+}
+
+.portada h1 {
+  font-size: var(--tam-portada);
+  letter-spacing: -0.03em;
+  max-width: 15ch;
+}
+
+.portada-texto {
+  display: grid;
+  gap: var(--e5);
+}
+
+.portada-pieza {
+  position: relative;
+  justify-self: center;
+  width: min(100%, 22rem);
+  padding-top: var(--e6);
+}
+
+.pabilo {
+  /* Va sobre la etiqueta: el hilo entra por el ojal. */
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  left: 0;
+  width: 100%;
+  /* Termina en el centro del ojal: padding superior + posición del ojal. */
+  height: calc(var(--e6) + 1.65rem);
+  pointer-events: none;
+}
+
+.portada-pieza .etiqueta {
+  padding-bottom: var(--e7);
+}
+
+.portada-pieza .sello {
+  position: absolute;
+  z-index: 2;
+  right: -0.5rem;
+  bottom: -3rem;
+}
+
+.ruta {
+  background: var(--pacifico);
+  color: var(--blanco);
+}
+
+.ruta-interior {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: var(--e6) var(--e4);
+  display: grid;
+  gap: var(--e4);
+}
+
+.ruta ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e3) 0;
+}
+
+.ruta li {
+  display: flex;
+  align-items: center;
+  font-family: var(--letra-rotulo);
+  font-weight: 600;
+  font-size: 1.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.ruta li:not(:last-child)::after {
+  /* Tramo de la ruta entre caletas. */
+  content: '';
+  width: 2.2rem;
+  height: 0;
+  margin-inline: var(--e3);
+  border-top: 3px dotted var(--arena);
+}
+
+.ruta-nota {
+  color: var(--ola-clara);
+}
+
+@media (min-width: 860px) {
+  .pagina {
+    padding: var(--e6) var(--e6) var(--e8);
+  }
+
+  .barra-interior,
+  .ruta-interior {
+    padding-inline: var(--e6);
+  }
+
+  .portada {
+    grid-template-columns: 1.15fr 1fr;
+    padding-block: var(--e7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

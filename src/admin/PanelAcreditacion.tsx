@@ -5,6 +5,7 @@ import {
   resolverAcreditacion,
   type Perfil,
 } from '../acceso/perfil'
+import { Aviso, Boton } from '../compartido/ui/componentes'
 
 /** Web `/admin`: revisión manual del RNA declarado. */
 export function PanelAcreditacion() {
@@ -19,7 +20,7 @@ export function PanelAcreditacion() {
           setSolicitudes(lista)
           setError(null)
         })
-        .catch(() => setError('No pudimos cargar las solicitudes.')),
+        .catch(() => setError('No se pudieron cargar las solicitudes. Recarga la página.')),
     [],
   )
 
@@ -40,53 +41,53 @@ export function PanelAcreditacion() {
       await resolverAcreditacion(id, resultado, nota)
       cargar()
     } catch {
-      setError('No se pudo guardar. ¿Tu cuenta es de administrador?')
+      setError('No se pudo guardar. Comprueba que tu cuenta sea de administrador.')
     } finally {
       setEnCurso(null)
     }
   }
 
-  if (!solicitudes) return error ? <p className="error">{error}</p> : <p>Cargando…</p>
-  if (solicitudes.length === 0) return <p>No hay solicitudes pendientes.</p>
+  if (!solicitudes)
+    return error ? <Aviso tono="error">{error}</Aviso> : <p className="cargando">Cargando…</p>
+  if (solicitudes.length === 0)
+    return <Aviso tono="exito">No hay solicitudes pendientes. Todo está revisado.</Aviso>
 
   return (
     <>
-      {error && <p className="error">{error}</p>}
-      <ListaSolicitudes solicitudes={solicitudes} enCurso={enCurso} resolver={resolver} />
+      {error && <Aviso tono="error">{error}</Aviso>}
+      <ul className="lista">
+        {solicitudes.map((s) => (
+          <li key={s.id} className="panel">
+            <h2>{s.nombre}</h2>
+            <dl className="datos">
+              <dt>RNA declarado</dt>
+              <dd>{s.rna_numero}</dd>
+              <dt>Caleta</dt>
+              <dd>{s.lugar}</dd>
+              {s.asociacion && (
+                <>
+                  <dt>Asociación</dt>
+                  <dd>{s.asociacion}</dd>
+                </>
+              )}
+              <dt>WhatsApp</dt>
+              <dd>{s.whatsapp}</dd>
+            </dl>
+            <div className="acciones">
+              <Boton cargando={enCurso === s.id} onClick={() => resolver(s.id, 'aprobada')}>
+                Aprobar
+              </Boton>
+              <Boton
+                variante="secundario"
+                disabled={enCurso === s.id}
+                onClick={() => resolver(s.id, 'rechazada')}
+              >
+                Rechazar
+              </Boton>
+            </div>
+          </li>
+        ))}
+      </ul>
     </>
-  )
-}
-
-function ListaSolicitudes(props: {
-  solicitudes: Perfil[]
-  enCurso: string | null
-  resolver: (id: string, resultado: 'aprobada' | 'rechazada') => void
-}) {
-  const { solicitudes, enCurso, resolver } = props
-  return (
-    <ul className="lista">
-      {solicitudes.map((s) => (
-        <li key={s.id} className="tarjeta">
-          <h2>{s.nombre}</h2>
-          <p>
-            RNA: <strong>{s.rna_numero}</strong> · {s.lugar}
-            {s.asociacion && ` · ${s.asociacion}`}
-          </p>
-          <p>WhatsApp: {s.whatsapp}</p>
-          <div className="acciones">
-            <button disabled={enCurso === s.id} onClick={() => resolver(s.id, 'aprobada')}>
-              Aprobar
-            </button>
-            <button
-              className="secundario"
-              disabled={enCurso === s.id}
-              onClick={() => resolver(s.id, 'rechazada')}
-            >
-              Rechazar
-            </button>
-          </div>
-        </li>
-      ))}
-    </ul>
   )
 }

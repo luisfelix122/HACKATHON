@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { BrowserRouter, Link, Navigate, Route, Routes } from 'react-router-dom'
 import { PantallaIngresoWeb } from '../acceso/PantallaIngresoWeb'
 import { asegurarPerfilComprador } from '../acceso/perfil'
@@ -6,24 +6,108 @@ import { RegistroArtesano } from '../acceso/RegistroArtesano'
 import { cerrarSesion, useSesion } from '../acceso/sesion'
 import { usePerfil } from '../acceso/usePerfil'
 import { PanelAcreditacion } from '../admin/PanelAcreditacion'
+import { Aviso, Boton, Etiqueta, Logotipo, SelloRna } from '../compartido/ui/componentes'
+
+/** Caletas de norte a sur, como se recorren por la costa. */
+const RUTA_NORTE_SUR = [
+  'Punta Sal',
+  'Máncora',
+  'Los Órganos',
+  'El Ñuro',
+  'Cabo Blanco',
+  'El Alto',
+  'Lobitos',
+  'Pariñas',
+  'Colán',
+]
+
+function Marco({ children }: { children: ReactNode }) {
+  return (
+    <>
+      <header className="barra">
+        <div className="barra-interior">
+          <Logotipo como="a" />
+          <nav className="nav" aria-label="Principal">
+            <Link to="/ingresar">Ingresar</Link>
+            <Link to="/artesano/registro">Soy artesano</Link>
+          </nav>
+        </div>
+      </header>
+      {children}
+    </>
+  )
+}
+
+/** Hilo del que cuelga la etiqueta de ejemplo en la portada. */
+function Pabilo() {
+  return (
+    <svg className="pabilo" viewBox="0 0 352 58" preserveAspectRatio="none" aria-hidden="true">
+      <path
+        d="M250 0 C 230 22, 186 30, 176 58"
+        fill="none"
+        stroke="var(--pacifico-hondo)"
+        strokeWidth="2"
+        strokeLinecap="round"
+      />
+    </svg>
+  )
+}
 
 function Inicio() {
   return (
-    <main className="pagina">
-      <h1>CosteARTE</h1>
-      <p>Artesanía de las playas del norte de Piura y Talara.</p>
-      <p>
-        <Link to="/ingresar">Ingresar</Link> · <Link to="/artesano/registro">Soy artesano</Link>
-      </p>
-    </main>
+    <Marco>
+      <main>
+        <section className="pagina portada" aria-labelledby="portada-titulo">
+          <div className="portada-texto">
+            <h1 id="portada-titulo">Piezas hechas a mano en las caletas del norte.</h1>
+            <p>
+              Cada pieza llega con el nombre de quien la hizo, su caleta y su registro de artesano
+              verificado. La pides aquí, y te la envían por agencia o la recoges en su casa.
+            </p>
+            <div className="acciones">
+              <Link className="boton boton-destacado" to="/ingresar">
+                Ingresar para pedir
+              </Link>
+              <Link className="boton boton-secundario" to="/artesano/registro">
+                Soy artesano: vender aquí
+              </Link>
+            </div>
+          </div>
+          <div className="portada-pieza">
+            <Pabilo />
+            <Etiqueta
+              lugar="Lobitos"
+              titulo="Poncho-toalla para surf"
+              artesano="nombre del artesano"
+              nota="Pieza de ejemplo: la vitrina se llena con las piezas publicadas."
+            />
+            <SelloRna estado="aprobada" />
+          </div>
+        </section>
+        <section className="ruta" aria-labelledby="ruta-titulo">
+          <div className="ruta-interior">
+            <h2 id="ruta-titulo">La ruta de la costa</h2>
+            <ol aria-label="Caletas de norte a sur">
+              {RUTA_NORTE_SUR.map((lugar) => (
+                <li key={lugar}>{lugar}</li>
+              ))}
+            </ol>
+            <p className="ruta-nota">De norte a sur, las caletas donde trabajan los artesanos.</p>
+          </div>
+        </section>
+      </main>
+    </Marco>
   )
 }
 
 function ProductoPendiente() {
   return (
-    <main className="pagina">
-      <p>Producto no disponible.</p>
-    </main>
+    <Marco>
+      <main className="pagina">
+        <Aviso tono="info">Este producto no está disponible.</Aviso>
+        <Link to="/">Volver al inicio</Link>
+      </main>
+    </Marco>
   )
 }
 
@@ -41,53 +125,70 @@ function Ingresar() {
       .catch(() => setError(true))
   }, [sesion])
 
-  if (sesion === undefined) return <p className="pagina">Cargando…</p>
-  if (!sesion)
-    return (
-      <main className="pagina">
-        <PantallaIngresoWeb rutaRetorno="/ingresar" />
-      </main>
-    )
-  if (error)
-    return <p className="pagina error">No pudimos preparar tu cuenta. Recarga la página.</p>
-  return listo ? <Navigate to="/" replace /> : <p className="pagina">Preparando tu cuenta…</p>
+  let contenido: ReactNode
+  if (sesion === undefined) contenido = <p className="cargando">Cargando…</p>
+  else if (!sesion) contenido = <PantallaIngresoWeb rutaRetorno="/ingresar" />
+  else if (error)
+    contenido = <Aviso tono="error">No pudimos preparar tu cuenta. Recarga la página.</Aviso>
+  else if (listo) return <Navigate to="/" replace />
+  else contenido = <p className="cargando">Preparando tu cuenta…</p>
+
+  return (
+    <Marco>
+      <main className="pagina">{contenido}</main>
+    </Marco>
+  )
 }
 
 function Admin() {
   const sesion = useSesion()
   const { perfil, cargando } = usePerfil(sesion?.user.id)
 
-  if (sesion === undefined || cargando) return <p className="pagina">Cargando…</p>
-  if (!sesion)
-    return (
-      <main className="pagina">
-        <PantallaIngresoWeb rutaRetorno="/admin" />
-      </main>
+  let contenido: ReactNode
+  if (sesion === undefined || cargando) contenido = <p className="cargando">Cargando…</p>
+  else if (!sesion) contenido = <PantallaIngresoWeb rutaRetorno="/admin" />
+  else if (perfil?.rol !== 'admin')
+    contenido = (
+      <>
+        <Aviso tono="alerta">Esta sección es solo para administradores.</Aviso>
+        <div>
+          <Boton variante="secundario" onClick={cerrarSesion}>
+            Cerrar sesión
+          </Boton>
+        </div>
+      </>
     )
-  if (perfil?.rol !== 'admin')
-    return (
-      <main className="pagina">
-        <p>Esta sección es solo para administradores.</p>
-        <button onClick={cerrarSesion}>Cerrar sesión</button>
-      </main>
+  else
+    contenido = (
+      <>
+        <h1>Solicitudes de acreditación</h1>
+        <p className="nota">Revisa el número de RNA declarado antes de aprobar.</p>
+        <PanelAcreditacion />
+      </>
     )
+
   return (
-    <main className="pagina">
-      <h1>Administración</h1>
-      <h2>Solicitudes de acreditación</h2>
-      <PanelAcreditacion />
-    </main>
+    <Marco>
+      <main className="pagina">{contenido}</main>
+    </Marco>
   )
 }
 
-/** Web del comprador y del administrador (Vercel). */
+/** Web del comprador y del administrador (servidor propio, CC-05). */
 export function AppWeb() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Inicio />} />
         <Route path="/ingresar" element={<Ingresar />} />
-        <Route path="/artesano/registro" element={<RegistroArtesano />} />
+        <Route
+          path="/artesano/registro"
+          element={
+            <Marco>
+              <RegistroArtesano />
+            </Marco>
+          }
+        />
         <Route path="/producto/:id" element={<ProductoPendiente />} />
         <Route path="/admin" element={<Admin />} />
         <Route path="*" element={<Inicio />} />

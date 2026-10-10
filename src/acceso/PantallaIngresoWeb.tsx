@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Aviso, Boton } from '../compartido/ui/componentes'
 import { ingresarConGoogle } from './sesion'
 
 /** Ingreso del comprador en la web. */
@@ -12,18 +13,19 @@ export function PantallaIngresoWeb({ rutaRetorno = '/' }: { rutaRetorno?: string
     try {
       await ingresarConGoogle(rutaRetorno)
     } catch {
-      setError('No pudimos abrir Google. Revisa tu conexión e inténtalo de nuevo.')
+      setError('No se abrió Google. Revisa tu conexión y vuelve a intentarlo.')
       setEnCurso(false)
     }
   }
 
   return (
-    <section className="tarjeta">
-      <h2>Ingresa para pedir</h2>
-      <button onClick={continuar} disabled={enCurso}>
+    <section className="formulario" aria-labelledby="ingreso-titulo">
+      <h1 id="ingreso-titulo">Ingresa para pedir</h1>
+      <p>Usa tu cuenta de Google. Así el artesano sabe a quién enviar tu pedido.</p>
+      <Boton variante="destacado" onClick={continuar} cargando={enCurso}>
         Continuar con Google
-      </button>
-      {error && <p className="error">{error}</p>}
+      </Boton>
+      {error && <Aviso tono="error">{error}</Aviso>}
     </section>
   )
 }

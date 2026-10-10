@@ -5,21 +5,23 @@ import { IngresoArtesano } from '../acceso/IngresoArtesano'
 import type { Perfil } from '../acceso/perfil'
 import { cerrarSesion, useSesion, type ErrorIngreso } from '../acceso/sesion'
 import { usePerfil } from '../acceso/usePerfil'
+import { Aviso, Boton, Logotipo } from '../compartido/ui/componentes'
 
 function MisProductos({ perfil, sinConexion }: { perfil: Perfil; sinConexion: boolean }) {
   return (
     <main className="pagina">
       {sinConexion && (
-        <p className="aviso" role="status">
-          Sin señal: lo guardamos en tu celular.
-        </p>
+        <Aviso tono="sin-senal">Sin señal: lo que hagas se guarda en tu celular.</Aviso>
       )}
-      <h1>Mis productos</h1>
+      <h1>Hola, {perfil.nombre}</h1>
       <EstadoAcreditacion perfil={perfil} />
-      <p>Aún no tienes productos.</p>
-      <button className="secundario" onClick={cerrarSesion}>
-        Cerrar sesión
-      </button>
+      <h2>Mis productos</h2>
+      <p>Aún no tienes productos. Toma la foto de tu primera pieza para empezar.</p>
+      <div>
+        <Boton variante="secundario" onClick={cerrarSesion}>
+          Cerrar sesión
+        </Boton>
+      </div>
     </main>
   )
 }
@@ -33,7 +35,7 @@ function CuentaNoArtesano(props: {
   useEffect(() => {
     void cerrarSesion().then(() => alCerrar(motivo))
   }, [motivo, alCerrar])
-  return <p className="pagina">Cerrando sesión…</p>
+  return <p className="pagina cargando">Cerrando sesión…</p>
 }
 
 function Inicio() {
@@ -42,11 +44,16 @@ function Inicio() {
   // El motivo sobrevive al cierre de sesión para mostrarlo en el ingreso.
   const [motivo, setMotivo] = useState<ErrorIngreso | undefined>(undefined)
 
-  if (sesion === undefined || cargando) return <p className="pagina">Cargando…</p>
+  if (sesion === undefined || cargando) return <p className="pagina cargando">Cargando…</p>
   if (!sesion) return <IngresoArtesano key={motivo ?? 'sin-motivo'} motivo={motivo} />
   if (!perfil) {
     // Sin conexión y sin copia local no se puede decidir: se espera a la red.
-    if (sinConexion) return <p className="pagina">Sin señal. Conéctate una vez para continuar.</p>
+    if (sinConexion)
+      return (
+        <main className="pagina">
+          <Aviso tono="sin-senal">Sin señal. Conéctate una vez para continuar.</Aviso>
+        </main>
+      )
     return <CuentaNoArtesano motivo="sin_registro" alCerrar={setMotivo} />
   }
   if (perfil.rol !== 'artesano')
@@ -61,6 +68,11 @@ function Inicio() {
 export function AppArtesano() {
   return (
     <HashRouter>
+      <header className="barra">
+        <div className="barra-interior">
+          <Logotipo />
+        </div>
+      </header>
       <Routes>
         <Route path="*" element={<Inicio />} />
       </Routes>

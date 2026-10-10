@@ -15,9 +15,13 @@ const { AppWeb } = await import('./AppWeb')
 const { AppArtesano } = await import('./AppArtesano')
 
 describe('salidas de la app', () => {
-  it('la web muestra la vitrina en la ruta raíz', () => {
+  it('la web abre en la portada con la ruta de las caletas', () => {
     render(<AppWeb />)
-    expect(screen.getByRole('heading', { name: 'CosteARTE' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { level: 1, name: /Piezas hechas a mano/ }),
+    ).toBeInTheDocument()
+    expect(screen.getByRole('list', { name: 'Caletas de norte a sur' })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: 'CosteARTE, inicio' })).toBeInTheDocument()
   })
 
   it('la APK sin sesión pide correo y contraseña (CC-03)', async () => {

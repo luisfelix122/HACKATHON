@@ -1,19 +1,32 @@
+import { Aviso, SelloRna } from '../compartido/ui/componentes'
 import type { Perfil } from './perfil'
 
-const TEXTOS = {
-  pendiente: 'Tu RNA está en revisión. Puedes crear borradores, pero aún no publicar.',
-  aprobada: 'RNA verificado. Ya puedes publicar tus productos.',
-  rechazada: 'Tu solicitud fue rechazada.',
-} as const
-
+/** Estado del RNA del artesano: sello y qué puede hacer ahora. */
 export function EstadoAcreditacion({ perfil }: { perfil: Perfil }) {
-  if (!perfil.acreditacion) return null
-  return (
-    <p className={`aviso aviso-${perfil.acreditacion}`} role="status">
-      {TEXTOS[perfil.acreditacion]}
-      {perfil.acreditacion === 'rechazada' && perfil.acreditacion_nota && (
-        <> Motivo: {perfil.acreditacion_nota}</>
-      )}
-    </p>
-  )
+  switch (perfil.acreditacion) {
+    case 'aprobada':
+      return (
+        <div className="acciones" style={{ alignItems: 'center' }}>
+          <SelloRna estado="aprobada" />
+          <p>Tu RNA está verificado. Ya puedes publicar tus productos.</p>
+        </div>
+      )
+    case 'pendiente':
+      return (
+        <div className="acciones" style={{ alignItems: 'center' }}>
+          <SelloRna estado="pendiente" />
+          <p>Estamos revisando tu RNA. Mientras tanto puedes crear borradores, pero no publicar.</p>
+        </div>
+      )
+    case 'rechazada':
+      return (
+        <Aviso tono="alerta">
+          Tu solicitud fue rechazada.
+          {perfil.acreditacion_nota && <> Motivo: {perfil.acreditacion_nota}</>} Corrige tu número
+          de RNA para que la revisemos otra vez.
+        </Aviso>
+      )
+    default:
+      return null
+  }
 }

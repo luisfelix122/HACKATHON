@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { LUGARES } from '../compartido/dominio/lugares'
+import { Aviso, Boton, Campo, Casilla } from '../compartido/ui/componentes'
 import { EstadoAcreditacion } from './EstadoAcreditacion'
 import {
   cambiarContrasena,
@@ -22,21 +23,26 @@ const VACIO: DatosArtesano = {
   rna_numero: '',
 }
 
-/** Web `/artesano/registro` (CC-03): Google → contraseña → perfil pendiente. */
+/** Web `/artesano/registro`: Google → contraseña → perfil pendiente. */
 export function RegistroArtesano() {
   const sesion = useSesion()
   const { perfil, cargando, recargar } = usePerfil(sesion?.user.id)
 
-  if (sesion === undefined || cargando) return <p className="pagina">Cargando…</p>
+  if (sesion === undefined || cargando) return <p className="pagina cargando">Cargando…</p>
 
   if (!sesion) {
     return (
       <main className="pagina">
-        <h1>Registro de artesanos</h1>
-        <p>Primero crea tu cuenta con Google. Después elegirás la contraseña para la app.</p>
-        <button onClick={() => ingresarConGoogle('/artesano/registro')}>
-          Continuar con Google
-        </button>
+        <section className="formulario" aria-labelledby="registro-titulo">
+          <h1 id="registro-titulo">Vende tus piezas en CosteARTE</h1>
+          <p>
+            Primero crea tu cuenta con Google. Después eliges la contraseña con la que entrarás a la
+            app y cuentas quién eres.
+          </p>
+          <Boton variante="destacado" onClick={() => ingresarConGoogle('/artesano/registro')}>
+            Continuar con Google
+          </Boton>
+        </section>
       </main>
     )
   }
@@ -57,13 +63,15 @@ function RegistroTerminado({ perfil }: { perfil: Perfil }) {
   if (perfil.rol !== 'artesano') {
     return (
       <main className="pagina">
-        <p>Esta cuenta ya está registrada como {perfil.rol}. Usa otra cuenta de Google.</p>
+        <Aviso tono="alerta">
+          Esta cuenta ya está registrada como {perfil.rol}. Usa otra cuenta de Google para vender.
+        </Aviso>
       </main>
     )
   }
   return (
     <main className="pagina">
-      <h1>¡Listo, {perfil.nombre}!</h1>
+      <h1>Listo, {perfil.nombre}</h1>
       <EstadoAcreditacion perfil={perfil} />
       <p>Abre la app CosteARTE en tu celular e ingresa con tu correo y tu contraseña.</p>
       <NuevaContrasena />
@@ -85,39 +93,45 @@ function NuevaContrasena() {
     setEnCurso(true)
     try {
       await cambiarContrasena(contrasena)
-      setMensaje({ texto: 'Contraseña actualizada. Úsala en la app.', error: false })
+      setMensaje({ texto: 'Contraseña cambiada. Úsala en la app.', error: false })
       setContrasena('')
       setConfirmacion('')
     } catch {
-      setMensaje({ texto: 'No pudimos cambiar la contraseña. Inténtalo de nuevo.', error: true })
+      setMensaje({ texto: 'No se pudo cambiar la contraseña. Vuelve a intentarlo.', error: true })
     } finally {
       setEnCurso(false)
     }
   }
 
   return (
-    <form className="formulario tarjeta" onSubmit={enviar} noValidate>
+    <form className="formulario panel" onSubmit={enviar} noValidate>
       <h2>¿Olvidaste tu contraseña?</h2>
-      <Campo etiqueta="Nueva contraseña (mínimo 8)">
-        <input
-          type="password"
-          autoComplete="new-password"
-          value={contrasena}
-          onChange={(e) => setContrasena(e.target.value)}
-        />
+      <Campo etiqueta="Nueva contraseña" ayuda="Mínimo 8 caracteres.">
+        {(a) => (
+          <input
+            {...a}
+            type="password"
+            autoComplete="new-password"
+            value={contrasena}
+            onChange={(e) => setContrasena(e.target.value)}
+          />
+        )}
       </Campo>
       <Campo etiqueta="Repite la contraseña">
-        <input
-          type="password"
-          autoComplete="new-password"
-          value={confirmacion}
-          onChange={(e) => setConfirmacion(e.target.value)}
-        />
+        {(a) => (
+          <input
+            {...a}
+            type="password"
+            autoComplete="new-password"
+            value={confirmacion}
+            onChange={(e) => setConfirmacion(e.target.value)}
+          />
+        )}
       </Campo>
-      {mensaje && <p className={mensaje.error ? 'error' : 'nota'}>{mensaje.texto}</p>}
-      <button type="submit" disabled={enCurso}>
-        Guardar contraseña
-      </button>
+      {mensaje && <Aviso tono={mensaje.error ? 'error' : 'exito'}>{mensaje.texto}</Aviso>}
+      <Boton type="submit" cargando={enCurso}>
+        Cambiar contraseña
+      </Boton>
     </form>
   )
 }
@@ -153,7 +167,7 @@ function FormularioArtesano(props: {
       await registrarArtesano(props.id, datos, contrasena)
       props.alTerminar()
     } catch {
-      setErrorGeneral('No pudimos guardar tu registro. Inténtalo de nuevo.')
+      setErrorGeneral('No se pudo guardar tu registro. Vuelve a intentarlo.')
     } finally {
       setEnCurso(false)
     }
@@ -161,74 +175,124 @@ function FormularioArtesano(props: {
 
   return (
     <main className="pagina">
-      <h1>Registro de artesanos</h1>
+      <h1>Tu guía de artesano</h1>
       <p>
-        Tu usuario para la app será <strong>{props.correo}</strong>.
+        Tu usuario para la app será <strong>{props.correo}</strong>. Completa las cuatro casillas.
       </p>
       <form className="formulario" onSubmit={enviar} noValidate>
-        <Campo etiqueta="Tu nombre" error={errores.nombre}>
-          <input value={datos.nombre} onChange={(e) => cambiar('nombre')(e.target.value)} />
-        </Campo>
-        <Campo etiqueta="WhatsApp (con +51)" error={errores.whatsapp}>
-          <input
-            inputMode="tel"
-            value={datos.whatsapp}
-            onChange={(e) => cambiar('whatsapp')(e.target.value)}
-          />
-        </Campo>
-        <Campo etiqueta="Playa o caleta" error={errores.lugar}>
-          <select value={datos.lugar} onChange={(e) => cambiar('lugar')(e.target.value)}>
-            <option value="">Elige una</option>
-            {LUGARES.map((lugar) => (
-              <option key={lugar}>{lugar}</option>
-            ))}
-          </select>
-        </Campo>
-        <Campo etiqueta="Asociación (opcional)" error={errores.asociacion}>
-          <input value={datos.asociacion} onChange={(e) => cambiar('asociacion')(e.target.value)} />
-        </Campo>
-        <Campo etiqueta="Número de RNA" error={errores.rna_numero}>
-          <input value={datos.rna_numero} onChange={(e) => cambiar('rna_numero')(e.target.value)} />
-        </Campo>
-        <Campo etiqueta="Tu historia (opcional)" error={errores.historia}>
-          <textarea
-            rows={4}
-            maxLength={600}
-            value={datos.historia}
-            onChange={(e) => cambiar('historia')(e.target.value)}
-          />
-        </Campo>
-        <Campo etiqueta="Contraseña para la app (mínimo 8)" error={errorClave ?? undefined}>
-          <input
-            type="password"
-            autoComplete="new-password"
-            value={contrasena}
-            onChange={(e) => setContrasena(e.target.value)}
-          />
-        </Campo>
-        <Campo etiqueta="Repite la contraseña">
-          <input
-            type="password"
-            autoComplete="new-password"
-            value={confirmacion}
-            onChange={(e) => setConfirmacion(e.target.value)}
-          />
-        </Campo>
-        {errorGeneral && <p className="error">{errorGeneral}</p>}
-        <button type="submit" disabled={enCurso}>
-          Enviar solicitud
-        </button>
+        <Casilla numero={1}>
+          <Campo etiqueta="Tu nombre" error={errores.nombre}>
+            {(a) => (
+              <input
+                {...a}
+                value={datos.nombre}
+                onChange={(e) => cambiar('nombre')(e.target.value)}
+              />
+            )}
+          </Campo>
+          <Campo
+            etiqueta="Tu WhatsApp"
+            ayuda="Con +51, por ejemplo +51987654321."
+            error={errores.whatsapp}
+          >
+            {(a) => (
+              <input
+                {...a}
+                inputMode="tel"
+                value={datos.whatsapp}
+                onChange={(e) => cambiar('whatsapp')(e.target.value)}
+              />
+            )}
+          </Campo>
+        </Casilla>
+        <Casilla numero={2}>
+          <Campo etiqueta="Tu playa o caleta" error={errores.lugar}>
+            {(a) => (
+              <select {...a} value={datos.lugar} onChange={(e) => cambiar('lugar')(e.target.value)}>
+                <option value="">Elige una</option>
+                {LUGARES.map((lugar) => (
+                  <option key={lugar}>{lugar}</option>
+                ))}
+              </select>
+            )}
+          </Campo>
+          <Campo
+            etiqueta="Tu asociación"
+            ayuda="Si no perteneces a una, déjalo vacío."
+            error={errores.asociacion}
+          >
+            {(a) => (
+              <input
+                {...a}
+                value={datos.asociacion}
+                onChange={(e) => cambiar('asociacion')(e.target.value)}
+              />
+            )}
+          </Campo>
+        </Casilla>
+        <Casilla numero={3}>
+          <Campo
+            etiqueta="Tu número de RNA"
+            ayuda="Registro Nacional del Artesano. Lo revisamos antes de que publiques."
+            error={errores.rna_numero}
+          >
+            {(a) => (
+              <input
+                {...a}
+                value={datos.rna_numero}
+                onChange={(e) => cambiar('rna_numero')(e.target.value)}
+              />
+            )}
+          </Campo>
+          <Campo
+            etiqueta="Tu historia"
+            ayuda="Opcional. Cuenta qué haces y desde cuándo (hasta 600 letras)."
+            error={errores.historia}
+          >
+            {(a) => (
+              <textarea
+                {...a}
+                rows={4}
+                maxLength={600}
+                value={datos.historia}
+                onChange={(e) => cambiar('historia')(e.target.value)}
+              />
+            )}
+          </Campo>
+        </Casilla>
+        <Casilla numero={4}>
+          <Campo
+            etiqueta="Contraseña para la app"
+            ayuda="Mínimo 8 caracteres."
+            error={errorClave ?? undefined}
+          >
+            {(a) => (
+              <input
+                {...a}
+                type="password"
+                autoComplete="new-password"
+                value={contrasena}
+                onChange={(e) => setContrasena(e.target.value)}
+              />
+            )}
+          </Campo>
+          <Campo etiqueta="Repite la contraseña">
+            {(a) => (
+              <input
+                {...a}
+                type="password"
+                autoComplete="new-password"
+                value={confirmacion}
+                onChange={(e) => setConfirmacion(e.target.value)}
+              />
+            )}
+          </Campo>
+        </Casilla>
+        {errorGeneral && <Aviso tono="error">{errorGeneral}</Aviso>}
+        <Boton type="submit" variante="destacado" cargando={enCurso}>
+          Enviar mi solicitud
+        </Boton>
       </form>
     </main>
-  )
-}
-
-function Campo(props: { etiqueta: string; error?: string; children: React.ReactNode }) {
-  return (
-    <label className="campo">
-      <span>{props.etiqueta}</span>
-      {props.children}
-      {props.error && <span className="error">{props.error}</span>}
-    </label>
   )
 }
