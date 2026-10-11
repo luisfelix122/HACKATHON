@@ -9,7 +9,7 @@ Vitrina digital para artesanos de las caletas del norte de Piura (Hackatón, Ret
 ## Qué hace
 
 1. El artesano toma la foto de su pieza, la describe y calcula su precio en la APK.
-2. La IA propone la ficha y una foto de estudio; el artesano revisa y publica.
+2. La IA propone la ficha; el artesano revisa y publica.
 3. El comprador explora el catálogo en la web y pide la pieza.
 4. Ambos acuerdan total y entrega en el chat del pedido; el comprador paga por Yape, Plin, cuenta bancaria o enlace de pago, y el artesano verifica el abono y despacha.
 
