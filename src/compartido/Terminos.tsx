@@ -2,10 +2,11 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useSesion } from './sesion'
 import { Aviso, Boton } from './ui/componentes'
-import { aceptarTerminos, consultarAceptacion, VERSION_TERMINOS } from './aceptacionTerminos'
+import { aceptarTerminos, consultarAceptacion } from './aceptacionTerminos'
 import './terminos.css'
 
-export function Terminos() {
+export function Terminos({ enRegistro = false }: { enRegistro?: boolean }) {
+  const Contenedor = enRegistro ? 'div' : 'main'
   const { sesion } = useSesion()
   const cuenta = sesion?.user.id
   const [confirmacion, setConfirmacion] = useState<{ cuenta: string; marcada: boolean } | null>(
@@ -28,13 +29,9 @@ export function Terminos() {
     }
   }
   return (
-    <main className="pagina terminos">
-      <Link to="/">Volver al inicio</Link>
+    <Contenedor className="pagina terminos">
+      {!enRegistro && <Link to="/">Volver al inicio</Link>}
       <h1>Términos y condiciones</h1>
-      <Aviso tono="alerta">
-        Borrador para la demostración. Pendiente de aprobación legal humana. Versión{' '}
-        {VERSION_TERMINOS}.
-      </Aviso>
       <section>
         <h2>Qué es Ayllu</h2>
         <p>
@@ -60,8 +57,8 @@ export function Terminos() {
           condiciones con el artesano.
         </p>
         <p>
-          Los cambios, devoluciones o incidencias deben coordinarse con el artesano. Este borrador
-          no limita los derechos que correspondan al comprador.
+          Los cambios, devoluciones o incidencias deben coordinarse con el artesano. Estas
+          condiciones no limitan los derechos que correspondan al comprador.
         </p>
       </section>
       <section>
@@ -79,40 +76,42 @@ export function Terminos() {
           borres sus datos antes de sincronizarlos. Las funciones remotas necesitan conexión.
         </p>
       </section>
-      <section>
-        <h2>Aceptación en este dispositivo</h2>
-        <p>
-          La aceptación se registra solo en el almacenamiento local, separada por cuenta y versión.
-          No es un registro de consentimiento en el servidor y no se comparte entre dispositivos.
-          Puedes leer estos términos sin iniciar sesión.
-        </p>
-        {cuenta ? (
-          <>
-            {aceptado ? (
-              <Aviso tono="exito">Aceptaste esta versión en este dispositivo.</Aviso>
-            ) : (
-              <>
-                <label className="terminos-confirmacion">
-                  <input
-                    type="checkbox"
-                    checked={Boolean(marcado)}
-                    onChange={(e) => setConfirmacion({ cuenta, marcada: e.target.checked })}
-                  />
-                  He leído este borrador y acepto sus condiciones para esta demostración.
-                </label>
-                <Boton disabled={!marcado} onClick={aceptar}>
-                  Registrar aceptación local
-                </Boton>
-              </>
-            )}
-            {resultado?.cuenta === cuenta && resultado.error && (
-              <Aviso tono="error">{resultado.error}</Aviso>
-            )}
-          </>
-        ) : (
-          <Aviso>Ingresa con tu cuenta para registrar la aceptación en este dispositivo.</Aviso>
-        )}
-      </section>
-    </main>
+      {!enRegistro && (
+        <section>
+          <h2>Aceptación en este dispositivo</h2>
+          <p>
+            La aceptación se registra solo en el almacenamiento local, separada por cuenta y
+            versión. No es un registro de consentimiento en el servidor y no se comparte entre
+            dispositivos. Puedes leer estos términos sin iniciar sesión.
+          </p>
+          {cuenta ? (
+            <>
+              {aceptado ? (
+                <Aviso tono="exito">Aceptaste esta versión en este dispositivo.</Aviso>
+              ) : (
+                <>
+                  <label className="terminos-confirmacion">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(marcado)}
+                      onChange={(e) => setConfirmacion({ cuenta, marcada: e.target.checked })}
+                    />
+                    He leído los términos y condiciones y los acepto.
+                  </label>
+                  <Boton disabled={!marcado} onClick={aceptar}>
+                    Registrar aceptación local
+                  </Boton>
+                </>
+              )}
+              {resultado?.cuenta === cuenta && resultado.error && (
+                <Aviso tono="error">{resultado.error}</Aviso>
+              )}
+            </>
+          ) : (
+            <Aviso>Ingresa con tu cuenta para registrar la aceptación en este dispositivo.</Aviso>
+          )}
+        </section>
+      )}
+    </Contenedor>
   )
 }

@@ -1,3 +1,4 @@
+import { Esqueleto } from '../compartido/ui/Esqueleto'
 import { useCallback, useState, type ReactNode } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { Aviso, Boton, Campo } from '../compartido/ui/componentes'
@@ -150,7 +151,7 @@ export function Catalogo({
             <Boton onClick={reintentar}>Reintentar</Boton>
           </>
         ) : !datos ? (
-          <Aviso>Cargando productos…</Aviso>
+          <Esqueleto variante="lista" etiqueta="Cargando productos…" />
         ) : visibles.length ? (
           <Cuadricula datos={{ ...datos, productos: visibles }} />
         ) : (
@@ -269,7 +270,7 @@ export function Catalogo({
                   <Boton onClick={reintentar}>Reintentar</Boton>
                 </>
               ) : !datos ? (
-                <Aviso>Cargando piezas…</Aviso>
+                <Esqueleto variante="lista" etiqueta="Cargando piezas…" />
               ) : visibles.length ? (
                 <Cuadricula datos={{ ...datos, productos: visibles.slice(0, 4) }} />
               ) : (

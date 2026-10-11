@@ -20,6 +20,7 @@ export type EstadoOrden = (typeof ESTADOS_ORDEN)[number]
 export type DatosEnvio = {
   nombre_destinatario: string
   telefono: string
+  dni: string
   departamento: string
   provincia: string
   distrito: string
@@ -28,6 +29,11 @@ export type DatosEnvio = {
 }
 
 export type Orden = {
+  /** Datos de presentación, devueltos solo a las partes por RPC. */
+  nombre_producto?: string | null
+  nombre_contraparte?: string | null
+  artesano_id?: string
+
   id: string
   producto_id: string
   comprador_id: string

@@ -17,3 +17,6 @@ docs
 supabase/.temp
 supabase/config.toml
 supabase/seed.sql
+
+# Bundles generados para Deno
+dist-functions

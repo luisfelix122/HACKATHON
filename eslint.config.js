@@ -10,6 +10,7 @@ export default tseslint.config(
     ignores: [
       'dist-web',
       'dist-artesano',
+      'dist-functions',
       'android',
       'node_modules',
       'supabase/.temp',

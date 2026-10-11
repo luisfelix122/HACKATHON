@@ -1,3 +1,5 @@
+import { Esqueleto } from '../compartido/ui/Esqueleto'
+import { FormularioModal } from '../compartido/ui/FormularioModal'
 import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { obtenerSupabase } from '../compartido/supabase'
@@ -313,7 +315,7 @@ export const RevisarProducto: React.FC = () => {
   if (cargando) {
     return (
       <main className="revisar-producto-pagina" role="main">
-        <p className="indicador-cargando">Cargando…</p>
+        <Esqueleto variante="detalle" etiqueta="Cargando…" />
       </main>
     )
   }
@@ -338,6 +340,7 @@ export const RevisarProducto: React.FC = () => {
     )
   }
 
+  const esActualizacion = producto.estado === 'publicado'
   const esRechazado =
     producto.revision_ia === 'rechazada' ||
     errorIa?.error === 'no_es_artesania' ||
@@ -363,7 +366,9 @@ export const RevisarProducto: React.FC = () => {
         <button type="button" onClick={() => navigate('/')} className="boton-volver-atras">
           Volver a Mis productos
         </button>
-        <h1 className="revisar-titulo">Revisar y publicar</h1>
+        <h1 className="revisar-titulo">
+          {esActualizacion ? 'Actualizar producto' : 'Revisar y publicar'}
+        </h1>
         <p className="revisar-bajada">
           Optimiza la ficha comercial y las fotos con IA antes de poner tu pieza en la vitrina.
         </p>
@@ -465,224 +470,241 @@ export const RevisarProducto: React.FC = () => {
       />
 
       {/* Formulario de Ficha Técnica */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault()
-          manejarPublicar()
-        }}
-        className="formulario-revisar"
+      <FormularioModal
+        titulo={esActualizacion ? 'Editar ficha y actualizar' : 'Editar ficha y publicar'}
+        accion={esActualizacion ? 'Editar ficha y actualizar' : 'Editar ficha y publicar'}
+        ocupado={guardandoPublicacion || procesandoIa}
       >
-        <div className="grupo-campo">
-          <label htmlFor="campo-titulo">Título comercial para turistas *</label>
-          <input
-            id="campo-titulo"
-            type="text"
-            value={titulo}
-            maxLength={80}
-            onChange={(e) => setTitulo(e.target.value)}
-            className="control-texto"
-            placeholder="Ej. Poncho-toalla de algodón para surfistas"
-            required
-          />
-          <span className="ayuda-campo">{titulo.length} / 80 caracteres</span>
-        </div>
-
-        <div className="grupo-campo">
-          <label htmlFor="campo-descripcion">Descripción de la pieza *</label>
-          <textarea
-            id="campo-descripcion"
-            value={descripcion}
-            maxLength={1200}
-            onChange={(e) => setDescripcion(e.target.value)}
-            className="control-textarea"
-            placeholder="Describe la pieza, su inspiración y origen..."
-            rows={4}
-            required
-          />
-          <span className="ayuda-campo">{descripcion.length} / 1200 caracteres</span>
-        </div>
-
-        <div className="fila-dos-columnas">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            manejarPublicar()
+          }}
+          className="formulario-revisar"
+        >
           <div className="grupo-campo">
-            <label htmlFor="campo-tipo">Tipo de producto *</label>
-            <select
-              id="campo-tipo"
-              value={tipoProducto}
-              onChange={(e) => setTipoProducto(e.target.value as TipoProducto)}
-              className="control-select"
-              required
-            >
-              {TIPOS_PRODUCTO.map((tipo) => (
-                <option key={tipo} value={tipo}>
-                  {tipo}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className="grupo-campo">
-            <label htmlFor="campo-tecnica">Técnica artesanal *</label>
+            <label htmlFor="campo-titulo">Título comercial para turistas *</label>
             <input
-              id="campo-tecnica"
+              id="campo-titulo"
               type="text"
-              value={tecnica}
-              maxLength={120}
-              onChange={(e) => setTecnica(e.target.value)}
+              value={titulo}
+              maxLength={80}
+              onChange={(e) => setTitulo(e.target.value)}
               className="control-texto"
-              placeholder="Ej. Tejido a crochet, tallado en madera"
+              placeholder="Ej. Poncho-toalla de algodón para surfistas"
               required
             />
+            <span className="ayuda-campo">{titulo.length} / 80 caracteres</span>
           </div>
-        </div>
 
-        <div className="grupo-campo">
-          <label htmlFor="campo-materiales">Materiales utilizados (separados por coma) *</label>
-          <input
-            id="campo-materiales"
-            type="text"
-            value={materialesTexto}
-            onChange={(e) => setMaterialesTexto(e.target.value)}
-            className="control-texto"
-            placeholder="Ej. algodón, tintes naturales, hilo pima"
-            required
-          />
-        </div>
-
-        <div className="grupo-campo">
-          <label htmlFor="campo-historia">Historia o valor cultural de la pieza</label>
-          <textarea
-            id="campo-historia"
-            value={historiaPieza}
-            maxLength={600}
-            onChange={(e) => setHistoriaPieza(e.target.value)}
-            className="control-textarea"
-            placeholder="Cuéntale al turista la tradición detrás de esta creación..."
-            rows={3}
-          />
-          <span className="ayuda-campo">{historiaPieza.length} / 600 caracteres</span>
-        </div>
-
-        <div className="grupo-campo">
-          <label htmlFor="campo-etiquetas">
-            Etiquetas para búsqueda (máximo 8, separadas por coma)
-          </label>
-          <input
-            id="campo-etiquetas"
-            type="text"
-            value={etiquetasTexto}
-            onChange={(e) => setEtiquetasTexto(e.target.value)}
-            className="control-texto"
-            placeholder="Ej. surf, algodon, lobitos, toalla"
-          />
-        </div>
-
-        {/* Sección de Precio y Referencia IA */}
-        <div className="fila-dos-columnas">
           <div className="grupo-campo">
-            <label htmlFor="campo-precio">Precio final de venta (S/ PEN) *</label>
-            <input
-              id="campo-precio"
-              type="number"
-              step="0.01"
-              min="0.01"
-              value={precioFinal}
-              onChange={(e) => setPrecioFinal(e.target.value === '' ? '' : Number(e.target.value))}
-              className="control-texto"
-              placeholder="0.00"
+            <label htmlFor="campo-descripcion">Descripción de la pieza *</label>
+            <textarea
+              id="campo-descripcion"
+              value={descripcion}
+              maxLength={1200}
+              onChange={(e) => setDescripcion(e.target.value)}
+              className="control-textarea"
+              placeholder="Describe la pieza, su inspiración y origen..."
+              rows={4}
               required
             />
+            <span className="ayuda-campo">{descripcion.length} / 1200 caracteres</span>
+          </div>
 
-            {comentarioPrecio && (
-              <div
-                className="tarjeta-comentario-precio"
-                role="region"
-                aria-label="Referencia de la IA"
+          <div className="fila-dos-columnas">
+            <div className="grupo-campo">
+              <label htmlFor="campo-tipo">Tipo de producto *</label>
+              <select
+                id="campo-tipo"
+                value={tipoProducto}
+                onChange={(e) => setTipoProducto(e.target.value as TipoProducto)}
+                className="control-select"
+                required
               >
-                <span className="etiqueta-referencia-ia">Referencia de la IA:</span>
-                <p style={{ margin: 0 }}>{comentarioPrecio}</p>
-              </div>
-            )}
+                {TIPOS_PRODUCTO.map((tipo) => (
+                  <option key={tipo} value={tipo}>
+                    {tipo}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="grupo-campo">
+              <label htmlFor="campo-tecnica">Técnica artesanal *</label>
+              <input
+                id="campo-tecnica"
+                type="text"
+                value={tecnica}
+                maxLength={120}
+                onChange={(e) => setTecnica(e.target.value)}
+                className="control-texto"
+                placeholder="Ej. Tejido a crochet, tallado en madera"
+                required
+              />
+            </div>
           </div>
 
           <div className="grupo-campo">
-            <label>Disponibilidad *</label>
-            <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <input
-                  type="radio"
-                  name="disponibilidad"
-                  value="en_stock"
-                  checked={disponibilidad === 'en_stock'}
-                  onChange={() => setDisponibilidad('en_stock')}
-                />
-                En stock
-              </label>
-              <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <input
-                  type="radio"
-                  name="disponibilidad"
-                  value="a_pedido"
-                  checked={disponibilidad === 'a_pedido'}
-                  onChange={() => setDisponibilidad('a_pedido')}
-                />
-                A pedido
-              </label>
+            <label htmlFor="campo-materiales">Materiales utilizados (separados por coma) *</label>
+            <input
+              id="campo-materiales"
+              type="text"
+              value={materialesTexto}
+              onChange={(e) => setMaterialesTexto(e.target.value)}
+              className="control-texto"
+              placeholder="Ej. algodón, tintes naturales, hilo pima"
+              required
+            />
+          </div>
+
+          <div className="grupo-campo">
+            <label htmlFor="campo-historia">Historia o valor cultural de la pieza</label>
+            <textarea
+              id="campo-historia"
+              value={historiaPieza}
+              maxLength={600}
+              onChange={(e) => setHistoriaPieza(e.target.value)}
+              className="control-textarea"
+              placeholder="Cuéntale al turista la tradición detrás de esta creación..."
+              rows={3}
+            />
+            <span className="ayuda-campo">{historiaPieza.length} / 600 caracteres</span>
+          </div>
+
+          <div className="grupo-campo">
+            <label htmlFor="campo-etiquetas">
+              Etiquetas para búsqueda (máximo 8, separadas por coma)
+            </label>
+            <input
+              id="campo-etiquetas"
+              type="text"
+              value={etiquetasTexto}
+              onChange={(e) => setEtiquetasTexto(e.target.value)}
+              className="control-texto"
+              placeholder="Ej. surf, algodon, lobitos, toalla"
+            />
+          </div>
+
+          {/* Sección de Precio y Referencia IA */}
+          <div className="fila-dos-columnas">
+            <div className="grupo-campo">
+              <label htmlFor="campo-precio">Precio final de venta (S/ PEN) *</label>
+              <input
+                id="campo-precio"
+                type="number"
+                step="0.01"
+                min="0.01"
+                value={precioFinal}
+                onChange={(e) =>
+                  setPrecioFinal(e.target.value === '' ? '' : Number(e.target.value))
+                }
+                className="control-texto"
+                placeholder="0.00"
+                required
+              />
+
+              {comentarioPrecio && (
+                <div
+                  className="tarjeta-comentario-precio"
+                  role="region"
+                  aria-label="Referencia de la IA"
+                >
+                  <span className="etiqueta-referencia-ia">Referencia de la IA:</span>
+                  <p style={{ margin: 0 }}>{comentarioPrecio}</p>
+                </div>
+              )}
             </div>
 
-            {disponibilidad === 'a_pedido' && (
-              <div style={{ marginTop: '0.5rem' }}>
-                <label htmlFor="campo-plazo">Plazo de fabricación (días) *</label>
-                <input
-                  id="campo-plazo"
-                  type="number"
-                  min="1"
-                  value={plazoDias}
-                  onChange={(e) =>
-                    setPlazoDias(e.target.value === '' ? '' : Number(e.target.value))
-                  }
-                  className="control-texto"
-                  placeholder="Ej. 7"
-                  required
-                />
+            <div className="grupo-campo">
+              <label>Disponibilidad *</label>
+              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <input
+                    type="radio"
+                    name="disponibilidad"
+                    value="en_stock"
+                    checked={disponibilidad === 'en_stock'}
+                    onChange={() => setDisponibilidad('en_stock')}
+                  />
+                  En stock
+                </label>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <input
+                    type="radio"
+                    name="disponibilidad"
+                    value="a_pedido"
+                    checked={disponibilidad === 'a_pedido'}
+                    onChange={() => setDisponibilidad('a_pedido')}
+                  />
+                  A pedido
+                </label>
+              </div>
+
+              {disponibilidad === 'a_pedido' && (
+                <div style={{ marginTop: '0.5rem' }}>
+                  <label htmlFor="campo-plazo">Plazo de fabricación (días) *</label>
+                  <input
+                    id="campo-plazo"
+                    type="number"
+                    min="1"
+                    value={plazoDias}
+                    onChange={(e) =>
+                      setPlazoDias(e.target.value === '' ? '' : Number(e.target.value))
+                    }
+                    className="control-texto"
+                    placeholder="Ej. 7"
+                    required
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Panel de publicación */}
+          <section className="panel-publicacion-accion">
+            {perfil?.acreditacion !== 'aprobada' && (
+              <p style={{ color: 'var(--error)', margin: '0 0 1rem 0' }}>
+                🔒 Tu acreditación como artesano está{' '}
+                <strong>{perfil?.acreditacion || 'pendiente'}</strong>. Solo los artesanos aprobados
+                por el administrador pueden publicar productos en la vitrina.
+              </p>
+            )}
+
+            {erroresPublicacion.length > 0 && (
+              <ul className="lista-errores-publicar" role="alert">
+                {erroresPublicacion.map((err, i) => (
+                  <li key={i}>{err}</li>
+                ))}
+              </ul>
+            )}
+
+            {publicadoExito && (
+              <div className="mensaje-exito" role="status">
+                {esActualizacion
+                  ? '¡Producto actualizado con éxito!'
+                  : '¡Producto publicado con éxito en la vitrina!'}{' '}
+                Redirigiendo…
               </div>
             )}
-          </div>
-        </div>
 
-        {/* Panel de publicación */}
-        <section className="panel-publicacion-accion">
-          {perfil?.acreditacion !== 'aprobada' && (
-            <p style={{ color: 'var(--error)', margin: '0 0 1rem 0' }}>
-              🔒 Tu acreditación como artesano está{' '}
-              <strong>{perfil?.acreditacion || 'pendiente'}</strong>. Solo los artesanos aprobados
-              por el administrador pueden publicar productos en la vitrina.
-            </p>
-          )}
-
-          {erroresPublicacion.length > 0 && (
-            <ul className="lista-errores-publicar" role="alert">
-              {erroresPublicacion.map((err, i) => (
-                <li key={i}>{err}</li>
-              ))}
-            </ul>
-          )}
-
-          {publicadoExito && (
-            <div className="mensaje-exito" role="status">
-              ¡Producto publicado con éxito en la vitrina! Redirigiendo…
-            </div>
-          )}
-
-          <button
-            type="submit"
-            disabled={!puedePublicar}
-            className="boton-publicar"
-            aria-busy={guardandoPublicacion}
-          >
-            {guardandoPublicacion ? 'Publicando…' : 'Publicar producto'}
-          </button>
-        </section>
-      </form>
+            <button
+              type="submit"
+              disabled={!puedePublicar}
+              className="boton-publicar"
+              aria-busy={guardandoPublicacion}
+            >
+              {guardandoPublicacion
+                ? esActualizacion
+                  ? 'Actualizando…'
+                  : 'Publicando…'
+                : esActualizacion
+                  ? 'Actualizar producto'
+                  : 'Publicar producto'}
+            </button>
+          </section>
+        </form>
+      </FormularioModal>
     </main>
   )
 }

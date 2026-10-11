@@ -1,24 +1,31 @@
+import { Esqueleto } from '../compartido/ui/Esqueleto'
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-import type { Orden } from '../compartido/dominio/orden'
+import type { Modalidad } from '../compartido/dominio/orden'
 import { useSesion } from '../compartido/sesion'
 import { Aviso, Boton } from '../compartido/ui/componentes'
-import { Icono } from '../compartido/ui/Icono'
-import { listarOrdenes } from './consultas'
+import { listarOrdenesConProducto, type OrdenConProducto } from './consultas'
+import { filtrarPedidos, iniciales, nombrePedido } from './bandeja'
 import { contarEnCurso, etiquetaEstado } from './estadoOrden'
 import './pedidos.css'
 
 export function MisPedidos() {
   const { sesion, cargando } = useSesion()
   const ubicacion = useLocation()
-  const [resultado, setResultado] = useState<{ usuario: string; ordenes: Orden[] } | null>(null)
+  const [buscar, setBuscar] = useState('')
+  const [modalidad, setModalidad] = useState<Modalidad | 'todos'>('todos')
+  const [mostrarAviso, setMostrarAviso] = useState(true)
+  const [resultado, setResultado] = useState<{
+    usuario: string
+    ordenes: OrdenConProducto[]
+  } | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [intento, setIntento] = useState(0)
   const id = sesion?.user.id
   useEffect(() => {
     if (!id) return
     let vigente = true
-    listarOrdenes()
+    listarOrdenesConProducto()
       .then((ordenes) => {
         if (vigente) {
           setResultado({ usuario: id, ordenes })
@@ -33,11 +40,16 @@ export function MisPedidos() {
       vigente = false
     }
   }, [id, intento])
+  const ordenes = resultado && resultado.usuario === id ? resultado.ordenes : []
+  const visibles = filtrarPedidos(ordenes, buscar, modalidad)
   return (
     <main className="pagina pagina-artesano pedidos">
-      <h1>Mis pedidos</h1>
+      <header className="bandeja-cabecera">
+        <h1>Mis pedidos</h1>
+        <p className="texto-secundario">Conversa y coordina cada pieza en su pedido.</p>
+      </header>
       {cargando ? (
-        <Aviso>Cargando…</Aviso>
+        <Esqueleto variante="lista" etiqueta="Cargando…" />
       ) : !sesion ? (
         <Aviso>
           Ingresa para ver tus pedidos.{' '}
@@ -53,11 +65,13 @@ export function MisPedidos() {
           </Boton>
         </Aviso>
       ) : !resultado || resultado.usuario !== id ? (
-        <Aviso>Cargando…</Aviso>
+        <Esqueleto variante="lista" etiqueta="Cargando…" />
       ) : (
         <>
           {import.meta.env.MODE === 'artesano' && (
-            <Aviso>Tienes {contarEnCurso(resultado.ordenes)} pedidos en curso.</Aviso>
+            <Aviso>
+              {resultado.ordenes.length} pedidos · {contarEnCurso(resultado.ordenes)} en curso.
+            </Aviso>
           )}
           <Boton
             variante="secundario"
@@ -66,6 +80,49 @@ export function MisPedidos() {
           >
             Actualizar
           </Boton>
+          <div className="bandeja-herramientas">
+            <label className="solo-lectores" htmlFor="buscar-pedidos">
+              Buscar pedidos
+            </label>
+            <input
+              id="buscar-pedidos"
+              type="search"
+              className="bandeja-buscador"
+              placeholder="Buscar pedidos"
+              value={buscar}
+              onChange={(e) => setBuscar(e.target.value)}
+            />
+            <div
+              className="bandeja-filtros"
+              role="group"
+              aria-label="Filtrar pedidos por modalidad"
+            >
+              {(['todos', 'envio', 'recojo'] as const).map((filtro) => (
+                <button
+                  type="button"
+                  key={filtro}
+                  aria-pressed={modalidad === filtro}
+                  onClick={() => setModalidad(filtro)}
+                >
+                  {filtro === 'todos' ? 'Todos' : filtro === 'envio' ? 'Envío' : 'Recojo'}
+                </button>
+              ))}
+            </div>
+          </div>
+          {mostrarAviso && (
+            <div className="bandeja-aviso">
+              <Aviso>
+                Los totales y fechas válidos están en los datos del pedido, no en los mensajes.
+              </Aviso>
+              <Boton
+                variante="secundario"
+                aria-label="Ocultar aviso"
+                onClick={() => setMostrarAviso(false)}
+              >
+                Entendido
+              </Boton>
+            </div>
+          )}
           {resultado.ordenes.length === 0 ? (
             <Aviso>
               Aún no tienes pedidos.{' '}
@@ -75,14 +132,19 @@ export function MisPedidos() {
                 'Tus solicitudes aparecerán aquí.'
               )}
             </Aviso>
+          ) : visibles.length === 0 ? (
+            <Aviso>No hay pedidos que coincidan con tu búsqueda o filtro.</Aviso>
           ) : (
             <ul className="pedidos-lista">
-              {resultado.ordenes.map((orden) => (
+              {visibles.map((orden) => (
                 <li key={orden.id}>
                   <Link className="pedidos-fila" to={`/pedidos/${orden.id}`}>
-                    <span className="pedidos-fila-titulo">
-                      <Icono nombre="pedidos" />
-                      Pedido <span className="cifra">{orden.id.slice(0, 8)}</span>
+                    <span className="pedido-avatar" aria-hidden="true">
+                      {iniciales(nombrePedido(orden))}
+                    </span>
+                    <span className="pedidos-fila-titulo">{nombrePedido(orden)}</span>
+                    <span className="texto-secundario">
+                      {orden.nombre_contraparte || 'Nombre no disponible'}
                     </span>
                     <span className="pedido-estado" data-estado={orden.estado}>
                       {etiquetaEstado(orden.estado)}
@@ -92,11 +154,15 @@ export function MisPedidos() {
                       {orden.modalidad === 'envio' ? 'envío por agencia' : 'recojo'}
                     </span>
                     <time dateTime={orden.creado_en} className="texto-secundario cifra">
-                      {new Date(orden.creado_en).toLocaleDateString('es-PE', {
+                      {new Date(orden.creado_en).toLocaleString('es-PE', {
                         timeZone: 'America/Lima',
+                        dateStyle: 'short',
+                        timeStyle: 'short',
                       })}
                     </time>
-                    <Icono nombre="adelante" />
+                    <span className="pedido-miniatura" aria-hidden="true">
+                      {iniciales(nombrePedido(orden))}
+                    </span>
                   </Link>
                 </li>
               ))}

@@ -1,3 +1,7 @@
+import { Terminos } from '../compartido/Terminos'
+import { aceptarTerminos } from '../compartido/aceptacionTerminos'
+import { Esqueleto } from '../compartido/ui/Esqueleto'
+import { FormularioModal } from '../compartido/ui/FormularioModal'
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { cerrarSesion } from '../compartido/sesion'
@@ -34,12 +38,15 @@ export function RegistroArtesano({ cuenta = false }: { cuenta?: boolean }) {
           ]),
         ),
       )
+      if (!cuenta && datos.get('terminos') !== 'on')
+        throw new Error('Acepta los términos y condiciones para crear tu cuenta.')
       if (!cuenta || password) validarContrasena(password, confirmacion)
       let actual = sesion
       if (!actual)
         actual = await registrarCorreo(String(datos.get('correo')), password, confirmacion)
       else if (!cuenta || password) await cambiarContrasena(password, confirmacion)
       const guardado = await guardarPerfil(actual.user.id, entrada)
+      if (!cuenta) aceptarTerminos(actual.user.id)
       guardarCopia(guardado)
       formulario.reset()
       navegar('/', { replace: true })
@@ -64,7 +71,7 @@ export function RegistroArtesano({ cuenta = false }: { cuenta?: boolean }) {
   if (cuenta && leyendo)
     return (
       <main className="pagina">
-        <p role="status">Leyendo tu cuenta…</p>
+        <Esqueleto variante="formulario" etiqueta="Leyendo tu cuenta…" />
       </main>
     )
   if (!cuenta && perfil) return <Navigate to="/" replace />
@@ -76,103 +83,125 @@ export function RegistroArtesano({ cuenta = false }: { cuenta?: boolean }) {
   ]
   return (
     <main className="pagina pagina-artesano acceso">
-      <h1>{cuenta ? 'Tu cuenta' : 'Crear tu cuenta de artesano'}</h1>
+      <h1>{cuenta ? perfil?.nombre || 'Tu cuenta' : 'Crear tu cuenta de artesano'}</h1>
       {(error || errorRetorno) && <Aviso tono="error">{error ?? errorRetorno}</Aviso>}
-      <form
-        onSubmit={(evento) => void guardar(evento)}
-        className="acceso-formulario"
-        key={cuenta ? perfil?.id : 'registro'}
+      <FormularioModal
+        titulo={cuenta ? 'Editar tu cuenta' : 'Crear tu cuenta de artesano'}
+        accion={cuenta ? 'Editar mi cuenta' : 'Completar registro'}
+        ocupado={cargando}
+        abiertoInicial
       >
-        <Casilla numero={1} titulo="Tu acceso">
-          {!sesion && (
-            <Campo etiqueta="Correo">
-              {(a) => <input {...a} name="correo" type="email" autoComplete="email" required />}
-            </Campo>
-          )}
-          {sesion && <p>{sesion.user.email}</p>}
-          <Campo
-            etiqueta={cuenta ? 'Nueva contraseña (opcional)' : 'Contraseña'}
-            ayuda="Al menos 8 caracteres"
-          >
-            {(a) => (
-              <input
-                {...a}
-                name="password"
-                type="password"
-                autoComplete="new-password"
-                minLength={8}
-                required={!cuenta}
-              />
+        <form
+          onSubmit={(evento) => void guardar(evento)}
+          className="acceso-formulario"
+          key={cuenta ? perfil?.id : 'registro'}
+        >
+          <Casilla numero={1} titulo="Tu acceso">
+            {!sesion && (
+              <Campo etiqueta="Correo">
+                {(a) => <input {...a} name="correo" type="email" autoComplete="email" required />}
+              </Campo>
             )}
-          </Campo>
-          <Campo etiqueta="Confirmar contraseña">
-            {(a) => (
-              <input
-                {...a}
-                name="confirmacion"
-                type="password"
-                autoComplete="new-password"
-                required={!cuenta}
-              />
-            )}
-          </Campo>
-        </Casilla>
-        <Casilla numero={2} titulo="Tu taller y tu RNA">
-          {campos.map((campo) => (
-            <Campo key={campo.nombre} etiqueta={campo.etiqueta}>
+            {sesion && <p>{sesion.user.email}</p>}
+            <Campo
+              etiqueta={cuenta ? 'Nueva contraseña (opcional)' : 'Contraseña'}
+              ayuda="Al menos 8 caracteres"
+            >
               {(a) => (
                 <input
                   {...a}
-                  name={campo.nombre}
-                  defaultValue={
-                    cuenta
-                      ? (perfil?.[campo.nombre] ?? '')
-                      : campo.nombre === 'nombre'
-                        ? String(sesion?.user.user_metadata.full_name ?? '')
-                        : ''
-                  }
-                  maxLength={campo.max}
-                  required={campo.obligatorio}
+                  name="password"
+                  type="password"
+                  autoComplete="new-password"
+                  minLength={8}
+                  required={!cuenta}
                 />
               )}
             </Campo>
-          ))}
-          <Campo etiqueta="Lugar">
-            {(a) => (
-              <select
-                {...a}
-                name="lugar"
-                defaultValue={cuenta ? (perfil?.lugar ?? '') : ''}
-                required
-              >
-                <option value="">Elige tu lugar</option>
-                {LUGARES.map((lugar) => (
-                  <option key={lugar}>{lugar}</option>
-                ))}
-              </select>
-            )}
-          </Campo>
-          <Campo etiqueta="Historia (opcional)" ayuda="Hasta 600 caracteres">
-            {(a) => (
-              <textarea
-                {...a}
-                name="historia"
-                maxLength={600}
-                defaultValue={cuenta ? (perfil?.historia ?? '') : ''}
-              />
-            )}
-          </Campo>
-        </Casilla>
-        <Boton
-          type="submit"
-          variante="destacado"
-          icono={cuenta ? 'exito' : 'adelante'}
-          ancho
-          cargando={cargando}
-        >
-          {cuenta ? 'Guardar cambios' : 'Enviar solicitud de acreditación'}
-        </Boton>
-      </form>
+            <Campo etiqueta="Confirmar contraseña">
+              {(a) => (
+                <input
+                  {...a}
+                  name="confirmacion"
+                  type="password"
+                  autoComplete="new-password"
+                  required={!cuenta}
+                />
+              )}
+            </Campo>
+          </Casilla>
+          <Casilla numero={2} titulo="Tu taller y tu RNA">
+            {campos.map((campo) => (
+              <Campo key={campo.nombre} etiqueta={campo.etiqueta}>
+                {(a) => (
+                  <input
+                    {...a}
+                    name={campo.nombre}
+                    defaultValue={
+                      cuenta
+                        ? (perfil?.[campo.nombre] ?? '')
+                        : campo.nombre === 'nombre'
+                          ? String(sesion?.user.user_metadata.full_name ?? '')
+                          : ''
+                    }
+                    maxLength={campo.max}
+                    required={campo.obligatorio}
+                  />
+                )}
+              </Campo>
+            ))}
+            <Campo etiqueta="Lugar">
+              {(a) => (
+                <select
+                  {...a}
+                  name="lugar"
+                  defaultValue={cuenta ? (perfil?.lugar ?? '') : ''}
+                  required
+                >
+                  <option value="">Elige tu lugar</option>
+                  {LUGARES.map((lugar) => (
+                    <option key={lugar}>{lugar}</option>
+                  ))}
+                </select>
+              )}
+            </Campo>
+            <Campo etiqueta="Historia (opcional)" ayuda="Hasta 600 caracteres">
+              {(a) => (
+                <textarea
+                  {...a}
+                  name="historia"
+                  maxLength={600}
+                  defaultValue={cuenta ? (perfil?.historia ?? '') : ''}
+                />
+              )}
+            </Campo>
+          </Casilla>
+          {!cuenta && (
+            <>
+              <details>
+                <summary>Leer términos y condiciones</summary>
+                <Terminos enRegistro />
+              </details>
+              <label className="terminos-confirmacion">
+                <input type="checkbox" name="terminos" required />
+                He leído los términos y condiciones y los acepto.
+              </label>
+              <p className="texto-secundario">
+                La aceptación se guarda en este dispositivo para tu cuenta.
+              </p>
+            </>
+          )}
+          <Boton
+            type="submit"
+            variante="destacado"
+            icono={cuenta ? 'exito' : 'adelante'}
+            ancho
+            cargando={cargando}
+          >
+            {cuenta ? 'Guardar cambios' : 'Enviar solicitud de acreditación'}
+          </Boton>
+        </form>
+      </FormularioModal>
       {!cuenta && sesion && (
         <Boton
           variante="secundario"

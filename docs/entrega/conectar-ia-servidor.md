@@ -96,11 +96,13 @@ Estas pruebas están pendientes y las realiza el operador autorizado. Las infere
 Tiempos y reintentos del proxy (`infra/litellm/config.yaml`):
 
 - `ayllu-texto` y `ayllu-audio`: 7 s por intento, dentro del presupuesto `IA_TIMEOUT_MS=8000` de la Edge Function.
-- `ayllu-imagen`: 40 s, por debajo de los 45 s que espera `llamarEdicionImagenIa`. Con 7 s la edición de imagen de Gemini fallaría casi siempre.
-- Un reintento solo para 429, 401 y 5xx, que responden rápido: el deployment fallido entra en cooldown y el reintento usa la otra llave dentro de la misma solicitud. Los timeouts no se reintentan, para no exceder el presupuesto.
+- `ayllu-imagen`: límite configurado de 40 s por deployment, por debajo de los 45 s que espera `llamarEdicionImagenIa`. No se establece `router_settings.timeout` global: un límite global de 7 s podría terminar la llamada completa antes del límite de imagen. El valor global de respaldo `request_timeout: 45` se usa cuando no hay timeout de deployment. La duración real de las imágenes sigue pendiente de comprobar.
+- Se permite un reintento para 429, 401 y 5xx; esos errores no garantizan respuesta rápida. El cooldown permite seleccionar otra deployment disponible, sin garantizar recuperación. Los timeouts no se reintentan. La Edge Function limita toda su llamada de texto/audio a 8000 ms y la de imagen a 45000 ms, aunque el proxy todavía esté completando un reintento.
 
 Si el servidor ya tiene la versión anterior de `config.yaml` (7 s y cero reintentos para todo), copiar la nueva y ejecutar `docker compose -f compose.yaml up -d --force-recreate`. Si audio supera los 7 s en la prueba real, registrarlo y acordar un presupuesto mayor; no declararlo probado por haber levantado el contenedor.
 
 Para diagnóstico local, revisar `docker compose logs --tail 100 functions` y los logs de LiteLLM, evitando compartir datos privados. Un 404 suele indicar función/router sin instalar; 401/403 requiere revisar sesión y autorización; 502 requiere comprobar variables, red, acceso al modelo y tiempos. No activar logs detallados de prompts.
 
 La configuración documentada sigue [los parámetros oficiales del proxy LiteLLM](https://docs.litellm.ai/docs/proxy/config_settings) y [su router](https://docs.litellm.ai/docs/routing). El esquema de la BD se aplica por separado con las migraciones entregadas; el proxy no requiere Postgres ni Redis propios.
+
+Los límites por deployment y el alcance global del router están documentados en [Timeouts de LiteLLM](https://docs.litellm.ai/docs/proxy/timeout).

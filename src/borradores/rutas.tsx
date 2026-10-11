@@ -1,3 +1,4 @@
+import { Esqueleto } from '../compartido/ui/Esqueleto'
 import { Navigate, type RouteObject } from 'react-router-dom'
 import type { ReactNode } from 'react'
 import { usePerfil, useSesionApk } from '../acceso/usePerfil'
@@ -17,7 +18,7 @@ function AccesoBorradores({ children }: { children: ReactNode }) {
   if (cargando || (sesion && !cuenta.perfil && cuenta.cargando))
     return (
       <main className="pagina">
-        <p role="status">Leyendo tu cuenta…</p>
+        <Esqueleto variante="formulario" etiqueta="Leyendo tu cuenta…" />
       </main>
     )
   if (!sesion) return <Navigate to="/ingresar" replace />

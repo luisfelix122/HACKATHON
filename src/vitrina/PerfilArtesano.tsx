@@ -1,3 +1,4 @@
+import { Esqueleto } from '../compartido/ui/Esqueleto'
 import { useCallback } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Aviso, Boton, Franja, Matricula, SelloRna } from '../compartido/ui/componentes'
@@ -22,7 +23,7 @@ export function PerfilArtesano() {
   if (datos === undefined)
     return (
       <main className="pagina">
-        <Aviso>Cargando perfil…</Aviso>
+        <Esqueleto variante="detalle" etiqueta="Cargando perfil…" />
       </main>
     )
   if (!datos)

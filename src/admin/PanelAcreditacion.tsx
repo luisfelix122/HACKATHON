@@ -1,3 +1,4 @@
+import { Esqueleto } from '../compartido/ui/Esqueleto'
 import { useCallback, useEffect, useState } from 'react'
 import type { Perfil } from '../compartido/dominio/perfil'
 import { obtenerSupabase } from '../compartido/supabase'
@@ -105,7 +106,7 @@ export function PanelAcreditacion() {
       {/* Si el modal se cerró antes de que respondiera el servidor, el fallo se ve aquí. */}
       {!dialogo && errorDialogo && <Aviso tono="error">{errorDialogo}</Aviso>}
       {cargando ? (
-        <Aviso>Cargando solicitudes…</Aviso>
+        <Esqueleto variante="lista" etiqueta="Cargando solicitudes…" />
       ) : !error && perfiles.length === 0 ? (
         <Aviso tono="exito">No hay solicitudes pendientes.</Aviso>
       ) : (

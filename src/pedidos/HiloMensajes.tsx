@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent, type ReactNode } from 'react'
 import type { MensajeOrden } from '../compartido/dominio/orden'
 import { Aviso, Boton, Campo } from '../compartido/ui/componentes'
 import { enviarMensaje } from './consultas'
@@ -10,12 +10,19 @@ export function HiloMensajes({
   usuarioId,
   mensajes,
   alEnviar,
+  acciones,
 }: {
   ordenId: string
   usuarioId: string
   mensajes: MensajeOrden[]
   alEnviar: () => void
+  acciones?: ReactNode
 }) {
+  const lista = useRef<HTMLOListElement>(null)
+  const seguirFinal = useRef(true)
+  useEffect(() => {
+    if (lista.current && seguirFinal.current) lista.current.scrollTop = lista.current.scrollHeight
+  }, [mensajes])
   const [texto, setTexto] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [enviando, setEnviando] = useState(false)
@@ -41,11 +48,21 @@ export function HiloMensajes({
   }
   return (
     <section className="pedido-hilo-seccion" aria-label="Hilo del pedido">
-      <h2>Hablar sobre este pedido</h2>
-      <p className="texto-secundario">
+      {acciones}
+      <p className="texto-secundario pedido-hilo-ayuda">
         Acuerden los detalles aquí. El total y el destino válidos son los que aparecen en el pedido.
       </p>
-      <ol className="pedido-hilo" aria-live="polite" aria-relevant="additions text">
+      <ol
+        ref={lista}
+        className="pedido-hilo"
+        aria-label="Mensajes del pedido"
+        aria-live="polite"
+        aria-relevant="additions text"
+        onScroll={() => {
+          const el = lista.current
+          if (el) seguirFinal.current = el.scrollHeight - el.scrollTop - el.clientHeight < 80
+        }}
+      >
         {mensajes.map((mensaje) => (
           <li key={mensaje.id} data-propio={mensaje.autor_id === usuarioId}>
             <strong>{mensaje.autor_id === usuarioId ? 'Tú' : 'La otra parte'}</strong>
@@ -67,6 +84,8 @@ export function HiloMensajes({
             <textarea
               {...atributos}
               required
+              rows={2}
+              placeholder="Escribe para coordinar tu pedido…"
               maxLength={1000}
               disabled={enviando}
               value={texto}

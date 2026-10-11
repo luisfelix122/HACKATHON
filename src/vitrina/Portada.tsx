@@ -1,3 +1,4 @@
+import { Esqueleto } from '../compartido/ui/Esqueleto'
 /*
  * CONTRATO DE DIRECCIÓN (impeccable, semilla 9bfb688c; decisión 0006)
  * THESIS: la vitrina es el casco pintado de una chalana; cada pieza lleva el nombre
@@ -219,7 +220,7 @@ export function Portada() {
         </div>
       ) : !datos ? (
         <div className="landing-contenido landing-estado" aria-busy="true">
-          <Aviso>Cargando piezas…</Aviso>
+          <Esqueleto variante="lista" etiqueta="Cargando piezas…" />
         </div>
       ) : datos.productos.length === 0 ? (
         <div className="landing-contenido landing-estado">

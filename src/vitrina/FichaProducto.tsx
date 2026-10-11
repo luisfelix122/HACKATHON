@@ -1,3 +1,4 @@
+import { Esqueleto } from '../compartido/ui/Esqueleto'
 import { useCallback } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { Aviso, Boton, Matricula, SelloRna } from '../compartido/ui/componentes'
@@ -24,7 +25,7 @@ export function FichaProducto() {
   if (datos === undefined)
     return (
       <main className="pagina">
-        <Aviso>Cargando producto…</Aviso>
+        <Esqueleto variante="detalle" etiqueta="Cargando producto…" />
       </main>
     )
   if (!datos)

@@ -4,6 +4,7 @@ import { validarDatosEnvio, validarPedido, validarMensaje } from './datosEnvio'
 const datos = {
   nombre_destinatario: 'Persona',
   telefono: '+51912345678',
+  dni: '01234567',
   departamento: 'Piura',
   provincia: 'Talara',
   distrito: 'Lobitos',
@@ -34,8 +35,14 @@ describe('datos de despacho y entradas del pedido', () => {
       }),
     ).not.toBeNull()
   })
-  it('rechaza campos extra no contratados como DNI', () =>
-    expect(validarDatosEnvio({ ...datos, dni: '123' })).toHaveProperty('datos_envio'))
+  it('rechaza un DNI incompleto', () =>
+    expect(validarDatosEnvio({ ...datos, dni: '123' })).toHaveProperty('dni'))
+  it('rechaza DNI con letras, espacios o más de ocho dígitos', () => {
+    for (const dni of ['1234567A', '123456789', ' 1234567'])
+      expect(validarDatosEnvio({ ...datos, dni })).toHaveProperty('dni')
+  })
+  it('rechaza campos extra fuera del contrato', () =>
+    expect(validarDatosEnvio({ ...datos, documento_extra: '123' })).toHaveProperty('datos_envio'))
   it('valida mensajes entre 1 y 1000 caracteres', () => {
     expect(validarMensaje('  ')).not.toBeNull()
     expect(validarMensaje('a'.repeat(1001))).not.toBeNull()

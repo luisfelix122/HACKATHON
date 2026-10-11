@@ -39,7 +39,6 @@ model_list:
       mode: image_edit
 router_settings:
   routing_strategy: simple-shuffle
-  timeout: 7
   num_retries: 1
   allowed_fails: 0
   cooldown_time: 30

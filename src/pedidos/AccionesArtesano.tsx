@@ -19,6 +19,8 @@ type Dialogo =
   | 'verificar_abono'
   | 'marcar_enviada'
   | 'cancelar_orden'
+  | 'marcar_lista_recojo'
+  | 'marcar_entregada'
 
 export function AccionesArtesano({
   orden,
@@ -54,7 +56,11 @@ export function AccionesArtesano({
     dialogo === d && error ? <Aviso tono="error">{error}</Aviso> : null
 
   return (
-    <section className="pedido-acuerdo pedido-siguiente" aria-label="Acciones del artesano">
+    <section
+      id="pedido-acciones"
+      className="pedido-acuerdo pedido-siguiente"
+      aria-label="Acciones del artesano"
+    >
       <h2>Siguiente paso</h2>
       {error && !dialogo && <Aviso tono="error">{error}</Aviso>}
       <div className="pedido-botones">
@@ -82,17 +88,13 @@ export function AccionesArtesano({
           <Boton
             icono="exito"
             cargando={pendiente}
-            onClick={() => void ejecutar('marcar_lista_recojo')}
+            onClick={() => setDialogo('marcar_lista_recojo')}
           >
             Lista para recojo
           </Boton>
         )}
         {acciones.includes('marcar_entregada') && (
-          <Boton
-            icono="exito"
-            cargando={pendiente}
-            onClick={() => void ejecutar('marcar_entregada')}
-          >
+          <Boton icono="exito" cargando={pendiente} onClick={() => setDialogo('marcar_entregada')}>
             Marcar entregada
           </Boton>
         )}
@@ -113,6 +115,7 @@ export function AccionesArtesano({
         titulo="Aceptar el pedido"
         descripcion="El comprador verá este total y esta fecha, y los confirmará."
         alCerrar={cerrar}
+        ocupado={pendiente}
       >
         <form
           className="pedido-modal-formulario"
@@ -333,6 +336,36 @@ export function AccionesArtesano({
         }
       >
         {errorEn('cancelar_orden')}
+      </Modal>
+      <Modal
+        abierto={dialogo === 'marcar_lista_recojo' || dialogo === 'marcar_entregada'}
+        titulo={
+          dialogo === 'marcar_lista_recojo'
+            ? '¿La pieza está lista para recojo?'
+            : '¿Entregaste este pedido?'
+        }
+        alCerrar={cerrar}
+        ocupado={pendiente}
+        acciones={
+          <>
+            <Boton variante="secundario" disabled={pendiente} onClick={cerrar}>
+              Volver
+            </Boton>
+            <Boton
+              variante="destacado"
+              cargando={pendiente}
+              onClick={() => {
+                if (dialogo === 'marcar_lista_recojo' || dialogo === 'marcar_entregada')
+                  void ejecutar(dialogo)
+              }}
+            >
+              Confirmar
+            </Boton>
+          </>
+        }
+      >
+        <p>El cambio se mostrará a las dos partes del pedido.</p>
+        {error && <Aviso tono="error">{error}</Aviso>}
       </Modal>
     </section>
   )

@@ -108,44 +108,15 @@ export async function ejecutarPublicacion(
   cliente: SupabaseClient,
   datos: DatosEjecucionPublicacion,
 ): Promise<{ ok: boolean; error?: string }> {
-  // 1. Actualizar fotos
-  for (const foto of datos.fotos) {
-    const { error: errFoto } = await cliente
-      .from('foto_producto')
-      .update({
-        publicada: foto.publicada,
-        posicion: foto.posicion,
-      })
-      .eq('id', foto.id)
-      .eq('producto_id', datos.productoId)
+  // La RPC guarda ficha y selección de fotos en una sola transacción.
+  const { error } = await cliente.rpc('publicar_producto', {
+    p_producto_id: datos.productoId,
+    p_ficha: datos.ficha,
+    p_precio_final: datos.precioFinal,
+    p_disponibilidad: datos.disponibilidad,
+    p_plazo_dias: datos.disponibilidad === 'a_pedido' ? datos.plazoDias : null,
+    p_fotos: datos.fotos,
+  })
 
-    if (errFoto) {
-      return {
-        ok: false,
-        error: `Error al actualizar fotos: ${errFoto.message}`,
-      }
-    }
-  }
-
-  // 2. Actualizar producto a publicado
-  const { error: errProd } = await cliente
-    .from('producto')
-    .update({
-      estado: 'publicado',
-      ficha: datos.ficha,
-      precio_final: datos.precioFinal,
-      disponibilidad: datos.disponibilidad,
-      plazo_dias: datos.disponibilidad === 'a_pedido' ? datos.plazoDias : null,
-      actualizado_en: new Date().toISOString(),
-    })
-    .eq('id', datos.productoId)
-
-  if (errProd) {
-    return {
-      ok: false,
-      error: errProd.message,
-    }
-  }
-
-  return { ok: true }
+  return error ? { ok: false, error: error.message } : { ok: true }
 }

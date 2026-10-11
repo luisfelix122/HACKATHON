@@ -9,17 +9,22 @@ export function AccionesComprador({ orden, alCambiar }: { orden: Orden; alCambia
   const { pendiente, error, ejecutar } = useAccionOrden(orden, alCambiar)
   const acciones = accionesVisibles('comprador', orden.estado, orden.modalidad)
   const pago = enlaceHttps(orden.enlace_pago)
+  const [confirmando, setConfirmando] = useState(false)
   const [cancelando, setCancelando] = useState(false)
   return (
-    <section className="pedido-acuerdo pedido-siguiente" aria-label="Acciones del comprador">
+    <section
+      id="pedido-acciones"
+      className="pedido-acuerdo pedido-siguiente"
+      aria-label="Acciones del comprador"
+    >
       <h2>Siguiente paso</h2>
-      {error && !cancelando && <Aviso tono="error">{error}</Aviso>}
+      {error && !cancelando && !confirmando && <Aviso tono="error">{error}</Aviso>}
       {acciones.includes('confirmar_total') && (
         <Boton
           variante="destacado"
           icono="exito"
           cargando={pendiente}
-          onClick={() => void ejecutar('confirmar_total')}
+          onClick={() => setConfirmando(true)}
         >
           Confirmar total
         </Boton>
@@ -68,6 +73,7 @@ export function AccionesComprador({ orden, alCambiar }: { orden: Orden; alCambia
         titulo="¿Cancelar este pedido?"
         descripcion="El pedido queda cancelado para las dos partes. No se puede deshacer."
         alCerrar={() => setCancelando(false)}
+        ocupado={pendiente}
         acciones={
           <>
             <Boton variante="secundario" onClick={() => setCancelando(false)}>
@@ -85,6 +91,32 @@ export function AccionesComprador({ orden, alCambiar }: { orden: Orden; alCambia
         }
       >
         {cancelando && error && <Aviso tono="error">{error}</Aviso>}
+      </Modal>
+      <Modal
+        abierto={confirmando}
+        titulo="¿Confirmar el total acordado?"
+        alCerrar={() => setConfirmando(false)}
+        ocupado={pendiente}
+        acciones={
+          <>
+            <Boton variante="secundario" disabled={pendiente} onClick={() => setConfirmando(false)}>
+              Volver
+            </Boton>
+            <Boton
+              variante="destacado"
+              cargando={pendiente}
+              onClick={() => void ejecutar('confirmar_total')}
+            >
+              Confirmar acuerdo
+            </Boton>
+          </>
+        }
+      >
+        <p>
+          Total: {orden.total === null ? 'Pendiente' : 'S/ ' + orden.total.toFixed(2)}. Fecha
+          estimada: {orden.fecha_entrega_estimada ?? 'Pendiente'}.
+        </p>
+        {confirmando && error && <Aviso tono="error">{error}</Aviso>}
       </Modal>
     </section>
   )

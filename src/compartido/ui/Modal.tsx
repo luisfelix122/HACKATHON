@@ -19,6 +19,7 @@ export function Modal(props: {
   alCerrar: () => void
   children: ReactNode
   /** Botones al pie (por ejemplo, Cancelar y la acción principal). */
+  ocupado?: boolean
   acciones?: ReactNode
 }) {
   const { abierto, alCerrar } = props
@@ -71,14 +72,14 @@ export function Modal(props: {
       onCancel={(evento) => {
         // Esc: el navegador cerraría el diálogo por su cuenta; lo decide la pantalla.
         evento.preventDefault()
-        alCerrar()
+        if (!props.ocupado) alCerrar()
       }}
     >
       <header className="modal-cabecera">
         <h2 id={idTitulo} className="modal-titulo">
           {props.titulo}
         </h2>
-        <button type="button" className="modal-cerrar" onClick={alCerrar}>
+        <button type="button" className="modal-cerrar" disabled={props.ocupado} onClick={alCerrar}>
           <Icono nombre="cerrar" />
           <span className="solo-lectores">Cerrar</span>
         </button>

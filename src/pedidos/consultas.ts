@@ -6,6 +6,10 @@ import { validarMensaje, validarPedido, type EntradaPedido } from './datosEnvio'
 export function mensajeError(causa: unknown): string {
   const texto =
     causa && typeof causa === 'object' && 'message' in causa ? String(causa.message) : ''
+  const codigo = causa && typeof causa === 'object' && 'code' in causa ? String(causa.code) : ''
+  if (['PGRST202', '42883'].includes(codigo))
+    return 'El servidor necesita actualizar las funciones de pedidos. Comunícalo al administrador.'
+  if (codigo === '42501') return 'El servidor no permite esta operación con tu cuenta.'
   if (texto.includes('datos_incompletos')) return 'Revisa los datos del pedido.'
   if (texto.includes('transicion_invalida'))
     return 'El producto ya no está disponible. Vuelve a la ficha.'
@@ -41,7 +45,7 @@ export async function obtenerOrden(
   id: string,
   cliente: SupabaseClient = obtenerSupabase(),
 ): Promise<Orden | null> {
-  const { data, error } = await cliente.from('orden').select('*').eq('id', id).maybeSingle()
+  const { data, error } = await cliente.rpc('detalle_pedido', { orden_id: id })
   if (error) throw new Error(mensajeError(error))
   return data as Orden | null
 }
@@ -71,4 +75,14 @@ export async function enviarMensaje(
     .from('mensaje_orden')
     .insert({ orden_id: id, autor_id: usuario.user.id, texto_original: texto.trim() })
   if (error) throw new Error(mensajeError(error))
+}
+
+export type OrdenConProducto = Orden & { nombre_producto: string | null }
+/** La RPC revela únicamente nombres de las partes de los pedidos propios. */
+export async function listarOrdenesConProducto(
+  cliente: SupabaseClient = obtenerSupabase(),
+): Promise<OrdenConProducto[]> {
+  const { data, error } = await cliente.rpc('listar_pedidos')
+  if (error) throw new Error(mensajeError(error))
+  return (data ?? []) as OrdenConProducto[]
 }

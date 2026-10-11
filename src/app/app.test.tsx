@@ -22,10 +22,21 @@ const supabaseFalso = vi.hoisted(() => {
   }
   const insert = vi.fn(() => ({
     select: () => ({
-      single: () => Promise.resolve({ data: { id: 'u-1', rol: 'comprador' }, error: null }),
+      single: () =>
+        Promise.resolve({ data: { id: 'u-1', rol: 'comprador', nombre: 'Camila' }, error: null }),
     }),
   }))
+  const canal = {
+    on: vi.fn().mockReturnThis(),
+    subscribe: vi.fn(function (this: unknown, alCambiar: (estado: string) => void) {
+      alCambiar('SUBSCRIBED')
+      return this
+    }),
+  }
   const cliente = {
+    channel: vi.fn(() => canal),
+    removeChannel: vi.fn(() => Promise.resolve('ok')),
+
     auth: {
       getSession: vi.fn(() => Promise.resolve({ data: { session: estado.sesion }, error: null })),
       onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: () => {} } } })),

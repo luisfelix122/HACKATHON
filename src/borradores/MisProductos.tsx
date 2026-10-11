@@ -1,3 +1,4 @@
+import { Esqueleto } from '../compartido/ui/Esqueleto'
 import { liveQuery } from 'dexie'
 import { useCallback, useEffect, useMemo, useState, useTransition } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -17,6 +18,7 @@ export function MisProductos() {
   const navigate = useNavigate()
   const { sesion } = useSesionApk()
   const artesanoId = sesion?.user?.id
+  const [cuentaLeida, setCuentaLeida] = useState<string | undefined>(undefined)
 
   const [borradores, setBorradores] = useState<BorradorLocal[]>([])
   const [conectado, setConectado] = useState<boolean>(true)
@@ -49,7 +51,12 @@ export function MisProductos() {
         }
       })
       .catch(async () => {
-        const productos = await listarProductosPersistidos(artesanoId, false)
+        let productos: ProductoPersistido[] = []
+        try {
+          productos = await listarProductosPersistidos(artesanoId, false)
+        } catch {
+          /* Sin copia local: se conserva el error recuperable. */
+        }
         if (vigente) {
           setRemotos({ cuenta: artesanoId, productos })
           setErrorRemotos(
@@ -67,8 +74,14 @@ export function MisProductos() {
     const escucha = liveQuery(() =>
       db.borrador_local.where('artesano_id').equals(artesanoId).toArray(),
     ).subscribe({
-      next: setBorradores,
-      error: () => setMensajeEstado('No pudimos leer tus borradores. Reintenta.'),
+      next: (items) => {
+        setBorradores(items)
+        setCuentaLeida(artesanoId)
+      },
+      error: () => {
+        setMensajeEstado('No pudimos leer tus borradores. Reintenta.')
+        setCuentaLeida(artesanoId)
+      },
     })
     return () => escucha.unsubscribe()
   }, [artesanoId])
@@ -181,7 +194,9 @@ export function MisProductos() {
         </div>
       </header>
 
-      {propios.length === 0 && productos.length === 0 ? (
+      {cuentaLeida !== artesanoId || (remotos?.cuenta !== artesanoId && propios.length === 0) ? (
+        <Esqueleto variante="lista" etiqueta="Cargando tus productos…" />
+      ) : propios.length === 0 && productos.length === 0 ? (
         <div className="panel vacio-contenedor">
           <p className="vacio">Aún no tienes productos. Toca Nuevo.</p>
           <div className="vacio-accion">

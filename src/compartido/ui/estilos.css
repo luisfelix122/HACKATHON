@@ -969,3 +969,114 @@ a:has(> .tablon):hover .tablon-media img {
     font-size: 1.2rem;
   }
 }
+
+/* Continuidad de vistas y contenido reservado mientras llegan los datos. */
+.vista-animada {
+  animation: cambiar-vista 220ms var(--salida);
+}
+@keyframes cambiar-vista {
+  from {
+    opacity: 0.75;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.esqueletos {
+  display: grid;
+  gap: var(--e5);
+  width: 100%;
+}
+.esqueletos-lista {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+}
+.esqueleto-panel {
+  display: grid;
+  gap: var(--e3);
+  padding: var(--e5);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
+}
+.esqueleto {
+  background: var(--casco-claro);
+  border-radius: var(--radio-control);
+  animation: pulso-esqueleto 1.6s ease-in-out infinite alternate;
+}
+.esqueleto-media {
+  aspect-ratio: 4 / 3;
+  max-height: 20rem;
+}
+.esqueleto-titulo {
+  height: 1.7rem;
+  width: 70%;
+}
+.esqueleto-linea {
+  height: 1rem;
+}
+.esqueleto-corta {
+  width: 55%;
+}
+.esqueleto-control {
+  height: var(--tactil);
+}
+@keyframes pulso-esqueleto {
+  to {
+    opacity: 0.5;
+  }
+}
+.modal-cabecera {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--blanco);
+}
+.modal-cuerpo {
+  min-height: 0;
+}
+.modal-cerrar:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+.modal .pedido-formulario {
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+.modal .acceso-formulario {
+  margin: 0;
+}
+.modal .editor-borrador {
+  width: 100%;
+  padding: 0;
+}
+.modal .paso-contenido {
+  animation: cambiar-vista 180ms var(--salida);
+}
+@media (max-width: 599px) {
+  .modal {
+    max-height: calc(100dvh - env(safe-area-inset-top) - 1rem);
+  }
+  .modal-cuerpo {
+    padding-bottom: max(var(--e5), env(safe-area-inset-bottom));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .vista-animada,
+  .modal .paso-contenido,
+  .esqueleto {
+    animation: none;
+  }
+}
+
+.selector-ubicacion {
+  display: grid;
+  gap: var(--e4);
+}
+.esqueletos-control .esqueleto-panel {
+  padding: 0;
+  border: 0;
+  margin-top: var(--e2);
+}

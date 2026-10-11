@@ -1,8 +1,8 @@
+import { CampanaNotificaciones } from '../compartido/notificaciones/CampanaNotificaciones'
 import { useEffect, useState } from 'react'
 import {
   createBrowserRouter,
   Link,
-  Outlet,
   RouterProvider,
   useLocation,
   type RouteObject,
@@ -17,6 +17,7 @@ import { PantallaIngresoWeb } from '../compartido/PantallaIngresoWeb'
 import { asegurarPerfilComprador, cerrarSesion, ErrorSesion, useSesion } from '../compartido/sesion'
 import { Aviso, Boton, Logotipo } from '../compartido/ui/componentes'
 import { Terminos } from '../compartido/Terminos'
+import { VistaAnimada } from '../compartido/ui/VistaAnimada'
 import './web.css'
 
 // Web del comprador y del administrador. Cada módulo declara sus rutas en su
@@ -84,6 +85,7 @@ function combinarRutas(deModulos: RouteObject[], deRelleno: RouteObject[]): Rout
 function Marco() {
   const { sesion, cargando } = useSesion()
   const { pathname, search, hash } = useLocation()
+  const [nombrePerfil, setNombrePerfil] = useState<{ id: string; nombre: string } | null>(null)
   const [adminDe, setAdminDe] = useState<string | null>(null)
   const [errorPerfil, setErrorPerfil] = useState<string | null>(null)
   const [intento, setIntento] = useState(0)
@@ -118,6 +120,7 @@ function Marco() {
       .then((perfil) => {
         if (!vigente) return
         setErrorPerfil(null)
+        setNombrePerfil({ id: usuario.id, nombre: perfil.nombre })
         setAdminDe(perfil.rol === 'admin' ? usuario.id : null)
       })
       .catch((causa: unknown) => {
@@ -177,10 +180,23 @@ function Marco() {
               </Link>
             )}
           </nav>
+          <CampanaNotificaciones usuarioId={sesion?.user.id} />
           {sesion ? (
-            <Boton variante="secundario" cargando={saliendo} onClick={() => void salir()}>
-              Salir
-            </Boton>
+            <>
+              <span>
+                {nombrePerfil && nombrePerfil.id === usuario?.id
+                  ? nombrePerfil.nombre
+                  : String(
+                      usuario?.user_metadata.full_name ??
+                        usuario?.user_metadata.name ??
+                        usuario?.email?.split('@')[0] ??
+                        'Mi cuenta',
+                    )}{' '}
+              </span>
+              <Boton variante="secundario" cargando={saliendo} onClick={() => void salir()}>
+                Salir
+              </Boton>
+            </>
           ) : (
             !cargando &&
             pathname !== '/ingresar' && (
@@ -227,7 +243,7 @@ function Marco() {
         </div>
       )}
       <div id="contenido" tabIndex={-1}>
-        <Outlet />
+        <VistaAnimada />
       </div>
       <footer className="pie-web">
         <Link to="/" aria-label="Ayllu, inicio">

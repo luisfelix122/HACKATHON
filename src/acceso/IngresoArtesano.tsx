@@ -1,3 +1,4 @@
+import { FormularioModal } from '../compartido/ui/FormularioModal'
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Aviso, Boton, Campo } from '../compartido/ui/componentes'
@@ -60,30 +61,37 @@ export function IngresoArtesano() {
         <p className="texto-secundario">Tu taller, tus piezas y tus pedidos.</p>
       </header>
       {(error || errorRetorno) && <Aviso tono="error">{error ?? errorRetorno}</Aviso>}
-      <form onSubmit={(evento) => void entrar(evento)} className="acceso-formulario">
-        <Campo etiqueta="Correo">
-          {(atributos) => (
-            <input {...atributos} name="correo" type="email" autoComplete="username" required />
-          )}
-        </Campo>
-        <Campo etiqueta="Contraseña">
-          {(atributos) => (
-            <input
-              {...atributos}
-              name="password"
-              type="password"
-              autoComplete="current-password"
-              required
-            />
-          )}
-        </Campo>
-        <Boton type="submit" variante="destacado" icono="ingresar" ancho cargando={cargando}>
-          Entrar
-        </Boton>
-        <button type="button" className="acceso-enlace" onClick={() => setAyuda(true)}>
-          ¿Olvidaste tu contraseña?
-        </button>
-      </form>
+      <FormularioModal
+        titulo="Ingresar con correo"
+        accion="Ingresar con correo"
+        ocupado={cargando}
+        abiertoInicial
+      >
+        <form onSubmit={(evento) => void entrar(evento)} className="acceso-formulario">
+          <Campo etiqueta="Correo">
+            {(atributos) => (
+              <input {...atributos} name="correo" type="email" autoComplete="username" required />
+            )}
+          </Campo>
+          <Campo etiqueta="Contraseña">
+            {(atributos) => (
+              <input
+                {...atributos}
+                name="password"
+                type="password"
+                autoComplete="current-password"
+                required
+              />
+            )}
+          </Campo>
+          <Boton type="submit" variante="destacado" icono="ingresar" ancho cargando={cargando}>
+            Entrar
+          </Boton>
+          <button type="button" className="acceso-enlace" onClick={() => setAyuda(true)}>
+            ¿Olvidaste tu contraseña?
+          </button>
+        </form>
+      </FormularioModal>
       <div className="acceso-separador" role="presentation">
         <span>o</span>
       </div>

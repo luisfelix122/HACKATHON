@@ -180,12 +180,12 @@ begin
   insert into public.orden (id, producto_id, comprador_id, cantidad, modalidad, datos_envio, detalle, costo_envio, total, fecha_entrega_estimada, enlace_pago, numero_guia, estado) values
   ('20000000-0000-0000-0000-000000000001', '10000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000090',
    1, 'envio',
-   '{"nombre_destinatario": "Compradora Demo", "telefono": "+51900000090", "departamento": "Lima", "provincia": "Lima", "distrito": "Miraflores", "agencia_destino": "Shalom Miraflores"}',
+   '{"nombre_destinatario": "Compradora Demo", "telefono": "+51900000090", "dni": "00000090", "departamento": "Lima", "provincia": "Lima", "distrito": "Miraflores", "agencia_destino": "Shalom Miraflores"}',
    'Talla M, color naranja atardecer', 15.00, 75.00, current_date + 3,
    'https://pago.ejemplo.test/ayllu-demo', null, 'pago_pendiente'),
   ('20000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000090',
    1, 'envio',
-   '{"nombre_destinatario": "Compradora Demo", "telefono": "+51900000090", "departamento": "Arequipa", "provincia": "Arequipa", "distrito": "Yanahuara", "agencia_destino": "Shalom Arequipa"}',
+   '{"nombre_destinatario": "Compradora Demo", "telefono": "+51900000090", "dni": "00000090", "departamento": "Arequipa", "provincia": "Arequipa", "distrito": "Yanahuara", "agencia_destino": "Shalom Arequipa"}',
    null, 20.00, 105.00, current_date + 5,
    'https://pago.ejemplo.test/ayllu-demo-2', 'GUIA-DEMO-0001', 'enviada')
   on conflict (id) do nothing;

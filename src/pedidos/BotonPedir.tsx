@@ -53,8 +53,13 @@ export function BotonPedir({ productoId }: { productoId: string }) {
       <p className="boton-pedir-nota texto-secundario">
         ¿Ya pediste? Revisa <Link to="/pedidos">Mis pedidos</Link>.
       </p>
-      {abierto && sesion && (
-        <FormularioPedido key={productoId} productoId={productoId} alCerrar={cerrar} />
+      {sesion && (
+        <FormularioPedido
+          key={productoId}
+          productoId={productoId}
+          alCerrar={cerrar}
+          abierto={abierto}
+        />
       )}
     </div>
   )

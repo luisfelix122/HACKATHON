@@ -1,3 +1,4 @@
+import { Esqueleto } from '../compartido/ui/Esqueleto'
 import { useEffect, useState } from 'react'
 import { Navigate, type RouteObject } from 'react-router-dom'
 import { useSesion } from '../compartido/sesion'
@@ -31,9 +32,9 @@ export function AccesoAdmin() {
       vigente = false
     }
   }, [id, revision])
-  if (cargando) return <p role="status">Leyendo tu sesión…</p>
+  if (cargando) return <Esqueleto variante="formulario" etiqueta="Leyendo tu sesión…" />
   if (!id) return <Navigate to="/ingresar?volver=/admin" replace />
-  if (estado.id !== id) return <p role="status">Comprobando permisos…</p>
+  if (estado.id !== id) return <Esqueleto variante="formulario" etiqueta="Comprobando permisos…" />
   if (estado.error)
     return (
       <main className="pagina">

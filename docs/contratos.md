@@ -94,9 +94,11 @@ La foto original nunca se borra ni se sobrescribe. Si el artesano no la publica,
 | `creado_en` / `actualizado_en` | timestamptz | sí | |
 
 #### Datos de envío
-`{ nombre_destinatario, telefono, departamento, provincia, distrito, agencia_destino, referencia? }`
+`{ nombre_destinatario, telefono, dni, departamento, provincia, distrito, agencia_destino, referencia? }`
 
-Los requisitos de identificación de Shalom (por ejemplo, el DNI del destinatario) **no están verificados**. No se piden hasta confirmarlos.
+Por solicitud del equipo, todo nuevo envío por agencia requiere `dni` del destinatario: texto de exactamente ocho dígitos, conservando ceros iniciales. Recojo no solicita DNI. Los pedidos históricos sin DNI siguen siendo legibles y pueden completar su flujo.
+
+Los campos departamento, provincia y distrito se seleccionan del catálogo de referencia de BD: `departamento(id, nombre)`, `provincia(id, departamento_id, nombre)` y `distrito(id, provincia_id, nombre)`. La lectura está permitida a anon/authenticated por RLS; no se permite escritura desde la app. Cambiar departamento limpia provincia/distrito y cambiar provincia limpia distrito. La BD valida la jerarquía al crear o cambiar el destino; `datos_envio` conserva los nombres como fotografía completa del destino de la orden. El DNI solo se muestra a las partes de la orden, protegidas por las políticas actuales.
 
 #### Seguimiento del envío (CC-09)
 En una orden `enviada`, el comprador ve el `numero_guia` como texto y un botón «Rastrear envío» que abre `https://shalom.com.pe/rastrea` en una pestaña nueva. Es un enlace fijo: no se le pasa el número.
@@ -238,7 +240,7 @@ La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y cali
 - **Usado por:** CU-02.
 
 ## Estados de interfaz (comunes a la web y la APK)
-- **Cargando:** indicador y texto corto («Cargando…»). Nunca una pantalla en blanco.
+- **Cargando:** esqueleto con anuncio accesible de carga y estructura de la vista. Nunca una pantalla en blanco. Transiciones breves entre vistas en web y APK, respetando movimiento reducido. Los formularios se abren en modales con foco contenido, cierre con Esc y conservación de campos al reabrir; el cierre se bloquea durante el envío.
 - **Vacío:** mensaje con la siguiente acción, por ejemplo «Aún no tienes productos. Toca Nuevo».
 - **Error:** el `mensaje` legible del contrato y un botón «Reintentar». Nunca códigos técnicos.
 - **Sin conexión (APK):** franja visible «Sin señal: lo guardamos en tu celular». Se ocultan las acciones que requieren red: dictar, Preparar con IA, Publicar.
@@ -272,3 +274,7 @@ La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y cali
 - **Lugares (filtro, preliminar):** Máncora, Lobitos, Cabo Blanco, El Ñuro, Los Órganos, El Alto, Pariñas, Colán, Punta Sal. **Pendiente** confirmar con La Vaca Loca la lista definitiva y si Punta Sal tiene artesanos.
 - **Errores de la Edge Function:** `{ error: "<codigo>", mensaje: "<texto para mostrar>" }`.
 - **Variables de entorno** (solo nombres, en `.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (cliente; es la "publishable key" que nombra la guía actual de Supabase) y `IA_BASE_URL`, `IA_API_KEY`, `IA_TIMEOUT_MS` (solo en las Edge Functions; sin OpenRouter desde CC-12). En el servidor del proxy (`infra/litellm/.env.example`): `LITELLM_MASTER_KEY` e `IA_KEY_1…n`.
+
+## Presentación privada de pedidos
+
+`listar_pedidos()` devuelve los pedidos propios ordenados por creación, con `nombre_producto`, `artesano_id` y `nombre_contraparte`. `detalle_pedido(orden_id)` devuelve un pedido propio o null. Ambas RPC solo se ejecutan como authenticated y limitan los datos al comprador o artesano de cada pedido. No amplían el acceso a perfil. Los nombres son datos de presentación derivados, no columnas persistidas.

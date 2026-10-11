@@ -221,7 +221,8 @@ describe('acciones en interfaz', () => {
         }),
     )
     render(createElement(AccionesComprador, { orden, alCambiar: vi.fn() }))
-    const boton = screen.getByRole('button', { name: 'Confirmar total' })
+    fireEvent.click(screen.getByRole('button', { name: 'Confirmar total' }))
+    const boton = screen.getByRole('button', { name: 'Confirmar acuerdo' })
     fireEvent.click(boton)
     fireEvent.click(boton)
     expect(boton).toBeDisabled()
@@ -253,6 +254,7 @@ describe('acciones en interfaz', () => {
     const cambiar = vi.fn()
     render(createElement(AccionesComprador, { orden, alCambiar: cambiar }))
     fireEvent.click(screen.getByRole('button', { name: 'Confirmar total' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Confirmar acuerdo' }))
     await waitFor(() => expect(cambiar).toHaveBeenCalledOnce())
     expect(falso.rpc).toHaveBeenCalledWith('confirmar_total', { orden_id: 'o' })
   })
@@ -297,6 +299,7 @@ it.each(['constructor', 'toString', '__proto__'])(
       datos_envio: {
         nombre_destinatario: 'Persona',
         telefono: '+51911111111',
+        dni: '01234567',
         departamento,
         provincia: 'Provincia',
         distrito: 'Distrito',

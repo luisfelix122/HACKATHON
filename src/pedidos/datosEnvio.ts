@@ -3,6 +3,7 @@ import type { DatosEnvio, Modalidad } from '../compartido/dominio/orden'
 export const CAMPOS_ENVIO = [
   'nombre_destinatario',
   'telefono',
+  'dni',
   'departamento',
   'provincia',
   'distrito',
@@ -21,6 +22,8 @@ export function validarDatosEnvio(datos: unknown): Record<string, string> {
     (campos.referencia !== undefined && typeof campos.referencia !== 'string')
   )
     errores.datos_envio = 'Revisa los datos de envío.'
+  if (typeof campos.dni === 'string' && !/^[0-9]{8}$/.test(campos.dni))
+    errores.dni = 'Escribe un DNI de 8 dígitos.'
   return errores
 }
 export type EntradaPedido = {

@@ -1,0 +1,41 @@
+.campana-notificaciones {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+.campana-contador {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  min-width: 20px;
+  padding: 2px 4px;
+  border-radius: 12px;
+  background: #9b321d;
+  color: white;
+  font-size: 12px;
+  line-height: 16px;
+}
+.notificaciones-lista {
+  list-style: none;
+  padding: 0;
+}
+.notificaciones-lista li + li {
+  border-top: 1px solid #d8d3ca;
+}
+.notificaciones-lista a {
+  display: grid;
+  gap: 4px;
+  padding: 16px 0;
+}
+.notificaciones-lista time {
+  font-size: 0.85em;
+}

@@ -1,9 +1,10 @@
+import { CampanaNotificaciones } from '../compartido/notificaciones/CampanaNotificaciones'
+import { useSesionApk } from '../acceso/usePerfil'
 import { useState } from 'react'
 import {
   createBrowserRouter,
   Navigate,
   NavLink,
-  Outlet,
   RouterProvider,
   useLocation,
   type RouteObject,
@@ -16,6 +17,7 @@ import * as publicacion from '../publicacion/rutas'
 import * as vitrina from '../vitrina/rutas'
 import { Logotipo } from '../compartido/ui/componentes'
 import { Terminos } from '../compartido/Terminos'
+import { VistaAnimada } from '../compartido/ui/VistaAnimada'
 import './artesano.css'
 import { Icono, type NombreIcono } from '../compartido/ui/Icono'
 
@@ -63,6 +65,7 @@ const MENU = MODULOS.flatMap((modulo) => modulo.menuArtesano)
 const SIN_PESTANAS = new Set(['/ingresar', '/registro'])
 
 function Marco() {
+  const { sesion } = useSesionApk()
   const { pathname } = useLocation()
   const conPestanas = MENU.length > 0 && !SIN_PESTANAS.has(pathname)
   return (
@@ -70,13 +73,11 @@ function Marco() {
       <header className="barra">
         <div className="barra-contenido">
           <Logotipo />
-          <NavLink className="artesano-terminos" to="/terminos">
-            Términos
-          </NavLink>
+          <CampanaNotificaciones usuarioId={sesion?.user.id} />
         </div>
       </header>
       <div className={conPestanas ? 'con-pestanas' : undefined}>
-        <Outlet />
+        <VistaAnimada />
       </div>
       {conPestanas && (
         <nav aria-label="Menú" className="pestanas">

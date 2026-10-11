@@ -143,9 +143,8 @@ describe('publicar.ts - validación previa a la publicación', () => {
 
 describe('regresión de denegación de acreditación', () => {
   it('nunca presenta éxito cuando el servidor rechaza publicar', async () => {
-    const eq = vi.fn().mockResolvedValue({ error: { message: 'acreditación no aprobada' } })
-    const update = vi.fn().mockReturnValue({ eq })
-    const cliente = { from: vi.fn().mockReturnValue({ update }) } as unknown as SupabaseClient
+    const rpc = vi.fn().mockResolvedValue({ error: { message: 'acreditación no aprobada' } })
+    const cliente = { rpc } as unknown as SupabaseClient
     const resultado = await ejecutarPublicacion(cliente, {
       productoId: 'pieza',
       ficha: {} as Ficha,
@@ -155,5 +154,31 @@ describe('regresión de denegación de acreditación', () => {
       fotos: [],
     })
     expect(resultado).toEqual({ ok: false, error: 'acreditación no aprobada' })
+  })
+})
+
+describe('guardado atómico de publicación', () => {
+  it('envía ficha y fotos por RPC sin escrituras parciales desde el cliente', async () => {
+    const rpc = vi.fn().mockResolvedValue({ error: null })
+    const cliente = { rpc } as unknown as SupabaseClient
+    const ficha = { titulo: 'Pieza actualizada' } as Ficha
+    const fotos = [{ id: 'foto-nueva', publicada: true, posicion: 0 }]
+    const resultado = await ejecutarPublicacion(cliente, {
+      productoId: 'pieza-publicada',
+      ficha,
+      precioFinal: 45,
+      disponibilidad: 'en_stock',
+      plazoDias: 7,
+      fotos,
+    })
+    expect(resultado).toEqual({ ok: true })
+    expect(rpc).toHaveBeenCalledExactlyOnceWith('publicar_producto', {
+      p_producto_id: 'pieza-publicada',
+      p_ficha: ficha,
+      p_precio_final: 45,
+      p_disponibilidad: 'en_stock',
+      p_plazo_dias: null,
+      p_fotos: fotos,
+    })
   })
 })

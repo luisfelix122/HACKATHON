@@ -106,6 +106,7 @@ describe('confirmaciones de las acciones de una orden', () => {
           datos_envio: {
             nombre_destinatario: 'C',
             telefono: '+51900000000',
+            dni: '01234567',
             departamento: 'Lima',
             provincia: 'Lima',
             distrito: 'Miraflores',
@@ -122,5 +123,43 @@ describe('confirmaciones de las acciones de una orden', () => {
     fireEvent.click(within(dialogo).getByRole('button', { name: 'Marcar enviada' }))
     expect(await within(dialogo).findByRole('alert')).toHaveTextContent(/el pedido cambió/i)
     expect(screen.getByLabelText('Número de guía')).toHaveValue('G-77')
+  })
+})
+
+describe('confirmaciones del chat compartido', () => {
+  it('confirmar el total requiere confirmar el modal', async () => {
+    render(
+      <AccionesComprador
+        orden={orden('aceptada', { total: 25, fecha_entrega_estimada: '2026-10-20' })}
+        alCambiar={() => {}}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Confirmar total' }))
+    expect(rpc).not.toHaveBeenCalled()
+    fireEvent.click(
+      within(screen.getByRole('dialog', { name: '¿Confirmar el total acordado?' })).getByRole(
+        'button',
+        { name: 'Confirmar acuerdo' },
+      ),
+    )
+    await waitFor(() => expect(rpc).toHaveBeenCalledWith('confirmar_total', { orden_id: 'o-1' }))
+  })
+  it('lista para recojo requiere confirmación y puede cancelarse sin RPC', () => {
+    render(
+      <AccionesArtesano
+        orden={orden('pagada')}
+        contexto={{ actor: 'artesano', producto: null, enCurso: 1 }}
+        alCambiar={() => {}}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Lista para recojo' }))
+    expect(rpc).not.toHaveBeenCalled()
+    fireEvent.click(
+      within(screen.getByRole('dialog', { name: '¿La pieza está lista para recojo?' })).getByRole(
+        'button',
+        { name: 'Volver' },
+      ),
+    )
+    expect(rpc).not.toHaveBeenCalled()
   })
 })

@@ -1,3 +1,4 @@
+import { Esqueleto } from '../compartido/ui/Esqueleto'
 import { useEffect } from 'react'
 import { Link, Navigate, useNavigate, type RouteObject } from 'react-router-dom'
 import { cerrarSesion } from '../compartido/sesion'
@@ -31,7 +32,7 @@ export function InicioArtesano({ cuenta = false }: { cuenta?: boolean }) {
   if (leyendoSesion || cargando)
     return (
       <main className="pagina">
-        <p role="status">Leyendo tu cuenta…</p>
+        <Esqueleto variante="formulario" etiqueta="Leyendo tu cuenta…" />
       </main>
     )
   if (!sesion) return <Navigate to="/ingresar" replace />

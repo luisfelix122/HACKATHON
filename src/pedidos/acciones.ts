@@ -5,7 +5,7 @@ import type { Producto } from '../compartido/dominio/producto'
 import { obtenerSupabase } from '../compartido/supabase'
 import type { AccionOrden, ActorOrden } from './estadoOrden'
 import { contarEnCurso } from './estadoOrden'
-import { listarOrdenes } from './consultas'
+import { listarOrdenes, mensajeError } from './consultas'
 import { estimarEntrega } from './estimarEntrega'
 export function errorAccion(causa: unknown): string {
   const texto =
@@ -15,7 +15,7 @@ export function errorAccion(causa: unknown): string {
   if (texto.includes('no_autorizado')) return 'Tu cuenta no puede realizar esta acción.'
   if (texto.includes('datos_incompletos'))
     return 'Revisa el total, la fecha y los datos de la acción.'
-  return 'No pudimos conectar. Revisa tu conexión y reintenta.'
+  return mensajeError(causa)
 }
 export function enlaceHttps(valor: string | null): string | null {
   if (!valor || !valor.startsWith('https://') || /\s/.test(valor)) return null
@@ -59,7 +59,8 @@ export function useAccionOrden(orden: Orden, alCambiar: () => void) {
 }
 export type ContextoAcciones = {
   actor: ActorOrden | null
-  producto: Pick<Producto, 'disponibilidad' | 'plazo_dias' | 'precio_final'> | null
+  producto:
+    (Pick<Producto, 'disponibilidad' | 'plazo_dias' | 'precio_final'> & { nombre?: string }) | null
   enCurso: number | null
 }
 export async function leerContextoAcciones(
@@ -69,12 +70,16 @@ export async function leerContextoAcciones(
 ): Promise<ContextoAcciones> {
   const { data, error } = await cliente
     .from('producto')
-    .select('artesano_id,disponibilidad,plazo_dias,precio_final')
+    .select('artesano_id,nombre,disponibilidad,plazo_dias,precio_final')
     .eq('id', orden.producto_id)
     .maybeSingle()
   if (error) throw new Error(errorAccion(error))
   const actor =
-    orden.comprador_id === usuario ? 'comprador' : data?.artesano_id === usuario ? 'artesano' : null
+    orden.comprador_id === usuario
+      ? 'comprador'
+      : (orden.artesano_id ?? data?.artesano_id) === usuario
+        ? 'artesano'
+        : null
   // RLS filtra las órdenes. En APK el perfil autenticado es artesano.
   if (actor === 'artesano' && data?.disponibilidad) {
     estimarEntrega(

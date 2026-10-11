@@ -18,10 +18,13 @@ export function MensajeTraducido({
     texto: string
     error: boolean
   } | null>(null)
+  const [intento, setIntento] = useState(0)
   const [original, setOriginal] = useState<string | null>(null)
+  const cache = mensaje.texto_traducido?.[idioma]
+  const guardada = typeof cache === 'string' && cache.trim() && cache.length <= 4000 ? cache : null
   const clave = `${usuarioId}:${mensaje.id}:${mensaje.texto_original}:${idioma}`
   useEffect(() => {
-    if (sesion?.user.id !== usuarioId) return
+    if (sesion?.user.id !== usuarioId || guardada) return
     let vigente = true
     async function traducir() {
       try {
@@ -49,6 +52,8 @@ export function MensajeTraducido({
     }
   }, [
     clave,
+    intento,
+    guardada,
     idioma,
     mensaje.id,
     mensaje.texto_original,
@@ -57,11 +62,12 @@ export function MensajeTraducido({
     sesion?.access_token,
   ])
   const actual = sesion?.user.id === usuarioId && resultado?.clave === clave ? resultado : null
-  const traducido = actual && !actual.error && actual.texto.trim() !== mensaje.texto_original.trim()
+  const texto = guardada ?? (actual && !actual.error ? actual.texto : mensaje.texto_original)
+  const traducido = texto.trim() !== mensaje.texto_original.trim()
   const verOriginal = original === clave
   return (
     <div>
-      <p>{traducido && !verOriginal ? actual.texto : mensaje.texto_original}</p>
+      <p>{traducido && !verOriginal ? texto : mensaje.texto_original}</p>
       {traducido && (
         <>
           <small>Traducción automática</small>{' '}
@@ -70,7 +76,14 @@ export function MensajeTraducido({
           </button>
         </>
       )}
-      {actual?.error && <small role="status">No pudimos traducir. Se muestra el original.</small>}
+      {actual?.error && (
+        <div>
+          <small role="status">No pudimos traducir. Se muestra el original.</small>{' '}
+          <button type="button" onClick={() => setIntento((i) => i + 1)}>
+            Reintentar traducción
+          </button>
+        </div>
+      )}
     </div>
   )
 }
