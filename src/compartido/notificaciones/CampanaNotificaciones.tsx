@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
 import type { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { obtenerSupabase } from '../supabase'
+import { mostrarAvisoSistema, prepararAvisosSistema } from './avisoSistema'
 import { Modal } from '../ui/Modal'
 import './notificaciones.css'
 
@@ -18,6 +19,12 @@ function CampanaSesion({ usuarioId }: { usuarioId: string }) {
   const [conexion, setConexion] = useState('Conectando las notificaciones…')
   const [intento, setIntento] = useState(0)
   const pendientes = novedades.filter((item) => !item.leida).length
+  const navegar = useNavigate()
+
+  useEffect(
+    () => prepararAvisosSistema((orden) => navegar(`/pedidos/${encodeURIComponent(orden)}`)),
+    [navegar],
+  )
 
   useEffect(() => {
     let activo = true
@@ -26,10 +33,11 @@ function CampanaSesion({ usuarioId }: { usuarioId: string }) {
     try {
       cliente = obtenerSupabase()
       const recibir = (novedad: Novedad) => {
-        if (activo)
-          setNovedades((actuales) =>
-            [novedad, ...actuales.filter((item) => item.id !== novedad.id)].slice(0, 30),
-          )
+        if (!activo) return
+        setNovedades((actuales) =>
+          [novedad, ...actuales.filter((item) => item.id !== novedad.id)].slice(0, 30),
+        )
+        mostrarAvisoSistema(novedad)
       }
       canal = cliente.channel(`novedades-${usuarioId}-${crypto.randomUUID()}`)
       canal
