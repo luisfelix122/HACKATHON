@@ -34,6 +34,8 @@ No se tocaron `supabase/seed.sql` (mismo sha1 antes y después de `supabase init
 - **`gradlew.bat` en Windows:** con `core.autocrlf=true`, un clon nuevo deja `android/gradlew` con CRLF y `sh` no lo ejecuta. El `Makefile` usa `./gradlew.bat` cuando `OS=Windows_NT`. Alternativa recomendada (fuera de la tabla): un `.gitattributes` con `android/gradlew text eol=lf`.
 - **`compileSdk`:** se queda en 36 (lo genera Capacitor 8); `platforms/android-36` está instalado, así que `variables.gradle` no cambió.
 - **Pruebas del cliente Supabase en `src/app/app.test.tsx`:** `src/compartido/supabase.test.ts` no está en la tabla del PRP. Moverlas ahí requiere aprobación.
+- **Puertos de Supabase local 55320–55329:** en esta laptop, Windows (Hyper-V/WinNAT) reserva el rango 54244–54343, y `supabase start` fallaba al publicar el puerto 54322 (`bind: … no permitido`). Se movieron todos los puertos al rango 553xx: la API local queda en `http://127.0.0.1:55321` y Studio en `http://127.0.0.1:55323`. Se comprueba con `netsh interface ipv4 show excludedportrange protocol=tcp`.
+- **`[analytics]` desactivado en `config.toml`:** en Windows, el contenedor `vector` necesita el socket de Docker expuesto y se reinicia en bucle. No hace falta para desarrollar.
 - **Dependencias:** las de la tarea 1 del PRP más las herramientas de calidad (ESLint, Prettier, Vitest, Testing Library, jsdom, TypeScript) y `supabase` (CLI, como dependencia de desarrollo). `@types/node` está alineado con Node 22.
 
 ## Pruebas y resultados
@@ -43,6 +45,7 @@ No se tocaron `supabase/seed.sql` (mismo sha1 antes y después de `supabase init
 | `npm run build:web` | exit 0, genera `dist-web/` |
 | `npm run build:artesano` | exit 0, genera `dist-artesano/` |
 | La APK no incluye la web | `rg` no encuentra «Administración» ni «Página no encontrada» en `dist-artesano/`, ni «Mis productos» en `dist-web/` |
+| `npx supabase start` | arranca con los puertos 553xx; `GET http://127.0.0.1:55321/rest/v1/` → 200; carga `seed.sql` |
 | `make apk` | exit 0, `BUILD SUCCESSFUL`, `android/app/build/outputs/apk/debug/app-debug.apk` (4,3 MB) |
 | `npm run preview -- --mode web` | `/`, `/producto/x` y `/admin` responden 200; `/producto/x` muestra «Producto» sin errores en consola (navegador integrado); sin scroll horizontal a 360 px |
 | Fallo crítico (variables de Supabase faltantes) | La prueba falló primero con el mensaje genérico `supabaseUrl is required.`; después de la validación muestra «Faltan VITE_SUPABASE_URL o VITE_SUPABASE_PUBLISHABLE_KEY…» |
@@ -79,6 +82,7 @@ Pruebas en `src/app/app.test.tsx`:
 - [ ] Confirmar que el CI pasa en GitHub Actions en el PR.
 
 ## Seguimiento (fuera del alcance del PRP 000)
+- `.mcp.json`: `supabase-local` sigue apuntando a `http://localhost:54321/mcp`. Hay que cambiarlo a `55321` (lo aprueba el responsable de `.claude/` y de la configuración de herramientas).
 - `android/app/src/main/AndroidManifest.xml`: `allowBackup="true"` deja la sesión indefinida en las copias de seguridad de Android. Proponer `allowBackup="false"` o `dataExtractionRules` en el PRP 001.
 - `supabase/config.toml` (generado): `minimum_password_length = 6`, cuando el contrato pide 8; `site_url` y `additional_redirect_urls` apuntan a `127.0.0.1:3000`. Ajustar en el PRP 001.
 - `android/app/src/androidTest/` y `android/app/src/test/` son plantillas de Capacitor que esperan `com.getcapacitor.app`. Borrarlas, con aprobación del responsable.
