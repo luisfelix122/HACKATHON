@@ -1,0 +1,83 @@
+/* Guía de encomienda: acuerdo separado del hilo, sin estilos fuera del módulo. */
+.pedidos,
+.pedido-formulario {
+  display: grid;
+  gap: var(--e5);
+}
+.boton-pedir {
+  display: grid;
+  gap: var(--e4);
+}
+.pedido-formulario {
+  margin-block: var(--e5);
+  border-top: var(--borde) solid var(--pacifico);
+  padding-top: var(--e5);
+}
+.pedido-formulario fieldset {
+  border: 0;
+  padding: 0;
+  min-width: 0;
+  display: grid;
+  gap: var(--e4);
+}
+.pedido-formulario legend {
+  font-weight: 700;
+  margin-bottom: var(--e4);
+}
+.pedido-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e3);
+  margin-block: var(--e4);
+}
+.pedidos-lista,
+.pedido-hilo {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  gap: var(--e4);
+}
+.pedidos-lista li {
+  display: grid;
+  gap: var(--e2);
+  border-bottom: var(--borde) solid var(--arena);
+  padding-block: var(--e4);
+}
+.pedido-acuerdo {
+  border-left: 4px solid var(--pacifico);
+  padding-left: var(--e4);
+}
+.pedido-acuerdo dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e2);
+}
+.pedido-acuerdo dt {
+  font-weight: 700;
+}
+.pedido-acuerdo dd {
+  margin: 0 0 var(--e3);
+  overflow-wrap: anywhere;
+}
+.pedido-hilo li {
+  background: var(--blanco);
+  border-left: 3px solid var(--arena);
+  padding: var(--e4);
+  overflow-wrap: anywhere;
+}
+.pedido-hilo li[data-propio='true'] {
+  border-color: var(--ola);
+  background: var(--ola-clara);
+}
+.pedido-hilo p {
+  white-space: pre-wrap;
+}
+.pedido-hilo time {
+  font-size: var(--tam-chico);
+  color: var(--noche-suave);
+}
+@media (min-width: 600px) {
+  .pedido-acuerdo dl {
+    grid-template-columns: minmax(8rem, 1fr) minmax(0, 2fr);
+  }
+}
