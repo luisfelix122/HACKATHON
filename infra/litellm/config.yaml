@@ -58,5 +58,7 @@ general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY
   background_health_checks: false
 litellm_settings:
+  # Gemini no acepta response_format en edición de imagen: se descarta en vez de fallar.
+  drop_params: true
   request_timeout: 45
   set_verbose: false

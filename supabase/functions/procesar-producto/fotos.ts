@@ -1,6 +1,9 @@
 export const VARIANTES_FOTO = ['estudio', 'luz', 'vitrina', 'contexto'] as const
 export type VarianteFoto = (typeof VARIANTES_FOTO)[number]
 
+// Se genera una sola foto mejorada por producto: menos tiempo y menos cuota de IA.
+export const VARIANTES_GENERADAS: readonly VarianteFoto[] = ['estudio']
+
 const PROMPTS_VARIANTES: Record<VarianteFoto, string> = {
   estudio:
     'Fotografía de catálogo en estudio profesional con fondo neutro limpio e iluminación difusa suave. Conserva estrictamente la forma, los colores auténticos, la textura original y los detalles de la pieza artesanal sin alterarlos.',
@@ -39,7 +42,7 @@ export async function procesarVariantesFotos(
   generador: (variante: VarianteFoto) => Promise<{ base64: string }>,
 ): Promise<ResultadoVariantes> {
   const resultados = await Promise.allSettled(
-    VARIANTES_FOTO.map(async (variante) => {
+    VARIANTES_GENERADAS.map(async (variante) => {
       const res = await generador(variante)
       return { variante, base64: res.base64 }
     }),
@@ -49,7 +52,7 @@ export async function procesarVariantesFotos(
   const advertencias: string[] = []
 
   resultados.forEach((res, index) => {
-    const variante = VARIANTES_FOTO[index]
+    const variante = VARIANTES_GENERADAS[index]
     if (res.status === 'fulfilled') {
       fotosExitosas.push(res.value)
     } else {

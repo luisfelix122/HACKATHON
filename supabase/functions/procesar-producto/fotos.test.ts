@@ -10,6 +10,7 @@ vi.mock('../_compartido/ia', async (original) => ({
 }))
 import {
   VARIANTES_FOTO,
+  VARIANTES_GENERADAS,
   obtenerPromptVariante,
   armarPeticionEdicionImagen,
   procesarVariantesFotos,
@@ -45,41 +46,22 @@ describe('fotos.ts - generación de variantes de imagen', () => {
     expect(formData.get('image')).toBeDefined()
   })
 
-  it('procesa las 4 variantes en paralelo y devuelve 4 fotos exitosas sin advertencias', async () => {
-    const fakeGenerador = async (variante: VarianteFoto) => {
-      return { base64: `base64_data_${variante}` }
-    }
+  it('genera una sola foto mejorada, la de estudio', async () => {
+    const generador = vi.fn(async (variante: VarianteFoto) => ({
+      base64: `base64_data_${variante}`,
+    }))
 
-    const resultado = await procesarVariantesFotos(fakeGenerador)
+    const resultado = await procesarVariantesFotos(generador)
 
-    expect(resultado.fotosExitosas).toHaveLength(4)
-    expect(resultado.advertencias).toHaveLength(0)
-    expect(resultado.fotosExitosas.map((f) => f.variante)).toEqual([
-      'estudio',
-      'luz',
-      'vitrina',
-      'contexto',
+    expect(VARIANTES_GENERADAS).toEqual(['estudio'])
+    expect(generador).toHaveBeenCalledTimes(1)
+    expect(resultado.fotosExitosas).toEqual([
+      { variante: 'estudio', base64: 'base64_data_estudio' },
     ])
-    expect(resultado.fotosExitosas[0].base64).toBe('base64_data_estudio')
+    expect(resultado.advertencias).toHaveLength(0)
   })
 
-  it('si 1 variante falla, devuelve 3 fotos y 1 advertencia específica', async () => {
-    const fakeGenerador = async (variante: VarianteFoto) => {
-      if (variante === 'contexto') {
-        throw new Error('Timeout al generar imagen de contexto')
-      }
-      return { base64: `base64_data_${variante}` }
-    }
-
-    const resultado = await procesarVariantesFotos(fakeGenerador)
-
-    expect(resultado.fotosExitosas).toHaveLength(3)
-    expect(resultado.advertencias).toHaveLength(1)
-    expect(resultado.advertencias[0]).toContain('contexto')
-    expect(resultado.fotosExitosas.find((f) => f.variante === 'contexto')).toBeUndefined()
-  })
-
-  it('si todas las variantes fallan, devuelve 0 fotos y 4 advertencias sin lanzar excepción', async () => {
+  it('si la foto falla, devuelve 0 fotos y 1 advertencia sin lanzar excepción', async () => {
     const fakeGenerador = async () => {
       throw new Error('Servicio de imagen ocupado')
     }
@@ -87,10 +69,7 @@ describe('fotos.ts - generación de variantes de imagen', () => {
     const resultado = await procesarVariantesFotos(fakeGenerador)
 
     expect(resultado.fotosExitosas).toHaveLength(0)
-    expect(resultado.advertencias).toHaveLength(4)
-    for (const variante of VARIANTES_FOTO) {
-      expect(resultado.advertencias.some((adv) => adv.includes(variante))).toBe(true)
-    }
+    expect(resultado.advertencias).toEqual(['No se pudo generar la foto «estudio».'])
   })
 })
 
@@ -237,14 +216,14 @@ describe('orquestación HTTP de fotos y recuperación del producto', () => {
     vi.mocked(llamarEdicionImagenIa).mockResolvedValue({ b64_json: '%%%invalido%%%' })
     const respuesta = await handler(peticion(true))
     expect(respuesta.status).toBe(200)
-    expect((await respuesta.json()).advertencias).toHaveLength(4)
+    expect((await respuesta.json()).advertencias).toHaveLength(1)
     expect(producto.estado).toBe('en_revision')
   })
   it('avisa si se sube una variante pero falla su fila', async () => {
     falloFoto = true
     const respuesta = await handler(peticion(true))
     expect(respuesta.status).toBe(200)
-    expect((await respuesta.json()).advertencias).toHaveLength(4)
+    expect((await respuesta.json()).advertencias).toHaveLength(1)
   })
   it('solo una petición concurrente adquiere procesamiento', async () => {
     const respuestas = await Promise.all([handler(peticion()), handler(peticion())])
