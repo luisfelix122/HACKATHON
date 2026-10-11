@@ -1,6 +1,6 @@
 # Fotos por producto — PRP 007
 
-Selección revisada contra los 17 productos publicados existentes (CC-16). Hay doce archivos seleccionados del mismo tipo de objeto, con diferencias declaradas: no se usa la imagen de otra pieza. La embarcación a escala es una coincidencia visual parcial: no acredita una chalana de Cabo Blanco. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
+Selección revisada contra los 17 productos publicados existentes (CC-16). Hay dieciséis archivos seleccionados: doce del mismo tipo de objeto y cuatro aproximados con diferencias declaradas. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
 
 Estas cinco imágenes son referencias de demo del mismo tipo de objeto, no fotos originales de los artesanos ficticios. Las diferencias y los materiales no verificables se declaran a continuación. La embarcación a escala es una coincidencia visual parcial: no acredita una chalana de Cabo Blanco. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
 
@@ -22,6 +22,10 @@ Los créditos se guardan en `ficha.descripcion` al aplicar la semilla sobre una 
 | 09: Abanico Frescor | `10000000-0000-0000-0000-000000000009.jpg` — James Moore200 | [Picture of a woven hand-fan](https://commons.wikimedia.org/wiki/File:Picture_of_a_woven_hand-fan.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | Abanicos redondos tejidos en contexto de mercado. Colores, material paja y tintes naturales no acreditados. |
 | 14: Collar Gota de Mar | `10000000-0000-0000-0000-000000000014.jpg` — Cooper Hewitt, Smithsonian Design Museum | [Pendant (England), 1909](https://commons.wikimedia.org/wiki/File:Pendant_(England),_1909_(CH_68245593).jpg) · dominio público | Colgante de plata con perla barroca en cadena fina. Joya histórica de 1909 con esmalte; foto de museo. |
 | 21: Tarjetero Marino | `10000000-0000-0000-0000-000000000021.jpg` — 掬茶 | [Eel skin card case](https://commons.wikimedia.org/wiki/File:Eel_skin_card_case.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | Tarjetero de piel de pez con brillo típico del cuero de pescado. Especie (pez bruja, no perico) y color no acreditados. |
+| 02: Falda larga calada (aproximada) | `10000000-0000-0000-0000-000000000002.jpg` — Velroy Fernandes | [Mujer con vestido de crochet en la playa](https://www.pexels.com/photo/woman-in-a-crochet-beach-dress-and-sun-hat-kicking-sea-wave-18539313/) · [licencia Pexels](https://www.pexels.com/license/) | Foto de ambiente: muestra un vestido puesto, no la falda. Aprobada por Johann el 2026-10-11. |
+| 15: Pulsera Tres Perlas (aproximada) | `10000000-0000-0000-0000-000000000015.jpg` — Durova | [Pearl crochet bracelet](https://commons.wikimedia.org/wiki/File:Pearl_crochet_bracelet_flat.jpg) · [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) | Pulsera de hilo con perlas, pero es crochet de muchas perlas, no macramé de tres. Aprobada por Johann el 2026-10-11. |
+| 16: Collar Oro Rojo (aproximada) | `10000000-0000-0000-0000-000000000016.jpg` — Daderot | [Collar chimú con Spondylus](https://commons.wikimedia.org/wiki/File:Necklace,_probably_Chan_Chan,_spondylus_and_mussel_shells_with_stone_beads_and_mother-of-pearl_tabs_-_Chimu_objects_in_the_American_Museum_of_Natural_History_-_DSC06135.JPG) · CC0 | Collar arqueológico de múltiples cuentas, no colgante moderno único; foto de museo. Aprobada por Johann el 2026-10-11. |
+| 18: Pulsera de chispas (aproximada) | `10000000-0000-0000-0000-000000000018.jpg` — Vajsov | [Brazaletes de Spondylus](https://commons.wikimedia.org/wiki/File:Spondilusovi_grivni_grob_644_maz_H_III.tif) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | Brazaletes blancos macizos arqueológicos, no fragmentos morados; foto de museo. Aprobada por Johann el 2026-10-11. |
 
 Se verificaron los metadatos de Wikimedia y, para las fuentes de Flickr, Pexels y Unsplash, la licencia en la página original. No se eliminan marcas de autor ni se alteran colores, formas o texturas. Solo se normaliza tamaño (máximo 1000 px) y se reduce/comprime a JPEG. Las fotos CC BY-SA conservan esa licencia, independiente de la licencia del código. Se descartó por incongruente un supuesto llavero de pez (CC0, Fish_keychain.jpg de Ranjima np): la imagen muestra un adorno colgante de templo, no un llavero de madera.
 
@@ -30,6 +34,7 @@ Se verificaron los metadatos de Wikimedia y, para las fuentes de Flickr, Pexels 
 | Archivo local | Bytes | Ruta en el bucket público `fotos` |
 | --- | ---: | --- |
 | `10000000-0000-0000-0000-000000000001.jpg` | 64297 | `00000000-0000-0000-0000-000000000001/10000000-0000-0000-0000-000000000001/original.jpg` |
+| `10000000-0000-0000-0000-000000000002.jpg` | 96310 | `00000000-0000-0000-0000-000000000001/10000000-0000-0000-0000-000000000002/original.jpg` |
 | `10000000-0000-0000-0000-000000000003.jpg` | 62097 | `00000000-0000-0000-0000-000000000001/10000000-0000-0000-0000-000000000003/original.jpg` |
 | `10000000-0000-0000-0000-000000000004.jpg` | 274446 | `00000000-0000-0000-0000-000000000002/10000000-0000-0000-0000-000000000004/original.jpg` |
 | `10000000-0000-0000-0000-000000000006.jpg` | 119458 | `00000000-0000-0000-0000-000000000002/10000000-0000-0000-0000-000000000006/original.jpg` |
@@ -40,6 +45,9 @@ Se verificaron los metadatos de Wikimedia y, para las fuentes de Flickr, Pexels 
 | `10000000-0000-0000-0000-000000000012.jpg` | 82072 | `00000000-0000-0000-0000-000000000004/10000000-0000-0000-0000-000000000012/original.jpg` |
 | `10000000-0000-0000-0000-000000000013.jpg` | 37809 | `00000000-0000-0000-0000-000000000005/10000000-0000-0000-0000-000000000013/original.jpg` |
 | `10000000-0000-0000-0000-000000000014.jpg` | 73033 | `00000000-0000-0000-0000-000000000005/10000000-0000-0000-0000-000000000014/original.jpg` |
+| `10000000-0000-0000-0000-000000000015.jpg` | 165506 | `00000000-0000-0000-0000-000000000005/10000000-0000-0000-0000-000000000015/original.jpg` |
+| `10000000-0000-0000-0000-000000000016.jpg` | 216832 | `00000000-0000-0000-0000-000000000006/10000000-0000-0000-0000-000000000016/original.jpg` |
+| `10000000-0000-0000-0000-000000000018.jpg` | 108623 | `00000000-0000-0000-0000-000000000006/10000000-0000-0000-0000-000000000018/original.jpg` |
 | `10000000-0000-0000-0000-000000000021.jpg` | 99691 | `00000000-0000-0000-0000-000000000007/10000000-0000-0000-0000-000000000021/original.jpg` |
 
 El archivo del producto 10 existe en el repo pero está excluido de la carga hasta aprobación específica de su coincidencia parcial, así que su ruta aún no tiene objeto en Storage.
@@ -48,18 +56,15 @@ Todos los JPEG tienen como máximo 1000 px en su lado mayor y menos de 300 KB (3
 
 ## Fotos pendientes
 
-### Candidatos de referencia para los productos publicados aún sin foto
+### Candidatos pendientes de decisión
 
-Para 02, 15, 16 y 18 solo hay referencias aproximadas (diseño o contexto distinto);
-para 11 no se halló foto reutilizable. Ninguna está aprobada para cargar.
+Solo quedan sin foto el producto 10 (referencia parcial de jangada, requiere aprobación
+específica) y el 11 (sin foto reutilizable; se necesita foto propia). Los productos
+22 (retirado) y 23 (borrador) requieren foto correspondiente.
 
-| Producto | Candidato de referencia | Coincidencia / diferencia por revisar |
-| --- | --- | --- |
-| 02: Falda larga calada | [Vestido playero de crochet — Velroy Fernandes / Pexels](https://www.pexels.com/photo/woman-in-a-crochet-beach-dress-and-sun-hat-kicking-sea-wave-18539313/) · licencia Pexels de libre uso | Es vestido, no falda separada; color y composición sin confirmar. Requiere aprobación. |
-| 11: Llavero Pez Espada | Sin candidata: la única referencia libre hallada (Fish_keychain.jpg, CC0) muestra un adorno colgante de templo, no un llavero de madera. Descartada por incongruente. | Pendiente de foto propia. |
-| 15: Pulsera Tres Perlas | [Pearl crochet bracelet — Durova / Commons](https://commons.wikimedia.org/wiki/File:Pearl_crochet_bracelet_flat.jpg) · [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) | Pulsera de hilo tejido con perlas de agua dulce, pero es crochet con muchas perlas pequeñas, no macramé de tres perlas. Requiere aprobación. |
-| 16: Collar Oro Rojo | [Collar chimú con Spondylus — Daderot / Commons](https://commons.wikimedia.org/wiki/File:Necklace,_probably_Chan_Chan,_spondylus_and_mussel_shells_with_stone_beads_and_mother-of-pearl_tabs_-_Chimu_objects_in_the_American_Museum_of_Natural_History_-_DSC06135.JPG) · CC0 | Pieza arqueológica de múltiples cuentas con Spondylus, no colgante rojo único moderno. Requiere aprobación. |
-| 18: Pulsera de chispas moradas | [Brazaletes de Spondylus — Vajsov / Commons](https://commons.wikimedia.org/wiki/File:Spondilusovi_grivni_grob_644_maz_H_III.tif) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | Brazaletes macizos blancos arqueológicos, no fragmentos morados ensartados. Requiere aprobación. |
+Las referencias aproximadas de 02, 15, 16 y 18 fueron aprobadas por Johann el 2026-10-11
+y ya están cargadas (ver tabla de selección). La única referencia descartada del proceso
+fue Fish_keychain.jpg (CC0) para el producto 11, por mostrar un adorno de templo y no un llavero.
 
 Alternativas con licencia de uso comprobada que no se usaron, por diseño diferente:
 [collar de una perla redonda CC0 — Sound Media](https://www.publicdomainpictures.net/en/view-image.php?image=366252&picture=silver-necklace-with-pearl-pendant),
@@ -72,17 +77,13 @@ a los vendedores ficticios. No se generaron imágenes con IA.
 
 | Producto | Estado |
 | --- | --- |
-| 01, 03, 04, 06–09, 12–14, 21 (11 publicados) | Foto de referencia cargada en Storage con atribución en ficha. |
-| 02: Falda larga calada para la playa | Referencia aproximada (vestido, no falda); requiere aprobación. Sin foto en Storage. |
+| 01–04, 06–09, 12–16, 18, 21 (15 publicados) | Foto de referencia cargada en Storage con atribución en ficha. |
 | 10: Chalana a escala | Referencia parcial (jangada brasileña); requiere aprobación específica. Sin foto en Storage. |
-| 11: Llavero tallado Pez Espada | Sin foto reutilizable; candidata descartada por incongruente. Sin foto en Storage. |
-| 15: Pulsera de macramé Tres Perlas | Referencia aproximada (crochet de muchas perlas); requiere aprobación. Sin foto en Storage. |
-| 16: Collar Oro Rojo de Spondylus | Referencia aproximada (pieza arqueológica); requiere aprobación. Sin foto en Storage. |
-| 18: Pulsera de chispas de Spondylus morado | Referencia aproximada (brazaletes blancos); requiere aprobación. Sin foto en Storage. |
+| 11: Llavero tallado Pez Espada | Sin foto reutilizable; se necesita foto propia. Sin foto en Storage. |
 | 22: Top edición especial (retirado) | Fuera de los publicados; requiere foto correspondiente. |
 | 23: Billetera en creación (borrador) | Fuera de los publicados; requiere foto correspondiente. |
 
-Para cerrar estos pendientes se necesitan fotos propias de las piezas o la aprobación de las referencias aproximadas. No se generaron imágenes con IA.
+Para cerrar estos pendientes se necesita la aprobación del 10 o fotos propias. No se generaron imágenes con IA.
 
 ## Carga y validación
 
@@ -97,10 +98,9 @@ La semilla conserva 10 perfiles, 19 productos (17 publicados), 19 registros SQL 
 ## Estado comprobado el 11 de octubre de 2026 (segunda carga)
 
 - Carga administrativa mediante el importador restringido `ayllu-import` (SSH por clave, alcance ampliado a 01/03/04/06–09/12–14/21, `upsert=false`, sin cambios de RLS; el 10 y otros IDs siguen rechazados).
-- Segunda carga (11-oct, mañana): 01, 04, 06, 08, 09, 14 y 21 recibidos y subidos tras aplicar su atribución en `producto.ficha.descripcion` y activar la política. Todo `uploaded`, POST 200 y GET público 200 con SHA256 coincidente:
-  01 → 64 297 B; 04 → 274 446 B; 06 → 119 458 B; 08 → 105 031 B; 09 → 133 261 B; 14 → 73 033 B; 21 → 99 691 B.
-- Primera carga: 03, 07, 13 subidos; 12 verificado existente. Totales en Storage: 11 fotos publicadas de 17 productos publicados.
-- Sin foto en Storage: 02 y 15/16/18 (referencias aproximadas, requieren aprobación), 10 (parcial, requiere aprobación específica) y 11 (sin candidata reutilizable; se descartó una CC0 por incongruente). Los productos 05/17/19/20 salieron de la semilla (CC-16).
-- `supabase/seed.sql` contiene los créditos de las 11 fotos y coincide con las fichas del servidor.
+- Tercera carga (11-oct, mediodía): 02, 15, 16 y 18 recibidos y subidos como referencias aproximadas aprobadas por Johann, con diferencias declaradas en ficha. Todo `uploaded`, POST 200 y GET público 200 con SHA256 coincidente:
+  02 → 96 310 B; 15 → 165 506 B; 16 → 216 832 B; 18 → 108 623 B.
+- Totales en Storage: 15 fotos publicadas de 17 productos publicados. Sin foto: 10 (parcial, requiere aprobación específica) y 11 (sin candidata; se necesita foto propia).
+- `supabase/seed.sql` contiene los créditos de las 15 fotos y coincide con las fichas del servidor.
 - Vitrina https://ayllu.likadev.com responde HTTP 200. La comprobación visual a 360 y 1440 px y del panel `/admin` con cuenta real queda para el usuario con navegador.
 - `make verify` y `make build` se reejecutan antes del merge (ver salida del PR).
