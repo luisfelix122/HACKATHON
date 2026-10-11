@@ -1,0 +1,5 @@
+[mcp_servers.engram]
+command = "node"
+args = ["scripts/engram.mjs", "mcp"]
+startup_timeout_sec = 20
+enabled = true
