@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { Boton } from '../compartido/ui/componentes'
+import { Icono } from '../compartido/ui/Icono'
 import { urlFoto, type FotoPublica } from './consultas'
 
 export function CarruselFotos({ fotos, titulo }: { fotos: FotoPublica[]; titulo: string }) {
@@ -40,12 +41,20 @@ export function CarruselFotos({ fotos, titulo }: { fotos: FotoPublica[]; titulo:
             onError={() => setFallidas((prev) => [...prev, actual.id])}
           />
         ) : (
-          <p>Foto no disponible</p>
+          <p className="vitrina-sin-foto">
+            <Icono nombre="camara" tamano={40} />
+            Sin foto todavía
+          </p>
         )}
       </div>
       <div className="vitrina-controles">
         {publicadas.length > 1 && (
-          <Boton variante="secundario" aria-label="Foto anterior" onClick={() => mover(-1)}>
+          <Boton
+            variante="secundario"
+            icono="atras"
+            aria-label="Foto anterior"
+            onClick={() => mover(-1)}
+          >
             Anterior
           </Boton>
         )}
@@ -55,7 +64,12 @@ export function CarruselFotos({ fotos, titulo }: { fotos: FotoPublica[]; titulo:
             : 'Sin fotos'}
         </span>
         {publicadas.length > 1 && (
-          <Boton variante="secundario" aria-label="Foto siguiente" onClick={() => mover(1)}>
+          <Boton
+            variante="secundario"
+            icono="adelante"
+            aria-label="Foto siguiente"
+            onClick={() => mover(1)}
+          >
             Siguiente
           </Boton>
         )}

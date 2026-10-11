@@ -1,5 +1,6 @@
 import type { RouteObject } from 'react-router-dom'
 import { Catalogo } from './Catalogo'
+import { Portada } from './Portada'
 import { FichaProducto } from './FichaProducto'
 import { PerfilArtesano } from './PerfilArtesano'
 import './vitrina.css'
@@ -9,7 +10,9 @@ import './vitrina.css'
 
 /** Rutas de la web del comprador y del administrador. */
 export const rutasWeb: RouteObject[] = [
-  { path: '/', element: <Catalogo /> },
+  // Landing en «/» y catálogo en «/catalogo» (CC-17); los filtros viejos de «/» redirigen.
+  { path: '/', element: <Portada /> },
+  { path: '/catalogo', element: <Catalogo /> },
   { path: '/producto/:id', element: <FichaProducto /> },
   { path: '/artesano/:id', element: <PerfilArtesano /> },
 ]

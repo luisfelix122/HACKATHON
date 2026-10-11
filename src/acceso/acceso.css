@@ -1,16 +1,60 @@
+/* Acceso del artesano en la APK (módulo A) con el mundo «Rotulado de chalana» (decisión 0006). */
 .acceso {
   display: grid;
-  gap: var(--e4);
+  gap: var(--e5);
 }
+
+.acceso-cabecera {
+  display: grid;
+  gap: var(--e2);
+  padding-bottom: var(--e4);
+  border-bottom: 1px solid var(--linea);
+}
+
 .acceso-formulario {
   display: grid;
-  gap: var(--e6);
+  gap: var(--e5);
 }
+
 .acceso .casilla-cuerpo {
   display: grid;
   gap: var(--e4);
 }
-.acceso details summary {
+
+/* Acción secundaria con aspecto de enlace, del tamaño de un dedo. */
+.acceso-enlace {
+  justify-self: start;
+  min-height: var(--tactil);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--casco);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.2em;
   cursor: pointer;
-  padding-block: var(--e3);
+}
+
+.acceso-separador {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--e3);
+  color: var(--brea-suave);
+  font-weight: 700;
+}
+
+.acceso-separador::before,
+.acceso-separador::after {
+  content: '';
+  border-top: 1px solid var(--linea);
+}
+
+.acceso-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  min-height: var(--tactil);
+  width: fit-content;
 }

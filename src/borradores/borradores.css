@@ -105,7 +105,7 @@
 .resumen-fila.destacada {
   font-size: 1.15rem;
   font-weight: 700;
-  border-top: 1px solid var(--borde);
+  border-top: 1px solid var(--linea-fuerte);
   padding-top: var(--e2);
 }
 
@@ -134,7 +134,7 @@
   max-height: 380px;
   object-fit: cover;
   border-radius: var(--radio-md);
-  border: 1px solid var(--borde);
+  border: 1px solid var(--linea-fuerte);
 }
 
 .foto-acciones {
@@ -148,7 +148,7 @@
   align-items: center;
   justify-content: center;
   padding: var(--e8) var(--e4);
-  border: 2px dashed var(--borde);
+  border: 2px dashed var(--linea-fuerte);
   border-radius: var(--radio-lg);
   background-color: var(--arena);
 }
@@ -192,7 +192,7 @@
   align-items: flex-start;
   text-align: left;
   padding: var(--e4);
-  border: 2px solid var(--borde);
+  border: 2px solid var(--linea-fuerte);
   border-radius: var(--radio-md);
   background-color: var(--fondo);
   cursor: pointer;
@@ -262,7 +262,7 @@
   gap: var(--e3);
   margin-top: var(--e6);
   padding-top: var(--e4);
-  border-top: 1px solid var(--borde);
+  border-top: 1px solid var(--linea-fuerte);
 }
 
 /* Mis Productos */
@@ -302,7 +302,7 @@
   flex-direction: column;
   border-radius: var(--radio-md);
   overflow: hidden;
-  border: 1px solid var(--borde);
+  border: 1px solid var(--linea-fuerte);
   background-color: var(--fondo);
 }
 
@@ -391,7 +391,7 @@
 .estado-guardado {
   background-color: var(--arena);
   color: var(--texto);
-  border: 1px solid var(--borde);
+  border: 1px solid var(--linea-fuerte);
 }
 
 .estado-sincronizando {

@@ -51,6 +51,7 @@ El despliegue de los PRP 009 y 010 lo hace la laptop autorizada. Mientras tanto 
 | CU-01 | Acceder (comprador con Google; artesano con correo o Google) y solicitar acreditación con RNA; el admin aprueba o rechaza | artesano, admin, comprador | CU-00 | H1 |
 | CU-11 | Sistema visual (tokens, componentes, fuentes locales), antes de las pantallas | equipo | CU-00 | H1 |
 | CU-12 | Esquema base y costuras para trabajar en paralelo (Fase 0) | equipo | CU-00, CU-11 | H1 |
+| CU-13 | Rediseño completo con el mundo «Rotulado de chalana»: landing, catálogo en `/catalogo`, navegación con iconos, modales y APK (CC-17) | equipo | CU-01 a CU-06 | H3 |
 | CU-02 | Crear un borrador de producto sin conexión (nombre, foto, audio, calculadora, disponibilidad) y sincronizarlo | artesano | CU-00, CU-01 | H1 |
 | CU-03 | Procesar el borrador con IA (filtro de artesanía, ficha, etiquetas y 4 fotos), revisarlo, corregirlo y publicarlo | artesano | CU-02 | H2 |
 | CU-04 | Explorar la vitrina pública: búsqueda, filtros y etiquetas, ficha con carrusel, perfil y WhatsApp | comprador | CU-00 (con datos semilla) | H1 |
