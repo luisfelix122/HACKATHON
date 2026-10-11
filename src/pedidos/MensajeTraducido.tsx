@@ -3,28 +3,32 @@ import type { MensajeOrden } from '../compartido/dominio/orden'
 import { obtenerSupabase } from '../compartido/supabase'
 import { useSesion } from '../compartido/sesion'
 
+/** Idioma base del lector (`es-PE` → `es`): coincide con más traducciones guardadas. */
+function idiomaDelLector(): string {
+  const base = navigator.language.split('-')[0]?.toLowerCase()
+  return base && /^[a-z]{2,3}$/.test(base) ? base : 'es'
+}
+
 export function MensajeTraducido({
   mensaje,
   usuarioId,
-  idioma = navigator.language,
+  idioma = idiomaDelLector(),
 }: {
   mensaje: MensajeOrden
   usuarioId: string
   idioma?: string
 }) {
   const { sesion } = useSesion()
-  const [resultado, setResultado] = useState<{
-    clave: string
-    texto: string
-    error: boolean
-  } | null>(null)
-  const [intento, setIntento] = useState(0)
+  const [resultado, setResultado] = useState<{ clave: string; texto: string } | null>(null)
   const [original, setOriginal] = useState<string | null>(null)
+  // Los mensajes propios ya están en tu idioma: no se traducen.
+  const esPropio = mensaje.autor_id === usuarioId
   const cache = mensaje.texto_traducido?.[idioma]
   const guardada = typeof cache === 'string' && cache.trim() && cache.length <= 4000 ? cache : null
   const clave = `${usuarioId}:${mensaje.id}:${mensaje.texto_original}:${idioma}`
+
   useEffect(() => {
-    if (sesion?.user.id !== usuarioId || guardada) return
+    if (esPropio || sesion?.user.id !== usuarioId || guardada) return
     let vigente = true
     async function traducir() {
       try {
@@ -36,14 +40,12 @@ export function MensajeTraducido({
           !data ||
           typeof data.texto !== 'string' ||
           !data.texto.trim() ||
-          data.texto.length > 4000 ||
-          typeof data.idioma !== 'string' ||
-          Intl.getCanonicalLocales(data.idioma)[0] !== Intl.getCanonicalLocales(idioma)[0]
+          data.texto.length > 4000
         )
-          throw new Error()
-        if (vigente) setResultado({ clave, texto: data.texto, error: false })
+          return
+        if (vigente) setResultado({ clave, texto: data.texto })
       } catch {
-        if (vigente) setResultado({ clave, texto: mensaje.texto_original, error: true })
+        // Sin traducción se muestra el original, sin avisos: el mensaje sigue legible.
       }
     }
     void traducir()
@@ -51,23 +53,25 @@ export function MensajeTraducido({
       vigente = false
     }
   }, [
+    esPropio,
     clave,
-    intento,
     guardada,
     idioma,
     mensaje.id,
-    mensaje.texto_original,
     usuarioId,
     sesion?.user.id,
     sesion?.access_token,
   ])
-  const actual = sesion?.user.id === usuarioId && resultado?.clave === clave ? resultado : null
-  const texto = guardada ?? (actual && !actual.error ? actual.texto : mensaje.texto_original)
-  const traducido = texto.trim() !== mensaje.texto_original.trim()
+
+  const traduccion = esPropio
+    ? null
+    : (guardada ?? (resultado?.clave === clave ? resultado.texto : null))
+  const traducido = traduccion !== null && traduccion.trim() !== mensaje.texto_original.trim()
   const verOriginal = original === clave
+
   return (
     <div>
-      <p>{traducido && !verOriginal ? texto : mensaje.texto_original}</p>
+      <p>{traducido && !verOriginal ? traduccion : mensaje.texto_original}</p>
       {traducido && (
         <>
           <small>Traducción automática</small>{' '}
@@ -75,14 +79,6 @@ export function MensajeTraducido({
             {verOriginal ? 'Ver traducción' : 'Ver original'}
           </button>
         </>
-      )}
-      {actual?.error && (
-        <div>
-          <small role="status">No pudimos traducir. Se muestra el original.</small>{' '}
-          <button type="button" onClick={() => setIntento((i) => i + 1)}>
-            Reintentar traducción
-          </button>
-        </div>
       )}
     </div>
   )
