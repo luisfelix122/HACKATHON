@@ -3,29 +3,55 @@
 #   macOS:   xcode-select --install   (o brew install make)
 #   Linux:   sudo apt install make
 #
-# Stack: POR DEFINIR. Cada check falla a propósito hasta reemplazar su comando
-# por el real (p. ej. lint, chequeo de formato, verificación de tipos, tests).
-# No sustituir por un comando que "pase" sin verificar nada.
+# Stack: React + TypeScript + Vite, Supabase y Capacitor (docs/decisiones/0001-stack.md).
+# Ningún objetivo se reemplaza por un comando que "pase" sin verificar nada.
 
-.PHONY: help verify lint format-check typecheck test
+.PHONY: help verify lint format-check typecheck test build apk test-db
+
+# Compilar Android: Capacitor 8 genera Gradle 8.14, que requiere JDK 21; el JDK 25
+# de Android Studio no sirve. Instalar con: winget install EclipseAdoptium.Temurin.21.JDK
+# Se sobrescriben así: make apk JDK21_HOME=/ruta/jdk-21 ANDROID_HOME=/ruta/Sdk
+JDK21_HOME ?= C:/Program Files/Eclipse Adoptium/jdk-21.0.12.101-hotspot
+ANDROID_HOME ?= $(LOCALAPPDATA)/Android/Sdk
+# En Windows, git con autocrlf deja `gradlew` con CRLF y sh no lo ejecuta: se usa el .bat.
+GRADLEW := $(if $(filter Windows_NT,$(OS)),./gradlew.bat,./gradlew)
 
 help:
 	@echo "make verify        lint + format-check + typecheck + test"
-	@echo "make lint          PENDIENTE: definir con el stack"
-	@echo "make format-check  PENDIENTE: definir con el stack"
-	@echo "make typecheck     PENDIENTE: definir con el stack"
-	@echo "make test          PENDIENTE: definir con el stack"
+	@echo "make lint          npm run lint (ESLint)"
+	@echo "make format-check  npm run format:check (Prettier)"
+	@echo "make typecheck     npm run typecheck (tsc)"
+	@echo "make test          npm run test -- --run (Vitest)"
+	@echo "make build         build de la web (dist-web) y de la app del artesano (dist-artesano)"
+	@echo "make apk           APK de debug del artesano (requiere JDK 21 y el SDK de Android)"
+	@echo "make test-db       pruebas pgTAP (requiere Docker y 'npx supabase start')"
 
 verify: lint format-check typecheck test
 
 lint:
-	@echo "PENDIENTE: comando de lint no definido (stack por definir)" && exit 1
+	npm run lint
 
 format-check:
-	@echo "PENDIENTE: comando de comprobacion de formato no definido (stack por definir)" && exit 1
+	npm run format:check
 
 typecheck:
-	@echo "PENDIENTE: comando de verificacion de tipos no definido (stack por definir)" && exit 1
+	npm run typecheck
 
 test:
-	@echo "PENDIENTE: comando de tests no definido (stack por definir)" && exit 1
+	npm run test -- --run
+
+build:
+	npm run build:web
+	npm run build:artesano
+
+apk:
+	@test -d "$(JDK21_HOME)" || { echo "No existe JDK21_HOME=$(JDK21_HOME). Instala JDK 21 o pasa make apk JDK21_HOME=/ruta."; exit 1; }
+	@test -d "$(ANDROID_HOME)" || { echo "No existe ANDROID_HOME=$(ANDROID_HOME). Instala el SDK de Android o pasa make apk ANDROID_HOME=/ruta."; exit 1; }
+	npm run build:artesano
+	npx cap sync android
+	cd android && JAVA_HOME="$(JDK21_HOME)" ANDROID_HOME="$(ANDROID_HOME)" $(GRADLEW) assembleDebug
+	@echo "APK: android/app/build/outputs/apk/debug/app-debug.apk"
+
+test-db:
+	@docker info >/dev/null 2>&1 || { echo "Docker no está corriendo: inicia Docker Desktop y luego 'npx supabase start'."; exit 1; }
+	npx supabase test db
