@@ -28,6 +28,12 @@ secrets/
 credentials*.json
 service-account*.json
 
+# Engram: solo config, manifiesto y chunks revisados se comparten.
+.engram/local/
+.engram/*.db
+.engram/*.db-*
+.engram/*.log
+
 # Claude Code (local, por persona)
 .claude/settings.local.json
 CLAUDE.local.md

@@ -12,8 +12,8 @@ export default defineConfig(({ mode }) => ({
   },
   test: {
     environment: 'jsdom',
-    // `globals` permite que Testing Library limpie el DOM después de cada prueba.
-    globals: true,
+    // Limpia el DOM entre pruebas (PRP 012).
+    setupFiles: ['src/test/setup.ts'],
     include: ['src/**/*.test.{ts,tsx}', 'supabase/functions/**/*.test.ts'],
     // Vitest devuelve vacío el CSS importado; tokens.css se lee de verdad para
     // comprobar el contraste AA de la paleta (PRP 011, aprobado por Cristopher).
