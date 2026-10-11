@@ -15,6 +15,7 @@ import {
 } from './audio'
 import { Calculadora } from './Calculadora'
 import { comprimirFoto } from './comprimirFoto'
+import { Icono } from '../compartido/ui/Icono'
 import { MAX_FOTOS_ADICIONALES } from '../publicacion/fotosProducto'
 import {
   validarDisponibilidad,
@@ -374,7 +375,8 @@ export function EditorBorrador() {
   return (
     <main className="pagina editor-borrador">
       <button type="button" onClick={() => navigate('/')} className="boton-volver-atras">
-        Volver a Mis productos
+        <Icono nombre="atras" tamano={20} />
+        Mis productos
       </button>
       <FormularioModal
         titulo={id ? 'Editar borrador' : 'Crear una pieza'}
@@ -429,6 +431,7 @@ export function EditorBorrador() {
                 <img src={fotoPreview} alt="Vista previa de la pieza" className="foto-previa" />
                 <div className="foto-acciones">
                   <Boton variante="secundario" onClick={tomarOSeleccionarFoto}>
+                    <Icono nombre="camara" tamano={20} />
                     Cambiar foto
                   </Boton>
                 </div>
@@ -440,7 +443,11 @@ export function EditorBorrador() {
                       <li key={foto.id}>
                         <img src={foto.url} alt={`Foto adicional ${indice + 1}`} />
                         <button type="button" onClick={() => quitarFotoExtra(foto.id)}>
-                          Quitar
+                          <Icono
+                            nombre="borrar"
+                            tamano={20}
+                            etiqueta={'Quitar foto adicional ' + (indice + 1)}
+                          />
                         </button>
                       </li>
                     ))}
@@ -448,6 +455,7 @@ export function EditorBorrador() {
                 )}
                 {fotosExtra.length < MAX_FOTOS_ADICIONALES && (
                   <Boton variante="secundario" onClick={agregarFotoExtra}>
+                    <Icono nombre="nuevo" tamano={20} />
                     Agregar otra foto
                   </Boton>
                 )}
@@ -455,6 +463,7 @@ export function EditorBorrador() {
             ) : (
               <div className="foto-vacia">
                 <Boton variante="destacado" onClick={tomarOSeleccionarFoto}>
+                  <Icono nombre="camara" tamano={20} />
                   Tomar foto o elegir de galería
                 </Boton>
               </div>
@@ -473,16 +482,19 @@ export function EditorBorrador() {
             <div className="audio-acciones">
               {conectado ? (
                 <Boton variante="secundario" onClick={alternarDictado}>
+                  <Icono nombre="microfono" tamano={20} />
                   {dictando ? 'Detener dictado' : 'Dictar por voz'}
                 </Boton>
               ) : (
                 <Boton variante="destacado" onClick={alternarGrabacionAudio}>
+                  <Icono nombre="microfono" tamano={20} />
                   {grabando ? 'Detener grabación' : 'Grabar audio sin señal'}
                 </Boton>
               )}
 
               {conectado && (
                 <Boton variante="secundario" onClick={alternarGrabacionAudio}>
+                  <Icono nombre="microfono" tamano={20} />
                   {grabando ? 'Detener grabación de audio' : 'Grabar audio'}
                 </Boton>
               )}
@@ -625,6 +637,7 @@ export function EditorBorrador() {
         <footer className="navegacion-pasos">
           {pasoActual > 0 && (
             <Boton variante="secundario" onClick={retrocederPaso}>
+              <Icono nombre="atras" tamano={20} />
               Atrás
             </Boton>
           )}
@@ -632,6 +645,7 @@ export function EditorBorrador() {
           {pasoActual < PASOS.length - 1 && (
             <Boton variante="destacado" onClick={avanzarPaso}>
               Siguiente
+              <Icono nombre="adelante" tamano={20} />
             </Boton>
           )}
         </footer>

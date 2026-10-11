@@ -44,6 +44,30 @@ const TRAZOS = {
     </>
   ),
   nuevo: <path d="M12 5v14M5 12h14" />,
+  editar: <path d="M4 20h4L19 9l-4-4L4 16v4ZM13.5 6.5l4 4" />,
+  borrar: (
+    <>
+      <path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 13h9l1-13" />
+      <path d="M10 11v5M14 11v5" />
+    </>
+  ),
+  imagen: (
+    <>
+      <rect x="3.5" y="5" width="17" height="14" rx="2" />
+      <path d="m3.5 16 5-5 4 4 2.5-2.5 5.5 5.5" />
+      <circle cx="15.5" cy="9.5" r="1.5" />
+    </>
+  ),
+  ia: <path d="M12 3.5 13.8 10 20.5 12l-6.7 2L12 20.5 10.2 14 3.5 12l6.7-2Z" />,
+  candado: (
+    <>
+      <rect x="5" y="10.5" width="14" height="10" rx="2" />
+      <path d="M8 10.5V7.5a4 4 0 0 1 8 0v3" />
+    </>
+  ),
+  sincronizar: (
+    <path d="M19.5 9A8 8 0 0 0 5 7.5M4.5 15a8 8 0 0 0 14.5 1.5M19.5 4v5h-5M4.5 20v-5h5" />
+  ),
   admin: (
     <>
       <path d="M12 3 4.5 6v5.5c0 4.4 3.2 8.2 7.5 9.5 4.3-1.3 7.5-5.1 7.5-9.5V6Z" />

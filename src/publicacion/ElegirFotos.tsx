@@ -1,5 +1,6 @@
 import React, { useRef } from 'react'
 import type { VarianteFoto, OrigenFoto } from '../compartido/dominio/producto'
+import { Icono } from '../compartido/ui/Icono'
 
 export interface ItemFotoUI {
   id: string
@@ -66,16 +67,17 @@ export const ElegirFotos: React.FC<ElegirFotosProps> = ({
   return (
     <section className="seccion-elegir-fotos" aria-label="Selección de fotos">
       <header className="elegir-fotos-cabecera">
-        <h3 className="subtitulo-elegir-fotos">Fotos del producto</h3>
+        <h2 className="subtitulo-elegir-fotos">Fotos</h2>
         <p className="descripcion-elegir-fotos">
-          Elige qué fotos se ven en la vitrina y su orden. Puedes agregar fotos tuyas.
+          {fotosPublicadas.length} de {fotos.length} en la vitrina. Marca cuáles se ven y ordénalas.
         </p>
       </header>
 
       {fotosPublicadas.length === 0 && (
-        <div className="aviso-fotos-incompletas" role="alert">
-          <span>⚠️ Marca al menos una foto para poder publicar.</span>
-        </div>
+        <p className="aviso-fotos-incompletas" role="alert">
+          <Icono nombre="alerta" tamano={20} />
+          Marca al menos una foto para poder publicar.
+        </p>
       )}
 
       <div className="cuadricula-fotos" role="list">
@@ -108,106 +110,92 @@ export const ElegirFotos: React.FC<ElegirFotosProps> = ({
                   {etiqueta}
                 </span>
                 {foto.publicada && (
-                  <span className="insignia-posicion" title="Posición en vitrina">
-                    #{foto.posicion + 1}
+                  <span className="insignia-posicion" title="Posición en la vitrina">
+                    {foto.posicion + 1}
                   </span>
                 )}
               </div>
 
-              <div className="acciones-foto">
-                <label className="etiqueta-checkbox-publicar">
-                  <input
-                    type="checkbox"
-                    checked={foto.publicada}
-                    onChange={() => togglePublicada(foto.id)}
-                    disabled={deshabilitado}
-                    className="checkbox-publicar"
-                    aria-label={`Publicar foto ${etiqueta}`}
-                  />
-                  <span className="texto-publicar">
-                    {foto.publicada ? 'Publicada' : 'No publicar'}
-                  </span>
-                </label>
+              <label className="etiqueta-checkbox-publicar">
+                <input
+                  type="checkbox"
+                  checked={foto.publicada}
+                  onChange={() => togglePublicada(foto.id)}
+                  disabled={deshabilitado}
+                  className="checkbox-publicar"
+                  aria-label={`Mostrar foto ${etiqueta} en la vitrina`}
+                />
+                <span className="texto-publicar">{foto.publicada ? 'En vitrina' : 'Oculta'}</span>
+              </label>
 
-                <div className="botones-orden" role="group" aria-label="Cambiar orden">
-                  <button
-                    type="button"
-                    onClick={() => moverFoto(index, 'arriba')}
-                    disabled={deshabilitado || index === 0}
-                    className="boton-orden"
-                    aria-label={`Mover foto ${etiqueta} antes`}
-                    title="Mover antes"
-                  >
-                    ←
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => moverFoto(index, 'abajo')}
-                    disabled={deshabilitado || index === fotos.length - 1}
-                    className="boton-orden"
-                    aria-label={`Mover foto ${etiqueta} después`}
-                    title="Mover después"
-                  >
-                    →
-                  </button>
-                </div>
-              </div>
-
-              {!esOriginal && alQuitar && (
+              <div className="acciones-foto" role="group" aria-label={`Acciones de ${etiqueta}`}>
                 <button
                   type="button"
-                  className="boton-quitar-foto"
-                  onClick={() => alQuitar(foto)}
-                  disabled={deshabilitado}
+                  onClick={() => moverFoto(index, 'arriba')}
+                  disabled={deshabilitado || index === 0}
+                  className="boton-orden"
                 >
-                  Quitar foto
+                  <Icono nombre="atras" tamano={20} etiqueta={`Mover foto ${etiqueta} antes`} />
                 </button>
-              )}
-
-              {esOriginal && (
-                <div className="pie-foto-original">
-                  <a
-                    href={foto.urlVisual}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="enlace-ver-original"
-                  >
-                    Ver foto original completa
+                <button
+                  type="button"
+                  onClick={() => moverFoto(index, 'abajo')}
+                  disabled={deshabilitado || index === fotos.length - 1}
+                  className="boton-orden"
+                >
+                  <Icono
+                    nombre="adelante"
+                    tamano={20}
+                    etiqueta={`Mover foto ${etiqueta} después`}
+                  />
+                </button>
+                {esOriginal ? (
+                  <a href={foto.urlVisual} target="_blank" rel="noreferrer" className="boton-orden">
+                    <Icono nombre="imagen" tamano={20} etiqueta="Ver foto original completa" />
                   </a>
-                </div>
-              )}
+                ) : (
+                  alQuitar && (
+                    <button
+                      type="button"
+                      className="boton-orden boton-quitar-foto"
+                      onClick={() => alQuitar(foto)}
+                      disabled={deshabilitado}
+                    >
+                      <Icono nombre="borrar" tamano={20} etiqueta={`Quitar foto ${etiqueta}`} />
+                    </button>
+                  )
+                )}
+              </div>
             </article>
           )
         })}
-      </div>
 
-      {alAgregar && (
-        <div className="agregar-foto">
-          <input
-            ref={entradaArchivo}
-            type="file"
-            accept="image/*"
-            hidden
-            onChange={(evento) => {
-              const archivo = evento.target.files?.[0]
-              evento.target.value = ''
-              if (archivo) alAgregar(archivo)
-            }}
-          />
-          <button
-            type="button"
-            className="boton boton-secundario"
-            disabled={deshabilitado || agregando || !puedeAgregar}
-            aria-busy={agregando}
-            onClick={() => entradaArchivo.current?.click()}
-          >
-            {agregando ? 'Subiendo foto…' : 'Agregar foto'}
-          </button>
-          {!puedeAgregar && (
-            <p className="descripcion-elegir-fotos">Llegaste al máximo de fotos propias.</p>
-          )}
-        </div>
-      )}
+        {alAgregar && (
+          <div className="agregar-foto" role="listitem">
+            <input
+              ref={entradaArchivo}
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={(evento) => {
+                const archivo = evento.target.files?.[0]
+                evento.target.value = ''
+                if (archivo) alAgregar(archivo)
+              }}
+            />
+            <button
+              type="button"
+              className="agregar-foto-boton"
+              disabled={deshabilitado || agregando || !puedeAgregar}
+              aria-busy={agregando}
+              onClick={() => entradaArchivo.current?.click()}
+            >
+              <Icono nombre={agregando ? 'sincronizar' : 'nuevo'} tamano={28} />
+              {agregando ? 'Subiendo…' : puedeAgregar ? 'Agregar foto' : 'Máximo de fotos'}
+            </button>
+          </div>
+        )}
+      </div>
     </section>
   )
 }

@@ -3,6 +3,7 @@ import { liveQuery } from 'dexie'
 import { useCallback, useEffect, useMemo, useState, useTransition } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Aviso, Boton } from '../compartido/ui/componentes'
+import { Icono } from '../compartido/ui/Icono'
 import { useSesionApk } from '../acceso/usePerfil'
 import { escucharRed, hayConexion } from './audio'
 import { db, listarBorradores, solicitarPersistenciaStorage, type BorradorLocal } from './db'
@@ -172,24 +173,27 @@ export function MisProductos() {
         <div>
           <h1>Mis productos</h1>
           <p className="texto-ayuda">
-            Gestiona tus artesanías creadas y su estado de sincronización con la nube.
+            {propios.length + productos.length === 1
+              ? '1 producto'
+              : `${propios.length + productos.length} productos`}
           </p>
         </div>
 
         <div className="acciones-cabecera">
-          <Boton variante="destacado" onClick={() => navigate('/nuevo')}>
-            Nuevo
-          </Boton>
-
           {conectado && tienePendientes && (
             <Boton
               variante="secundario"
               cargando={sincronizando}
               onClick={ejecutarSincronizacionLote}
             >
+              <Icono nombre="sincronizar" tamano={20} />
               Sincronizar
             </Boton>
           )}
+          <Boton variante="destacado" onClick={() => navigate('/nuevo')}>
+            <Icono nombre="nuevo" tamano={20} />
+            Nuevo
+          </Boton>
         </div>
       </header>
 
@@ -197,12 +201,12 @@ export function MisProductos() {
         <Esqueleto variante="lista" etiqueta="Cargando tus productos…" />
       ) : propios.length === 0 && productos.length === 0 ? (
         <div className="panel vacio-contenedor">
-          <p className="vacio">Aún no tienes productos. Toca Nuevo.</p>
-          <div className="vacio-accion">
-            <Boton variante="destacado" onClick={() => navigate('/nuevo')}>
-              Nuevo
-            </Boton>
-          </div>
+          <Icono nombre="camara" tamano={40} />
+          <p className="vacio">Aún no tienes productos. Toma la foto de tu primera pieza.</p>
+          <Boton variante="destacado" onClick={() => navigate('/nuevo')}>
+            <Icono nombre="nuevo" tamano={20} />
+            Nuevo producto
+          </Boton>
         </div>
       ) : (
         <div className="rejilla-productos">
@@ -217,15 +221,27 @@ export function MisProductos() {
             />
           ))}
           {productos.map((p) => (
-            <article className="tarjeta-producto panel" key={p.id}>
+            <article className="tarjeta-producto" key={p.id}>
+              <div className="tarjeta-media">
+                <Icono nombre="imagen" tamano={32} />
+              </div>
               <div className="tarjeta-info">
-                <h3>{p.nombre}</h3>
-                <p>{p.estado.replaceAll('_', ' ')}</p>
-                {p.precio_final !== null && <p>S/ {p.precio_final.toFixed(2)}</p>}
+                <div className="tarjeta-estado">
+                  <span className={`badge-estado estado-${p.estado}`}>
+                    {p.estado.replaceAll('_', ' ')}
+                  </span>
+                </div>
+                <h3 className="tarjeta-titulo">{p.nombre}</h3>
+                {p.precio_final !== null && (
+                  <p className="tarjeta-precio">S/ {p.precio_final.toFixed(2)}</p>
+                )}
                 {conectado && (
-                  <Link to={`/revisar/${p.id}`} className="enlace-editar">
-                    {textoEnlaceRevisar(p.estado)}
-                  </Link>
+                  <div className="tarjeta-acciones">
+                    <Link to={`/revisar/${p.id}`} className="enlace-editar">
+                      <Icono nombre="editar" tamano={18} />
+                      {textoEnlaceRevisar(p.estado)}
+                    </Link>
+                  </div>
                 )}
               </div>
             </article>
@@ -272,7 +288,14 @@ function TarjetaBorrador({
   const renderBadgeEstado = () => {
     switch (borrador.estado_sincronizacion) {
       case 'sincronizado':
-        return <span className="badge-estado estado-sincronizado">Sincronizado</span>
+        // Ya en la nube: importa el estado del producto, no la sincronización.
+        return estadoRemoto ? (
+          <span className={`badge-estado estado-${estadoRemoto}`}>
+            {estadoRemoto.replaceAll('_', ' ')}
+          </span>
+        ) : (
+          <span className="badge-estado estado-sincronizado">Sincronizado</span>
+        )
       case 'sincronizando':
         return <span className="badge-estado estado-sincronizando">Sincronizando…</span>
       case 'error':
@@ -284,23 +307,25 @@ function TarjetaBorrador({
   }
 
   return (
-    <article className="tarjeta-producto panel">
+    <article className="tarjeta-producto">
       <div className="tarjeta-media">
         {miniaturaUrl ? (
           <img src={miniaturaUrl} alt={borrador.nombre} className="tarjeta-img" />
         ) : (
-          <div className="tarjeta-sin-foto">Sin foto</div>
+          <Icono nombre="imagen" tamano={32} />
         )}
       </div>
 
       <div className="tarjeta-info">
         <div className="tarjeta-estado">{renderBadgeEstado()}</div>
         <h3 className="tarjeta-titulo">{borrador.nombre}</h3>
-        <p className="tarjeta-precio">S/ {borrador.precio_final.toFixed(2)}</p>
-        <p className="tarjeta-disp">
-          {borrador.disponibilidad === 'en_stock'
-            ? 'Pieza lista (en stock)'
-            : `A pedido (${borrador.plazo_dias || 0} días)`}
+        <p className="tarjeta-precio">
+          S/ {borrador.precio_final.toFixed(2)}
+          <span className="tarjeta-disp">
+            {borrador.disponibilidad === 'en_stock'
+              ? 'En stock'
+              : `A pedido · ${borrador.plazo_dias || 0} días`}
+          </span>
         </p>
 
         {borrador.estado_sincronizacion === 'error' && borrador.error_sincronizacion && (
@@ -310,11 +335,13 @@ function TarjetaBorrador({
         <div className="tarjeta-acciones">
           {borrador.estado_sincronizacion === 'sincronizado' ? (
             <Link to={`/revisar/${borrador.id}`} className="enlace-editar">
+              <Icono nombre="editar" tamano={18} />
               {textoEnlaceRevisar(estadoRemoto)}
             </Link>
           ) : (
             !borrador.sincronizacion_iniciada && (
               <Link to={`/borrador/${borrador.id}`} className="enlace-editar">
+                <Icono nombre="editar" tamano={18} />
                 Editar borrador
               </Link>
             )
@@ -322,6 +349,7 @@ function TarjetaBorrador({
 
           {borrador.estado_sincronizacion === 'error' && conectado && (
             <Boton variante="secundario" cargando={sincronizando} onClick={alReintentar}>
+              <Icono nombre="sincronizar" tamano={18} />
               Reintentar
             </Boton>
           )}

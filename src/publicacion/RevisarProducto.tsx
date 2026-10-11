@@ -23,6 +23,7 @@ import {
   quitarFoto,
 } from './fotosProducto'
 import { Modal } from '../compartido/ui/Modal'
+import { Icono } from '../compartido/ui/Icono'
 import { eliminarBorrador } from '../borradores/db'
 import { normalizarEtiquetas } from '../../supabase/functions/procesar-producto/ficha'
 import './publicacion.css'
@@ -443,45 +444,51 @@ export const RevisarProducto: React.FC = () => {
 
       <header className="revisar-cabecera">
         <button type="button" onClick={() => navigate('/')} className="boton-volver-atras">
-          Volver a Mis productos
+          <Icono nombre="atras" tamano={20} />
+          Mis productos
         </button>
         <h1 className="revisar-titulo">
           {esActualizacion ? 'Editar producto' : 'Revisar y publicar'}
         </h1>
         <p className="revisar-bajada">
-          Optimiza la ficha comercial y las fotos con IA antes de poner tu pieza en la vitrina.
+          {producto.nombre} · {producto.estado.replaceAll('_', ' ')}
         </p>
       </header>
 
       {/* Panel de Asistencia IA */}
       <section className="tarjeta-ia-panel" aria-label="Asistente de IA">
         <div className="tarjeta-ia-cabecera">
+          <span className="tarjeta-ia-icono">
+            <Icono nombre="ia" />
+          </span>
           <div>
-            <h2 className="tarjeta-ia-titulo">Preparación inteligente con IA</h2>
+            <h2 className="tarjeta-ia-titulo">Preparar con IA</h2>
             <p className="descripcion-elegir-fotos">
-              Analiza la foto original, evalúa autenticidad artesanal, redacta la ficha y sugiere
-              variantes de imagen.
+              Redacta la ficha a partir de tu foto y sugiere un precio. Tú revisas antes de
+              publicar.
             </p>
           </div>
-          <button
-            type="button"
-            onClick={ejecutarPrepararConIa}
-            disabled={procesandoIa || !enLinea}
-            className="boton-ia-primario"
-            aria-busy={procesandoIa}
-          >
-            {procesandoIa ? 'Preparando con IA…' : 'Preparar con IA'}
-          </button>
         </div>
+        <button
+          type="button"
+          onClick={ejecutarPrepararConIa}
+          disabled={procesandoIa || !enLinea}
+          className="boton-ia-primario"
+          aria-busy={procesandoIa}
+        >
+          <Icono nombre={procesandoIa ? 'sincronizar' : 'ia'} tamano={20} />
+          {procesandoIa ? 'Preparando…' : 'Preparar con IA'}
+        </button>
 
         {advertenciasIa.length > 0 && (
-          <div className="aviso-fotos-incompletas">
+          <ul className="lista-avisos">
             {advertenciasIa.map((adv, i) => (
-              <p key={i} style={{ margin: 0 }}>
-                ⚠️ {adv}
-              </p>
+              <li key={i} className="aviso-fotos-incompletas">
+                <Icono nombre="alerta" tamano={20} />
+                {adv}
+              </li>
             ))}
-          </div>
+          </ul>
         )}
       </section>
 
@@ -499,10 +506,10 @@ export const RevisarProducto: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate('/nuevo')}
-              className="boton-orden"
-              style={{ width: 'auto', padding: '0.5rem 1rem' }}
+              className="boton boton-secundario"
             >
-              Crear borrador con otra foto
+              <Icono nombre="camara" tamano={20} />
+              Otra foto
             </button>
             <button
               type="button"
@@ -519,7 +526,10 @@ export const RevisarProducto: React.FC = () => {
       {/* Alerta de error 502 / servicio IA */}
       {errorIa && !esRechazado && (
         <section className="tarjeta-alerta-error" role="alert">
-          <p style={{ margin: '0 0 1rem 0' }}>{errorIa.mensaje}</p>
+          <p className="texto-alerta">
+            <Icono nombre="error" tamano={20} />
+            {errorIa.mensaje}
+          </p>
           <div className="acciones-rechazo">
             <button
               type="button"
@@ -532,9 +542,9 @@ export const RevisarProducto: React.FC = () => {
             <button
               type="button"
               onClick={() => setErrorIa(null)}
-              className="boton-orden"
-              style={{ width: 'auto', padding: '0.5rem 1rem' }}
+              className="boton boton-secundario"
             >
+              <Icono nombre="editar" tamano={20} />
               Completar a mano
             </button>
           </div>
@@ -559,288 +569,292 @@ export const RevisarProducto: React.FC = () => {
         </p>
       )}
 
-      {/* Formulario de Ficha Técnica */}
-      <FormularioModal
-        titulo={esActualizacion ? 'Editar ficha y actualizar' : 'Editar ficha y publicar'}
-        accion={esActualizacion ? 'Editar ficha y actualizar' : 'Editar ficha y publicar'}
-        ocupado={guardandoPublicacion || procesandoIa}
-      >
-        <form
-          onSubmit={(e) => {
-            e.preventDefault()
-            manejarPublicar()
-          }}
-          className="formulario-revisar"
+      {/* Acciones fijas abajo: ficha y eliminar */}
+      <div className="revisar-acciones">
+        <FormularioModal
+          titulo={esActualizacion ? 'Editar ficha y actualizar' : 'Editar ficha y publicar'}
+          accion={esActualizacion ? 'Editar ficha' : 'Publicar'}
+          ocupado={guardandoPublicacion || procesandoIa}
         >
-          <div className="grupo-campo">
-            <label htmlFor="campo-titulo">Título comercial para turistas *</label>
-            <input
-              id="campo-titulo"
-              type="text"
-              value={titulo}
-              maxLength={80}
-              onChange={(e) => setTitulo(e.target.value)}
-              className="control-texto"
-              placeholder="Ej. Poncho-toalla de algodón para surfistas"
-              required
-            />
-            <span className="ayuda-campo">{titulo.length} / 80 caracteres</span>
-          </div>
-
-          <div className="grupo-campo">
-            <label htmlFor="campo-descripcion">Descripción de la pieza *</label>
-            <textarea
-              id="campo-descripcion"
-              value={descripcion}
-              maxLength={1200}
-              onChange={(e) => setDescripcion(e.target.value)}
-              className="control-textarea"
-              placeholder="Describe la pieza, su inspiración y origen..."
-              rows={4}
-              required
-            />
-            <span className="ayuda-campo">{descripcion.length} / 1200 caracteres</span>
-          </div>
-
-          <div className="fila-dos-columnas">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault()
+              manejarPublicar()
+            }}
+            className="formulario-revisar"
+          >
             <div className="grupo-campo">
-              <label htmlFor="campo-tipo">Tipo de producto *</label>
-              <select
-                id="campo-tipo"
-                value={tipoProducto}
-                onChange={(e) => setTipoProducto(e.target.value as TipoProducto)}
-                className="control-select"
-                required
-              >
-                {TIPOS_PRODUCTO.map((tipo) => (
-                  <option key={tipo} value={tipo}>
-                    {tipo}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="grupo-campo">
-              <label htmlFor="campo-tecnica">Técnica artesanal *</label>
+              <label htmlFor="campo-titulo">Título comercial para turistas *</label>
               <input
-                id="campo-tecnica"
+                id="campo-titulo"
                 type="text"
-                value={tecnica}
-                maxLength={120}
-                onChange={(e) => setTecnica(e.target.value)}
+                value={titulo}
+                maxLength={80}
+                onChange={(e) => setTitulo(e.target.value)}
                 className="control-texto"
-                placeholder="Ej. Tejido a crochet, tallado en madera"
+                placeholder="Ej. Poncho-toalla de algodón para surfistas"
                 required
               />
+              <span className="ayuda-campo">{titulo.length} / 80 caracteres</span>
             </div>
-          </div>
 
-          <div className="grupo-campo">
-            <label htmlFor="campo-materiales">Materiales utilizados (separados por coma) *</label>
-            <input
-              id="campo-materiales"
-              type="text"
-              value={materialesTexto}
-              onChange={(e) => setMaterialesTexto(e.target.value)}
-              className="control-texto"
-              placeholder="Ej. algodón, tintes naturales, hilo pima"
-              required
-            />
-          </div>
-
-          <div className="grupo-campo">
-            <label htmlFor="campo-historia">Historia o valor cultural de la pieza</label>
-            <textarea
-              id="campo-historia"
-              value={historiaPieza}
-              maxLength={600}
-              onChange={(e) => setHistoriaPieza(e.target.value)}
-              className="control-textarea"
-              placeholder="Cuéntale al turista la tradición detrás de esta creación..."
-              rows={3}
-            />
-            <span className="ayuda-campo">{historiaPieza.length} / 600 caracteres</span>
-          </div>
-
-          <div className="grupo-campo">
-            <label htmlFor="campo-etiquetas">
-              Etiquetas para búsqueda (máximo 8, separadas por coma)
-            </label>
-            <input
-              id="campo-etiquetas"
-              type="text"
-              value={etiquetasTexto}
-              onChange={(e) => setEtiquetasTexto(e.target.value)}
-              className="control-texto"
-              placeholder="Ej. surf, algodon, lobitos, toalla"
-            />
-          </div>
-
-          {/* Sección de Precio y Referencia IA */}
-          <div className="fila-dos-columnas">
             <div className="grupo-campo">
-              <label htmlFor="campo-precio">Precio final de venta (S/ PEN) *</label>
-              <input
-                id="campo-precio"
-                type="number"
-                step="0.01"
-                min="0.01"
-                value={precioFinal}
-                onChange={(e) =>
-                  setPrecioFinal(e.target.value === '' ? '' : Number(e.target.value))
-                }
-                className="control-texto"
-                placeholder="0.00"
+              <label htmlFor="campo-descripcion">Descripción de la pieza *</label>
+              <textarea
+                id="campo-descripcion"
+                value={descripcion}
+                maxLength={1200}
+                onChange={(e) => setDescripcion(e.target.value)}
+                className="control-textarea"
+                placeholder="Describe la pieza, su inspiración y origen..."
+                rows={4}
                 required
               />
+              <span className="ayuda-campo">{descripcion.length} / 1200 caracteres</span>
+            </div>
 
-              {comentarioPrecio && (
-                <div
-                  className="tarjeta-comentario-precio"
-                  role="region"
-                  aria-label="Referencia de la IA"
+            <div className="fila-dos-columnas">
+              <div className="grupo-campo">
+                <label htmlFor="campo-tipo">Tipo de producto *</label>
+                <select
+                  id="campo-tipo"
+                  value={tipoProducto}
+                  onChange={(e) => setTipoProducto(e.target.value as TipoProducto)}
+                  className="control-select"
+                  required
                 >
-                  <span className="etiqueta-referencia-ia">Referencia de la IA:</span>
-                  <p style={{ margin: 0 }}>{comentarioPrecio}</p>
-                </div>
-              )}
+                  {TIPOS_PRODUCTO.map((tipo) => (
+                    <option key={tipo} value={tipo}>
+                      {tipo}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="grupo-campo">
+                <label htmlFor="campo-tecnica">Técnica artesanal *</label>
+                <input
+                  id="campo-tecnica"
+                  type="text"
+                  value={tecnica}
+                  maxLength={120}
+                  onChange={(e) => setTecnica(e.target.value)}
+                  className="control-texto"
+                  placeholder="Ej. Tejido a crochet, tallado en madera"
+                  required
+                />
+              </div>
             </div>
 
             <div className="grupo-campo">
-              <label>Disponibilidad *</label>
-              <div style={{ display: 'flex', gap: '1rem', marginTop: '0.5rem' }}>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <input
-                    type="radio"
-                    name="disponibilidad"
-                    value="en_stock"
-                    checked={disponibilidad === 'en_stock'}
-                    onChange={() => setDisponibilidad('en_stock')}
-                  />
-                  En stock
-                </label>
-                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <input
-                    type="radio"
-                    name="disponibilidad"
-                    value="a_pedido"
-                    checked={disponibilidad === 'a_pedido'}
-                    onChange={() => setDisponibilidad('a_pedido')}
-                  />
-                  A pedido
-                </label>
+              <label htmlFor="campo-materiales">Materiales utilizados (separados por coma) *</label>
+              <input
+                id="campo-materiales"
+                type="text"
+                value={materialesTexto}
+                onChange={(e) => setMaterialesTexto(e.target.value)}
+                className="control-texto"
+                placeholder="Ej. algodón, tintes naturales, hilo pima"
+                required
+              />
+            </div>
+
+            <div className="grupo-campo">
+              <label htmlFor="campo-historia">Historia o valor cultural de la pieza</label>
+              <textarea
+                id="campo-historia"
+                value={historiaPieza}
+                maxLength={600}
+                onChange={(e) => setHistoriaPieza(e.target.value)}
+                className="control-textarea"
+                placeholder="Cuéntale al turista la tradición detrás de esta creación..."
+                rows={3}
+              />
+              <span className="ayuda-campo">{historiaPieza.length} / 600 caracteres</span>
+            </div>
+
+            <div className="grupo-campo">
+              <label htmlFor="campo-etiquetas">
+                Etiquetas para búsqueda (máximo 8, separadas por coma)
+              </label>
+              <input
+                id="campo-etiquetas"
+                type="text"
+                value={etiquetasTexto}
+                onChange={(e) => setEtiquetasTexto(e.target.value)}
+                className="control-texto"
+                placeholder="Ej. surf, algodon, lobitos, toalla"
+              />
+            </div>
+
+            {/* Sección de Precio y Referencia IA */}
+            <div className="fila-dos-columnas">
+              <div className="grupo-campo">
+                <label htmlFor="campo-precio">Precio final de venta (S/ PEN) *</label>
+                <input
+                  id="campo-precio"
+                  type="number"
+                  step="0.01"
+                  min="0.01"
+                  value={precioFinal}
+                  onChange={(e) =>
+                    setPrecioFinal(e.target.value === '' ? '' : Number(e.target.value))
+                  }
+                  className="control-texto"
+                  placeholder="0.00"
+                  required
+                />
+
+                {comentarioPrecio && (
+                  <div
+                    className="tarjeta-comentario-precio"
+                    role="region"
+                    aria-label="Referencia de la IA"
+                  >
+                    <span className="etiqueta-referencia-ia">Referencia de la IA:</span>
+                    <p style={{ margin: 0 }}>{comentarioPrecio}</p>
+                  </div>
+                )}
               </div>
 
-              {disponibilidad === 'a_pedido' && (
-                <div style={{ marginTop: '0.5rem' }}>
-                  <label htmlFor="campo-plazo">Plazo de fabricación (días) *</label>
-                  <input
-                    id="campo-plazo"
-                    type="number"
-                    min="1"
-                    value={plazoDias}
-                    onChange={(e) =>
-                      setPlazoDias(e.target.value === '' ? '' : Number(e.target.value))
-                    }
-                    className="control-texto"
-                    placeholder="Ej. 7"
-                    required
-                  />
+              <div className="grupo-campo">
+                <label>Disponibilidad *</label>
+                <div className="opciones-radio">
+                  <label>
+                    <input
+                      type="radio"
+                      name="disponibilidad"
+                      value="en_stock"
+                      checked={disponibilidad === 'en_stock'}
+                      onChange={() => setDisponibilidad('en_stock')}
+                    />
+                    En stock
+                  </label>
+                  <label>
+                    <input
+                      type="radio"
+                      name="disponibilidad"
+                      value="a_pedido"
+                      checked={disponibilidad === 'a_pedido'}
+                      onChange={() => setDisponibilidad('a_pedido')}
+                    />
+                    A pedido
+                  </label>
+                </div>
+
+                {disponibilidad === 'a_pedido' && (
+                  <div className="plazo-bloque">
+                    <label htmlFor="campo-plazo">Plazo de fabricación (días) *</label>
+                    <input
+                      id="campo-plazo"
+                      type="number"
+                      min="1"
+                      value={plazoDias}
+                      onChange={(e) =>
+                        setPlazoDias(e.target.value === '' ? '' : Number(e.target.value))
+                      }
+                      className="control-texto"
+                      placeholder="Ej. 7"
+                      required
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Panel de publicación */}
+            <section className="panel-publicacion-accion">
+              {perfil?.acreditacion !== 'aprobada' && (
+                <p className="texto-alerta">
+                  <Icono nombre="candado" tamano={20} />
+                  Tu acreditación como artesano está{' '}
+                  <strong>{perfil?.acreditacion || 'pendiente'}</strong>. Solo los artesanos
+                  aprobados por el administrador pueden publicar productos en la vitrina.
+                </p>
+              )}
+
+              {erroresPublicacion.length > 0 && (
+                <ul className="lista-errores-publicar" role="alert">
+                  {erroresPublicacion.map((err, i) => (
+                    <li key={i}>{err}</li>
+                  ))}
+                </ul>
+              )}
+
+              {publicadoExito && (
+                <div className="mensaje-exito" role="status">
+                  {esActualizacion
+                    ? '¡Producto actualizado con éxito!'
+                    : '¡Producto publicado con éxito en la vitrina!'}{' '}
+                  Redirigiendo…
                 </div>
               )}
-            </div>
-          </div>
 
-          {/* Panel de publicación */}
-          <section className="panel-publicacion-accion">
-            {perfil?.acreditacion !== 'aprobada' && (
-              <p style={{ color: 'var(--error)', margin: '0 0 1rem 0' }}>
-                🔒 Tu acreditación como artesano está{' '}
-                <strong>{perfil?.acreditacion || 'pendiente'}</strong>. Solo los artesanos aprobados
-                por el administrador pueden publicar productos en la vitrina.
-              </p>
-            )}
-
-            {erroresPublicacion.length > 0 && (
-              <ul className="lista-errores-publicar" role="alert">
-                {erroresPublicacion.map((err, i) => (
-                  <li key={i}>{err}</li>
-                ))}
-              </ul>
-            )}
-
-            {publicadoExito && (
-              <div className="mensaje-exito" role="status">
-                {esActualizacion
-                  ? '¡Producto actualizado con éxito!'
-                  : '¡Producto publicado con éxito en la vitrina!'}{' '}
-                Redirigiendo…
-              </div>
-            )}
-
-            <button
-              type="submit"
-              disabled={!puedePublicar}
-              className="boton-publicar"
-              aria-busy={guardandoPublicacion}
-            >
-              {guardandoPublicacion
-                ? esActualizacion
-                  ? 'Actualizando…'
-                  : 'Publicando…'
-                : esActualizacion
-                  ? 'Actualizar producto'
-                  : 'Publicar producto'}
-            </button>
-          </section>
-        </form>
+              <button
+                type="submit"
+                disabled={!puedePublicar}
+                className="boton-publicar"
+                aria-busy={guardandoPublicacion}
+              >
+                {guardandoPublicacion
+                  ? esActualizacion
+                    ? 'Actualizando…'
+                    : 'Publicando…'
+                  : esActualizacion
+                    ? 'Actualizar producto'
+                    : 'Publicar producto'}
+              </button>
+            </section>
+          </form>
+        </FormularioModal>
 
         <section className="zona-eliminar" aria-label="Eliminar producto">
           <button
             type="button"
-            className="boton boton-peligro"
+            className="boton boton-secundario boton-eliminar"
             disabled={
               !enLinea || procesandoIa || guardandoPublicacion || producto.estado === 'procesando'
             }
             onClick={() => setConfirmarEliminar(true)}
           >
-            Eliminar producto
+            <Icono nombre="borrar" tamano={20} />
+            Eliminar
           </button>
         </section>
+      </div>
 
-        <Modal
-          abierto={confirmarEliminar}
-          titulo="¿Eliminar este producto?"
-          descripcion="Deja de verse en la vitrina. Si ya tiene pedidos, se retira y su historial se conserva."
-          alCerrar={() => {
-            if (!eliminando) setConfirmarEliminar(false)
-          }}
-          ocupado={eliminando}
-          acciones={
-            <>
-              <button
-                type="button"
-                className="boton boton-secundario"
-                disabled={eliminando}
-                onClick={() => setConfirmarEliminar(false)}
-              >
-                Cancelar
-              </button>
-              <button
-                type="button"
-                className="boton boton-peligro"
-                aria-busy={eliminando}
-                disabled={eliminando}
-                onClick={() => void manejarEliminar()}
-              >
-                {eliminando ? 'Eliminando…' : 'Eliminar'}
-              </button>
-            </>
-          }
-        >
-          {errorEliminar && <p role="alert">{errorEliminar}</p>}
-        </Modal>
-      </FormularioModal>
+      <Modal
+        abierto={confirmarEliminar}
+        titulo="¿Eliminar este producto?"
+        descripcion="Deja de verse en la vitrina. Si ya tiene pedidos, se retira y su historial se conserva."
+        alCerrar={() => {
+          if (!eliminando) setConfirmarEliminar(false)
+        }}
+        ocupado={eliminando}
+        acciones={
+          <>
+            <button
+              type="button"
+              className="boton boton-secundario"
+              disabled={eliminando}
+              onClick={() => setConfirmarEliminar(false)}
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              className="boton boton-peligro"
+              aria-busy={eliminando}
+              disabled={eliminando}
+              onClick={() => void manejarEliminar()}
+            >
+              {eliminando ? 'Eliminando…' : 'Eliminar'}
+            </button>
+          </>
+        }
+      >
+        {errorEliminar && <p role="alert">{errorEliminar}</p>}
+      </Modal>
     </main>
   )
 }

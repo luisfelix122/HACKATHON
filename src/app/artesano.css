@@ -18,6 +18,9 @@
   --arena: #f6edd9;
   --arena-clara: #faf8f4;
   --radio-control: 8px;
+  --pestanas-alto: 4rem;
+  /* Alto de lo que tapa el borde inferior: las barras fijas se apoyan encima. */
+  --alto-inferior: env(safe-area-inset-bottom, 0px);
   min-height: 100dvh;
   background: var(--cal);
   color: var(--casco-hondo);
@@ -68,11 +71,19 @@
   background: var(--cal);
   color: var(--casco-hondo);
   border-top: 1px solid var(--linea);
-  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 .artesano-ayllu .pestana {
   color: var(--casco-hondo);
-  min-height: 56px;
+  min-height: var(--pestanas-alto);
+}
+.artesano-ayllu .con-pestanas {
+  --alto-inferior: calc(var(--pestanas-alto) + env(safe-area-inset-bottom, 0px));
+}
+/* En el celular el aire va entre grupos, no en los bordes de la pantalla. */
+.artesano-ayllu .pagina {
+  gap: var(--e4);
+  padding: var(--e3) var(--margen) var(--e5);
 }
 .artesano-ayllu .pestana.active {
   background: var(--casco-claro);
