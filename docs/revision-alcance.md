@@ -109,7 +109,7 @@ Son las listadas en su mensaje: Google, revisión manual del RNA, borrador offli
 | 0:00 | Un turista escanea el QR de la van y entra al catálogo sin cuenta. Filtra por "Lobitos". | Catálogo, filtros | QR impreso que apunta a la URL desplegada |
 | 0:25 | Abre el poncho-toalla y ve la ficha, la historia del artesano, el sello "RNA verificado" y el botón de WhatsApp. | Ficha, perfil, sello del flujo de aprobación | Artesano y producto **ficticios** de la semilla |
 | 0:45 | En el celular del artesano, **modo avión**: nombre, foto, audio de 10 s y calculadora. Guarda el borrador. | Captura offline | — |
-| 1:10 | Activa la red y sincroniza. La IA transcribe, genera la ficha y propone la foto mejorada junto a la original. El artesano corrige el precio y publica. | IA vía OpenRouter | **Respaldo grabado** si falla la red del local |
+| 1:10 | Activa la red y sincroniza. La IA transcribe, genera la ficha y propone la foto mejorada junto a la original. El artesano corrige el precio y publica. | IA vía el proxy LiteLLM con Gemini (CC-12) | **Respaldo grabado** si falla la red del local |
 | 1:40 | El comprador inicia sesión con Google y pulsa "Pedir" con envío. Llena los datos de Shalom y se crea la orden. | Login, orden | — |
 | 2:00 | El vendedor acepta (se reserva el stock), suma el costo del envío y pega el enlace de pago. El comprador lo abre. | Estados, reserva | **Enlace de pago de prueba**: no se paga en vivo |
 | 2:20 | El vendedor marca "Abono verificado" y luego "Enviado", con el número de guía. | Estados | Número de guía ficticio |
@@ -164,8 +164,8 @@ Fórmula para el pitch, **ilustrativa**: punto de equilibrio = (fijos + soporte)
 | Stock | Doble venta mientras dos órdenes esperan pago, o una reserva vencida que se paga igual. | Reservar al aceptar y vencer a las 24 h tras enviar el enlace. Si llega un pago después del vencimiento, revisión manual (supuesto pendiente). |
 | Pago manual | Captura falsa, link reutilizado o abono no conciliado. | Solo el vendedor confirma, tras revisar su panel de Izipay. Usar link **individual** por orden. No aceptar capturas como prueba. |
 | Datos personales | El padrón tiene datos sensibles (ingresos, estado civil). [T] contiene el teléfono de Daniela y los tres `.md` no están rastreados por git. | No cargar el padrón en la app. Decidir antes de commitear los `.md`. Revisar la Ley 29733 y su reglamento: **pendiente de verificación legal.** |
-| PWA en celulares reales | Los navegadores difieren en el formato de grabación de audio, el permiso de cámara y micrófono, y pueden borrar el almacenamiento local de una PWA poco usada. El inicio de sesión con Google dentro de una PWA instalada puede comportarse distinto que en una pestaña. | Probar en la hora 2 en un Android y un iPhone del equipo: grabar, recargar sin conexión, iniciar sesión. Enviar el audio en un formato que acepte OpenRouter (sección 7). Botón de sincronización visible. |
-| Demo | Red del local, cuota de OpenRouter, OAuth. | Video de respaldo, clave con saldo, cuentas de prueba. |
+| PWA en celulares reales | Los navegadores difieren en el formato de grabación de audio, el permiso de cámara y micrófono, y pueden borrar el almacenamiento local de una PWA poco usada. El inicio de sesión con Google dentro de una PWA instalada puede comportarse distinto que en una pestaña. | Probar en la hora 2 en un Android y un iPhone del equipo: grabar, recargar sin conexión, iniciar sesión. Enviar el audio en un formato que acepte Gemini (sección 7; CC-12). Botón de sincronización visible. |
+| Demo | Red del local, cuota de Gemini y servidor del proxy (CC-12), OAuth. | Video de respaldo, llaves de Gemini de proyectos distintos, cuentas de prueba. |
 
 ---
 
@@ -198,8 +198,8 @@ Los PRP 002 y 003 comparten la entidad **Borrador/Producto**, que debe fijarse p
 
 ## 7. Fuentes externas
 - Izipay, link de pago: https://www.izipay.pe/link-de-pago/ — **verificado**. Admite tarjetas extranjeras, Yape y Plin; link general o individual; 3,44% + IGV; abono al día hábil siguiente; "no requiere integraciones". La página no menciona API ni webhook.
-- OpenRouter, entrada de audio: https://openrouter.ai/docs/features/multimodal/audio — **verificado**. Audio en base64; wav, mp3, m4a, ogg y otros; ejemplo con `google/gemini-2.5-flash`.
-- OpenRouter, imágenes: https://openrouter.ai/docs/features/multimodal/image-generation — **verificado**. `POST /api/v1/images` con `input_references` para editar; ejemplo con `google/gemini-2.5-flash-image`.
+- OpenRouter, entrada de audio: https://openrouter.ai/docs/features/multimodal/audio — **verificado** (histórico; no aplica desde CC-12). Audio en base64; wav, mp3, m4a, ogg y otros; ejemplo con `google/gemini-2.5-flash`.
+- OpenRouter, imágenes: https://openrouter.ai/docs/features/multimodal/image-generation — **verificado** (histórico; no aplica desde CC-12). `POST /api/v1/images` con `input_references` para editar; ejemplo con `google/gemini-2.5-flash-image`.
 - RNA en gob.pe: https://www.gob.pe/747-inscribirse-en-el-registro-nacional-del-artesano-rna — **no verificado**. El sitio devolvió "Acceso restringido" (HTTP 418) desde aquí.
 - Noticia de MINCETUR: https://www.gob.pe/institucion/mincetur/noticias/1160976-... — **no verificado**, por el mismo bloqueo. Conviene que alguien del equipo abra ambos enlaces desde su navegador antes de citarlos.
 - Shalom: no consulté ninguna fuente. No asumir que tiene API.

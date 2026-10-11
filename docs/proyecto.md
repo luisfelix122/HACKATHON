@@ -52,9 +52,9 @@ Que el artesano publique una pieza desde su celular en pocos pasos, aun sin señ
 
 ## Restricciones
 - **Plazo:** hackatón de 24 h. Al cerrar el plan quedaban unas 15 h. Equipo de 5 estudiantes; el código lo implementa Cristopher.
-- **Presupuesto:** Supabase self-hosted y la web en el servidor del equipo (0003 / CC-05), y saldo de OpenRouter. No hay precios de suscripción aprobados.
+- **Presupuesto:** Supabase self-hosted y la web en el servidor del equipo (0003 / CC-05), y las llaves de Gemini del proxy LiteLLM (CC-12). No hay precios de suscripción aprobados.
 - **Técnicas o legales:**
-  - IA solo Gemini vía OpenRouter (restricción oficial).
+  - IA solo Gemini vía OpenRouter (restricción oficial). **CC-12** usa Gemini directo por LiteLLM, sin OpenRouter: pendiente de confirmar con los organizadores.
   - Vercel Hobby es de uso no comercial.
   - Sin datos personales del padrón en la app.
   - Tratamiento de datos personales (Ley 29733) pendiente de revisión legal.
