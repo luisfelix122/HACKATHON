@@ -32,35 +32,81 @@ Todos los JPEG tienen como máximo 1000 px en su lado mayor y menos de 300 KB (3
 
 ## Fotos pendientes
 
-| Producto | Motivo |
+### Candidatos de referencia para los 16 productos publicados pendientes
+
+La búsqueda incluye ahora una fuente específica para **cada uno de los 16 productos**.
+Son referencias para elegir imágenes: no están aprobadas para cargar ni se incorporan
+como originales. No se ha confirmado una licencia de reutilización de estas fotografías
+comerciales. La coincidencia se apoya en las descripciones de las fuentes; los materiales
+no se dan por probados solo por el aspecto de la foto.
+
+| Producto | Candidato de referencia | Coincidencia / diferencia por revisar |
+| --- | --- | --- |
+| 01: Top de bikini Atardecer | [Bikini naranja de crochet con flores](https://www.crochetkingdom.com/orange-crochet-bikini-with-flower-motifs/) | Naranja, crochet y algodón; motivos florales. No acredita algodón pima. Que el patrón sea gratuito no implica permiso para reutilizar su foto. |
+| 02: Falda larga calada | [Crochet Beach Maxi Skirt blanca — AmiEmi](https://amiemi.com/es/products/crochet-beach-maxi-skirt) | Falda larga blanca de playa; confirmar técnica y composición de algodón. |
+| 04: Bolso Red de Pescador | [Trenza Macrame Net Bag — Tin Marin](https://tinmarinbrand.com/products/trenza-macrame-net-bag) | Bolso de red de macramé y algodón; referencia fabricada en México. |
+| 05: Porta botella cruzado | [Porta Botella — Ponte Cuerda](https://pontecuerda.cl/producto/porta-botella/) | Macramé de cuerdas de algodón natural, correa larga; referencia chilena. |
+| 06: Tapiz Olas | [Macrame Wave Wall Hanging — OlivetCo](https://www.etsy.com/listing/695646606/macrame-wave-wall-hanging) | Patrón de ola, algodón y rama recogida en playa; revisar escala y encuadre. |
+| 08: Cartera de mano de toquilla | [Cartera cilíndrica — Asociación Virgen del Pilar](https://pajatoquilla.ruraqmaki.pe/producto/cartera-colindro-color-marron-oscuro) | Toquilla tejida y asas de cuero, Catacaos; diseño cilíndrico marrón. |
+| 09: Abanico Frescor | [Woven Straw Hand Fan — Sensi Studio](https://www.farfetch.com/ph/shopping/women/sensi-studio-woven-straw-hand-fan-item-30255167.aspx) | Abanico redondo de toquilla; incorpora cuero y marca en el mango. |
+| 11: Llavero Pez Espada | [Wooden Fish Keychain — PongiWorks](https://www.etsy.com/listing/242207688/wooden-fish-keychain-walnut-wood-animal) | Candidato aproximado: pez de madera y aro metálico; es nogal y no se acredita pez espada. No asignar como coincidencia exacta. |
+| 14: Collar Gota de Mar | [Collar Perla irregular — La Femme Unchained](https://www.lafemmeunchained.com/collections/collares/products/collar-perla-irregular) | Perla natural irregular y plata 925; lleva marco ennegrecido adicional. |
+| 15: Pulsera Tres Perlas | [Triple Scoop Macramé — Klara Haloho](https://www.klarahaloho.com/products/triple-scoop-macrame-freshwater-pearl-bracelet) | Tres perlas de agua dulce en macramé; usa cuero, no hilo encerado. Candidato aproximado. |
+| 16: Collar Oro Rojo | [Red & Swirls — colgante de Spondylus rojo](https://www.etsy.com/listing/1017166576/red-swirls-rare-red-spiny-oyster-red) | Colgante central rojo; montura de plata, no alpaca. Candidato aproximado. |
+| 17: Aretes Sol Tallán | [Spondylus Circles Earrings — La Vida Ventura](https://christina-lauridsen.squarespace.com/silver-jewelry/spondylus-circles-earrings) | Aretes circulares de Spondylus; incrustación morada y plata 950, no 925. |
+| 18: Pulsera de chispas moradas | [Pulsera Spondylus Morado — Viancca](https://viancca.com.pe/producto/pulsera-spondylus-morado/) | Coincide material y color; candidata aproximada de incrustación, no fragmentos ensartados en nylon. |
+| 19: Billetera de perico | [Genuine Mahi Mahi Fish Leather Wallets — Spearman Artisanry](https://www.spearmanartisanry.com/products/genuine-mahi-mahi-fish-leather-wallets) | Cuero de mahi-mahi/perico y compartimentos para tarjetas y billetes; forro reciclado no acreditado. |
+| 20: Llavero Quilla de Surf | [Hawaiian Koa Surf Fin Keychain — WoodandShell](https://www.etsy.com/listing/674772191/hawaiian-koa-surf-fin-keychain) | Candidato por forma: quilla de madera koa; no incorpora cuero de pescado ni madera balsa. Coincidencia parcial. |
+| 21: Tarjetero Marino | [Billetera tarjetero de cuero de pescado — QAYA / HAF Perú](https://hafperu.org/en-pe/products/billetera-tarjetero-by-qaya) | Tarjetero artesanal peruano de cuero de pescado; combina cuero ovino y bovino. Especie de pescado sin confirmar. |
+
+Alternativas con licencia de uso comprobada, pero diseño diferente:
+[collar de una perla redonda CC0 — Sound Media](https://www.publicdomainpictures.net/en/view-image.php?image=366252&picture=silver-necklace-with-pearl-pendant),
+[tapiz geométrico — rocknwool / Unsplash](https://unsplash.com/photos/yas-CnrBwTw),
+[tapices en conjunto — Pexels](https://www.pexels.com/photo/macrame-wall-hanging-8503255/) y
+[bolsos de trama cerrada — Pexels](https://www.pexels.com/it-it/foto/borse-in-macrame-fatte-a-mano-appese-in-un-mercato-33194363/).
+
+Estas referencias no significan que el autor avale Ayllu ni que las piezas pertenezcan
+a los vendedores ficticios. Para publicar una fotografía comercial hace falta permiso
+aplicable a esa imagen. No se generaron imágenes con IA.
+
+| Producto | Estado |
 | --- | --- |
-| 01: Top de bikini Atardecer tejido a crochet | Los candidatos libres encontrados no coinciden con el top naranja descrito. |
-| 02: Falda larga calada para la playa | Las faldas encontradas difieren de la falda larga calada en corte o técnica. |
-| 04: Bolso de macramé Red de Pescador | No se encontró el bolso de red de macramé de algodón; la referencia anterior era otro bolso. |
-| 05: Porta botella cruzado de macramé | Los portabotellas encontrados son de crochet o paracord, no el macramé descrito. |
-| 06: Tapiz de macramé Olas | Los tapices libres encontrados son circulares, sin la rama ni el patrón de olas descritos. |
-| 08: Cartera de mano de paja toquilla | Los bolsos encontrados son de ratán, no de paja toquilla con cuero. |
-| 09: Abanico de paja toquilla Frescor | Los abanicos encontrados son de rafia u otras palmas; no hay coincidencia verificada con toquilla. |
-| 11: Llavero tallado Pez Espada | Los llaveros de pez encontrados son metálicos, no el pez espada tallado. |
-| 14: Collar Gota de Mar con perla | Los collares encontrados difieren del dije de una perla irregular en cadena de plata. |
-| 15: Pulsera de macramé Tres Perlas | No se encontró la pulsera de macramé con tres perlas. |
-| 16: Collar Oro Rojo de Spondylus | Los candidatos libres son arqueológicos o de otra forma/material; no el collar rojo contemporáneo descrito. |
-| 17: Aretes Sol Tallán de Spondylus | No se encontraron los aretes circulares de Spondylus y plata. |
-| 18: Pulsera de chispas de Spondylus morado | No se encontró pulsera de fragmentos morados de Spondylus. |
-| 19: Billetera de cuero de pescado perico | Las billeteras encontradas son de cuero convencional o de pesca; no cuero de perico. |
-| 20: Llavero Quilla de Surf en cuero de pescado | No se encontró un llavero de quilla forrado con cuero de pescado. |
-| 21: Tarjetero Marino de cuero de pescado | Los tarjeteros encontrados son de cuero convencional; no cuero de pescado. |
-| 22: Top edición especial (retirado) | Top retirado; requiere foto que corresponda, sin reutilizar un sombrero. |
-| 23: Billetera en creación (borrador) | Borrador de billetera de pescado; requiere foto propia o libre coincidente. |
+| 01: Top de bikini Atardecer tejido a crochet | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 02: Falda larga calada para la playa | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 04: Bolso de macramé Red de Pescador | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 05: Porta botella cruzado de macramé | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 06: Tapiz de macramé Olas | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 08: Cartera de mano de paja toquilla | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 09: Abanico de paja toquilla Frescor | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 11: Llavero tallado Pez Espada | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 14: Collar Gota de Mar con perla | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 15: Pulsera de macramé Tres Perlas | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 16: Collar Oro Rojo de Spondylus | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 17: Aretes Sol Tallán de Spondylus | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 18: Pulsera de chispas de Spondylus morado | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 19: Billetera de cuero de pescado perico | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 20: Llavero Quilla de Surf en cuero de pescado | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 21: Tarjetero Marino de cuero de pescado | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
+| 22: Top edición especial (retirado) | Fuera de los 16 publicados pendientes; requiere foto correspondiente. |
+| 23: Billetera en creación (borrador) | Fuera de los 16 publicados pendientes; requiere foto correspondiente. |
 
 Para cerrar estos pendientes se necesitan fotos propias de las piezas o permiso del autor de una imagen realmente coincidente. Las fotos comerciales encontradas sin licencia de reutilización no se incluyen. No se generaron imágenes con IA.
 
 ## Carga y validación
 
 1. Confirmar autorización y permisos de escritura sobre el servidor de demo. No resetear la BD compartida ni recrear vendedores/productos.
-2. Cargar únicamente los cinco JPEG seleccionados en las rutas indicadas, tras comprobar que el objeto no existe. No sobrescribir originales existentes. Revisar la coincidencia visual parcial de la embarcación con el responsable antes de usarla en la demo.
+2. Cargar únicamente los JPEG 03, 07 y 13 después de añadir su atribución, tras comprobar que el objeto no existe. El 12 ya está cargado: verificar y omitir. No sobrescribir originales existentes. El 10 queda excluido hasta recibir aprobación específica de su coincidencia visual parcial.
 3. Revisar créditos de las fichas existentes antes de publicar: la semilla no sobrescribe registros previos.
 4. Comprobar vitrina a 360 y 1440 px y `/admin` con una cuenta real. Los usuarios de Auth de la semilla no sirven para iniciar sesión.
 5. Los teléfonos ficticios se conservan por indicación de Johann para esta etapa. No usarlos para contactar a personas; el reemplazo por el número consentido del equipo queda para antes de la demo.
 
 La semilla conserva 10 perfiles, 23 productos (21 publicados), 23 registros SQL de fotos, dos órdenes y dos mensajes al aplicarse dos veces. Los registros SQL pendientes no implican que sus archivos existan en Storage.
+
+## Estado comprobado el 11 de octubre de 2026
+
+- Consulta pública: 21 productos, 7 artesanos y 21 registros de fotos. El producto retirado no aparece.
+- Foto 12: GET público HTTP 200, `image/jpeg`, 82 072 bytes; contenido idéntico al JPEG local.
+- Las otras 20 rutas publicadas devolvieron HTTP 400 en GET público. Este resultado no sustituye el listado autenticado de Storage para decidir una carga.
+- El agente del servidor informó que 03, 07, 10 y 13 estaban ausentes. No se realizó ninguna carga ni cambio de BD desde el equipo local en esta comprobación.
+- `make verify`: 110 pruebas aprobadas; seis advertencias de lint preexistentes. `make build`: web y artesano correctos.
+- Pendiente: acceso de carga desde el equipo local, atribuciones de 03/07/13, fotos utilizables para los 16 productos indicados, decisión específica sobre 10 y comprobación manual del usuario a 360 y 1440 px. PRP 007 incompleto.
