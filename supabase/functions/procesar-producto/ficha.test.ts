@@ -100,7 +100,7 @@ describe('procesamiento de ficha con IA y validación de esquemas (PRP 003)', ()
       expect(parsed.evaluacion.motivo).toContain('industrial')
     })
 
-    it('corrige tipo_producto fuera de la lista oficial asignando "otro"', () => {
+    it('rechaza tipo_producto fuera de la lista oficial', () => {
       const jsonTipoInvalido = {
         ...jsonCasoFeliz,
         ficha: {
@@ -108,9 +108,8 @@ describe('procesamiento de ficha con IA y validación de esquemas (PRP 003)', ()
           tipo_producto: 'gadget electrónico',
         },
       }
-      const parsed = validarRespuestaIA(jsonTipoInvalido)
-      expect(parsed.ficha.tipo_producto).toBe('otro')
-      expect(TIPOS_PRODUCTO_VALIDOS).toContain(parsed.ficha.tipo_producto)
+      expect(() => validarRespuestaIA(jsonTipoInvalido)).toThrow()
+      expect(TIPOS_PRODUCTO_VALIDOS).not.toContain('gadget electrónico')
     })
 
     it('lanza error si falta un campo requerido como materiales o título', () => {

@@ -85,6 +85,11 @@ export async function handler(req: Request): Promise<Response> {
     )
   }
 
+  if (!body || typeof body !== 'object' || typeof body.mejorar_foto !== 'boolean')
+    return jsonRespuesta(
+      { error: 'entrada_invalida', mensaje: 'Indica el producto y si deseas mejorar la foto.' },
+      400,
+    )
   const { producto_id, mejorar_foto } = body
   if (!producto_id || typeof producto_id !== 'string') {
     return jsonRespuesta(
@@ -241,7 +246,12 @@ export async function handler(req: Request): Promise<Response> {
   if (!tieneTexto && tieneAudio) {
     const rutaAudio = producto.audio_ruta
     const ext = rutaAudio.split('.').pop()?.toLowerCase() || ''
-    const formatosCompatibles = ['webm', 'ogg', 'mp3', 'm4a', 'wav']
+    if (rutaAudio !== `${user.id}/${producto_id}/descripcion.${ext}`)
+      return jsonRespuesta(
+        { error: 'entrada_invalida', mensaje: 'El audio no pertenece a este producto.' },
+        400,
+      )
+    const formatosCompatibles = ['webm', 'ogg', 'mp3', 'm4a', 'mp4', 'wav', 'aac']
     if (!formatosCompatibles.includes(ext)) {
       return jsonRespuesta(
         {
@@ -251,9 +261,11 @@ export async function handler(req: Request): Promise<Response> {
         400,
       )
     }
-    audioMimeType = ext === 'ogg' ? 'audio/ogg' : `audio/${ext}`
+    audioMimeType =
+      ({ mp3: 'audio/mpeg', m4a: 'audio/mp4', mp4: 'audio/mp4' } as Record<string, string>)[ext] ??
+      `audio/${ext}`
 
-    const { data: audioBlob, error: errAudio } = await adminClient.storage
+    const { data: audioBlob, error: errAudio } = await userClient.storage
       .from('audios')
       .download(rutaAudio)
 
@@ -272,13 +284,17 @@ export async function handler(req: Request): Promise<Response> {
 
   // 4. Cambiar estado a 'procesando' e incrementar ia_intentos
   const nuevoIntento = (producto.ia_intentos ?? 0) + 1
-  const { error: errProcesando } = await adminClient
+  const { data: adquirido, error: errProcesando } = await adminClient
     .from('producto')
     .update({
       estado: 'procesando',
       ia_intentos: nuevoIntento,
     })
     .eq('id', producto_id)
+    .eq('estado', producto.estado)
+    .eq('ia_intentos', producto.ia_intentos ?? 0)
+    .select('id')
+    .maybeSingle()
 
   if (errProcesando) {
     return jsonRespuesta(
@@ -288,6 +304,30 @@ export async function handler(req: Request): Promise<Response> {
       },
       502,
     )
+  }
+
+  if (!adquirido)
+    return jsonRespuesta(
+      {
+        error: 'estado_invalido',
+        mensaje: 'Este producto ya está siendo procesado. Actualiza para ver su estado.',
+      },
+      409,
+    )
+  async function recuperar(extra: Record<string, unknown>): Promise<boolean> {
+    try {
+      const { data, error } = await adminClient
+        .from('producto')
+        .update({ ...extra, estado: 'borrador' })
+        .eq('id', producto_id)
+        .eq('estado', 'procesando')
+        .eq('ia_intentos', nuevoIntento)
+        .select('id')
+        .maybeSingle()
+      return !error && !!data
+    } catch {
+      return false
+    }
   }
 
   // 5. Preparar prompts para IA
@@ -334,13 +374,7 @@ export async function handler(req: Request): Promise<Response> {
     respuestaIa = await ejecutarLlamadaIaConReintento()
   } catch (err) {
     const mensajeError = err instanceof Error ? err.message : 'Error en procesamiento IA'
-    await adminClient
-      .from('producto')
-      .update({
-        estado: 'borrador',
-        ia_error: mensajeError,
-      })
-      .eq('id', producto_id)
+    await recuperar({ ia_error: mensajeError })
 
     return jsonRespuesta(
       {
@@ -356,14 +390,11 @@ export async function handler(req: Request): Promise<Response> {
     const motivo =
       respuestaIa.evaluacion.motivo ||
       'Esta pieza parece industrial. Si la hiciste tú, toma otra foto que muestre el trabajo a mano.'
-    await adminClient
-      .from('producto')
-      .update({
-        estado: 'borrador',
-        revision_ia: 'rechazada',
-        ia_error: motivo,
-      })
-      .eq('id', producto_id)
+    if (!(await recuperar({ revision_ia: 'rechazada', ia_error: motivo })))
+      return jsonRespuesta(
+        { error: 'ia_no_disponible', mensaje: 'No pudimos guardar la evaluación. Reintenta.' },
+        502,
+      )
 
     return jsonRespuesta(
       {
@@ -377,14 +408,11 @@ export async function handler(req: Request): Promise<Response> {
 
   if (!respuestaIa.evaluacion.contenido_apropiado) {
     const motivo = respuestaIa.evaluacion.motivo || 'Contenido ofensivo o no permitido.'
-    await adminClient
-      .from('producto')
-      .update({
-        estado: 'borrador',
-        revision_ia: 'rechazada',
-        ia_error: motivo,
-      })
-      .eq('id', producto_id)
+    if (!(await recuperar({ revision_ia: 'rechazada', ia_error: motivo })))
+      return jsonRespuesta(
+        { error: 'ia_no_disponible', mensaje: 'No pudimos guardar la evaluación. Reintenta.' },
+        502,
+      )
 
     return jsonRespuesta(
       {
@@ -405,11 +433,18 @@ export async function handler(req: Request): Promise<Response> {
 
   if (mejorar_foto) {
     // Eliminar variantes anteriores si existían
-    await adminClient
+    const { error: errorVariantes } = await adminClient
       .from('foto_producto')
       .delete()
       .eq('producto_id', producto_id)
       .eq('origen', 'ia')
+    if (errorVariantes) {
+      await recuperar({ ia_error: 'No pudimos reemplazar las variantes.' })
+      return jsonRespuesta(
+        { error: 'ia_no_disponible', mensaje: 'No pudimos preparar las fotos. Reintenta.' },
+        502,
+      )
+    }
 
     const resultadoVariantes = await procesarVariantesFotos(async (variante) => {
       const peticion = armarPeticionEdicionImagen({
@@ -428,41 +463,46 @@ export async function handler(req: Request): Promise<Response> {
     for (let i = 0; i < resultadoVariantes.fotosExitosas.length; i++) {
       const { variante, base64 } = resultadoVariantes.fotosExitosas[i]!
       const rutaIa = `${producto.artesano_id}/${producto_id}/ia-${variante}.png`
-      const bytes = base64ToUint8Array(base64)
+      try {
+        const bytes = base64ToUint8Array(base64)
 
-      const { error: errUpload } = await adminClient.storage.from('fotos').upload(rutaIa, bytes, {
-        contentType: 'image/png',
-        upsert: true,
-      })
+        const { error: errUpload } = await adminClient.storage.from('fotos').upload(rutaIa, bytes, {
+          contentType: 'image/png',
+          upsert: true,
+        })
 
-      if (errUpload) {
-        advertencias.push(`No se pudo guardar la foto «${variante}».`)
-        continue
-      }
+        if (errUpload) {
+          advertencias.push(`No se pudo guardar la foto «${variante}».`)
+          continue
+        }
 
-      const idFoto = crypto.randomUUID()
-      const { error: errInsertFoto } = await adminClient.from('foto_producto').insert({
-        id: idFoto,
-        producto_id,
-        origen: 'ia',
-        variante,
-        ruta: rutaIa,
-        publicada: false,
-        posicion: i + 1,
-      })
-
-      if (!errInsertFoto) {
-        fotosIaGuardadas.push({
+        const idFoto = crypto.randomUUID()
+        const { error: errInsertFoto } = await adminClient.from('foto_producto').insert({
           id: idFoto,
+          producto_id,
+          origen: 'ia',
           variante,
           ruta: rutaIa,
+          publicada: false,
+          posicion: i + 1,
         })
+
+        if (errInsertFoto) advertencias.push(`No se pudo registrar la foto «${variante}».`)
+        else {
+          fotosIaGuardadas.push({
+            id: idFoto,
+            variante,
+            ruta: rutaIa,
+          })
+        }
+      } catch {
+        advertencias.push(`No se pudo guardar la foto «${variante}».`)
       }
     }
   }
 
   // 8. Actualizar producto a 'en_revision' con ficha y comentario
-  const { error: errActualizar } = await adminClient
+  const { data: actualizado, error: errActualizar } = await adminClient
     .from('producto')
     .update({
       estado: 'en_revision',
@@ -472,8 +512,13 @@ export async function handler(req: Request): Promise<Response> {
       ia_error: null,
     })
     .eq('id', producto_id)
+    .eq('estado', 'procesando')
+    .eq('ia_intentos', nuevoIntento)
+    .select('id')
+    .maybeSingle()
 
-  if (errActualizar) {
+  if (errActualizar || !actualizado) {
+    await recuperar({ ia_error: 'No pudimos guardar la ficha del producto.' })
     return jsonRespuesta(
       {
         error: 'ia_no_disponible',

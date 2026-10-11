@@ -41,12 +41,7 @@ const EsquemaFicha = z.object({
   descripcion: z.string().min(1).max(1200),
   materiales: z.array(z.string().min(1)).min(1),
   tecnica: z.string().min(1).max(120),
-  tipo_producto: z.string().transform((val) => {
-    const coincidencia = TIPOS_PRODUCTO_VALIDOS.find(
-      (t) => t.toLowerCase() === val.trim().toLowerCase(),
-    )
-    return coincidencia || 'otro'
-  }),
+  tipo_producto: z.string().trim().toLowerCase().pipe(z.enum(TIPOS_PRODUCTO_VALIDOS)),
   historia_pieza: z
     .string()
     .max(600)
