@@ -15,5 +15,8 @@ export default defineConfig(({ mode }) => ({
     // `globals` permite que Testing Library limpie el DOM después de cada prueba.
     globals: true,
     include: ['src/**/*.test.{ts,tsx}', 'supabase/functions/**/*.test.ts'],
+    // Vitest devuelve vacío el CSS importado; tokens.css se lee de verdad para
+    // comprobar el contraste AA de la paleta (PRP 011, aprobado por Cristopher).
+    css: { include: [/\/compartido\/ui\/tokens\.css/] },
   },
 }))

@@ -1,5 +1,11 @@
 import { StrictMode, type ComponentType } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
+// Fuentes empaquetadas (sin CDN): la APK abre sin señal con su tipografía (decisión 0004).
+import '@fontsource/atkinson-hyperlegible/400.css'
+import '@fontsource/atkinson-hyperlegible/700.css'
+import '@fontsource/barlow-condensed/600.css'
+import '@fontsource/barlow-condensed/700.css'
+import './compartido/ui/tokens.css'
 import './compartido/ui/estilos.css'
 
 const raiz = document.getElementById('root')
