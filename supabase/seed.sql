@@ -83,7 +83,7 @@ begin
 end $$;
 
 -- ------------------------------------------------------------------------------------
--- 2. Productos: 21 publicados, 1 retirado (no debe verse) y 1 borrador (APK)
+-- 2. Productos: 17 publicados, 1 retirado (no debe verse) y 1 borrador (APK)
 -- Sin precio sugerido ni cantidad en stock (3FN y CC-09).
 -- ------------------------------------------------------------------------------------
 do $$
@@ -105,9 +105,6 @@ begin
   ('10000000-0000-0000-0000-000000000004', '00000000-0000-0000-0000-000000000002', 'publicado', 'Bolso red de pescador', 'Bolso de macramé tipo red.',
    '{"titulo": "Bolso de macramé Red de Pescador", "descripcion": "Bolso expansible tejido en nudos, perfecto para la toalla y el protector solar. Demo ficticia. Foto correspondiente pendiente; no se utiliza una imagen de otro objeto.", "materiales": ["cuerda de algodón"], "tecnica": "macramé", "tipo_producto": "textil", "historia_pieza": "Imita la forma y la resistencia de las redes de pesca artesanal.", "etiquetas": ["macramé", "bolso", "pesca artesanal"]}',
    '{"materiales": 18.00, "horas": 4, "pago_hora": 8.00, "gastos": 3.00, "ganancia": 25.00}', 80.00, 'en_stock', null, 'aprobada', 1),
-  ('10000000-0000-0000-0000-000000000005', '00000000-0000-0000-0000-000000000002', 'publicado', 'Porta botella macramé', 'Para llevar agua, tejido con cuerda.',
-   '{"titulo": "Porta botella cruzado de macramé", "descripcion": "Funda colgante para llevar botellas o tomatodos cruzada al hombro. Demo ficticia. Foto correspondiente pendiente; no se utiliza una imagen de otro objeto.", "materiales": ["cuerda de algodón trenzado"], "tecnica": "macramé", "tipo_producto": "utilitario", "historia_pieza": "Creado para tener las manos libres en las caminatas por la costa.", "etiquetas": ["macramé", "caminata"]}',
-   '{"materiales": 8.00, "horas": 1, "pago_hora": 8.00, "gastos": 1.00, "ganancia": 15.00}', 30.00, 'en_stock', null, 'aprobada', 1),
   ('10000000-0000-0000-0000-000000000006', '00000000-0000-0000-0000-000000000002', 'publicado', 'Tapiz mural olas', 'Adorno de pared tejido.',
    '{"titulo": "Tapiz de macramé Olas", "descripcion": "Decoración de pared tejida a mano con patrones ondulados sobre una rama de deriva. Demo ficticia. Foto correspondiente pendiente; no se utiliza una imagen de otro objeto.", "materiales": ["cuerda de algodón", "rama de deriva"], "tecnica": "macramé", "tipo_producto": "textil", "historia_pieza": "Cada nudo representa la constancia de las olas en la orilla.", "etiquetas": ["macramé", "decoración", "hecho a pedido"]}',
    '{"materiales": 30.00, "horas": 8, "pago_hora": 8.00, "gastos": 5.00, "ganancia": 60.00}', 150.00, 'a_pedido', 5, 'aprobada', 1),
@@ -145,19 +142,10 @@ begin
   ('10000000-0000-0000-0000-000000000016', '00000000-0000-0000-0000-000000000006', 'publicado', 'Collar oro rojo', 'Collar de concha roja pulida.',
    '{"titulo": "Collar Oro Rojo de Spondylus", "descripcion": "Collar con una pieza central pulida de Spondylus engastada en alpaca. Demo ficticia. Foto correspondiente pendiente; no se utiliza una imagen de otro objeto.", "materiales": ["concha Spondylus", "alpaca"], "tecnica": "pulido y engaste", "tipo_producto": "bisutería marina", "historia_pieza": "El Spondylus fue la concha más valiosa para las culturas antiguas de nuestra costa.", "etiquetas": ["spondylus", "joyería", "tallán"]}',
    '{"materiales": 30.00, "horas": 5, "pago_hora": 12.00, "gastos": 5.00, "ganancia": 60.00}', 160.00, 'en_stock', null, 'aprobada', 1),
-  ('10000000-0000-0000-0000-000000000017', '00000000-0000-0000-0000-000000000006', 'publicado', 'Aretes sol tallán', 'Aretes circulares de spondylus.',
-   '{"titulo": "Aretes Sol Tallán de Spondylus", "descripcion": "Aretes circulares tallados en la parte más intensa de la concha Spondylus. Demo ficticia. Foto correspondiente pendiente; no se utiliza una imagen de otro objeto.", "materiales": ["concha Spondylus", "plata 925"], "tecnica": "tallado y pulido", "tipo_producto": "bisutería marina", "historia_pieza": "La forma circular recuerda al sol de las culturas prehispánicas.", "etiquetas": ["spondylus", "plata", "hecho a pedido"]}',
-   '{"materiales": 25.00, "horas": 4, "pago_hora": 12.00, "gastos": 5.00, "ganancia": 50.00}', 130.00, 'a_pedido', 5, 'aprobada', 1),
   ('10000000-0000-0000-0000-000000000018', '00000000-0000-0000-0000-000000000006', 'publicado', 'Pulsera de chispas', 'Pulsera con fragmentos morados de concha.',
    '{"titulo": "Pulsera de chispas de Spondylus morado", "descripcion": "Pulsera con pequeños fragmentos pulidos de Spondylus morado. Demo ficticia. Foto correspondiente pendiente; no se utiliza una imagen de otro objeto.", "materiales": ["concha Spondylus", "hilo de nylon"], "tecnica": "ensamblado", "tipo_producto": "bisutería marina", "historia_pieza": "La variedad morada vive en aguas más profundas y es más difícil de recolectar.", "etiquetas": ["spondylus", "pulsera"]}',
    '{"materiales": 15.00, "horas": 2, "pago_hora": 12.00, "gastos": 3.00, "ganancia": 30.00}', 75.00, 'en_stock', null, 'aprobada', 1),
   -- Carlos Mendoza · cuero de pescado
-  ('10000000-0000-0000-0000-000000000019', '00000000-0000-0000-0000-000000000007', 'publicado', 'Billetera de cuero de perico', 'Billetera hecha con cuero de pescado perico.',
-   '{"titulo": "Billetera de cuero de pescado perico", "descripcion": "Billetera resistente elaborada con piel curtida de perico e interior de tela reciclada. Demo ficticia. Foto correspondiente pendiente; no se utiliza una imagen de otro objeto.", "materiales": ["cuero de pescado", "tela reciclada"], "tecnica": "curtiembre y marroquinería", "tipo_producto": "utilitario", "historia_pieza": "Aprovechamos los residuos de la pesca del día en Lobitos.", "etiquetas": ["cuero de pescado", "reciclado", "lobitos"]}',
-   '{"materiales": 30.00, "horas": 6, "pago_hora": 10.00, "gastos": 5.00, "ganancia": 50.00}', 150.00, 'en_stock', null, 'aprobada', 1),
-  ('10000000-0000-0000-0000-000000000020', '00000000-0000-0000-0000-000000000007', 'publicado', 'Llavero quilla de surf', 'Llavero en forma de quilla forrado en cuero.',
-   '{"titulo": "Llavero Quilla de Surf en cuero de pescado", "descripcion": "Llavero inspirado en el surf, forrado a mano con cuero de pescado curtido. Demo ficticia. Foto correspondiente pendiente; no se utiliza una imagen de otro objeto.", "materiales": ["cuero de pescado", "madera balsa", "argolla de acero"], "tecnica": "ensamblado y forrado", "tipo_producto": "utilitario", "historia_pieza": "Homenaje a las olas de Lobitos, paraíso del surf.", "etiquetas": ["surf", "cuero de pescado", "lobitos"]}',
-   '{"materiales": 5.00, "horas": 1, "pago_hora": 10.00, "gastos": 2.00, "ganancia": 15.00}', 30.00, 'en_stock', null, 'aprobada', 1),
   ('10000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000007', 'publicado', 'Tarjetero marino', 'Tarjetero pequeño de cuero oscuro.',
    '{"titulo": "Tarjetero Marino de cuero de pescado", "descripcion": "Tarjetero minimalista con la textura natural de las escamas curtidas. Demo ficticia. Foto correspondiente pendiente; no se utiliza una imagen de otro objeto.", "materiales": ["cuero de pescado"], "tecnica": "marroquinería artesanal", "tipo_producto": "utilitario", "historia_pieza": "Pensado para quienes visitan el norte con poco equipaje.", "etiquetas": ["cuero de pescado", "lobitos", "hecho a pedido"]}',
    '{"materiales": 15.00, "horas": 3, "pago_hora": 10.00, "gastos": 3.00, "ganancia": 35.00}', 85.00, 'a_pedido', 5, 'aprobada', 1),
@@ -201,10 +189,10 @@ begin
    '{"nombre_destinatario": "Compradora Demo", "telefono": "+51900000090", "departamento": "Lima", "provincia": "Lima", "distrito": "Miraflores", "agencia_destino": "Shalom Miraflores"}',
    'Talla M, color naranja atardecer', 15.00, 75.00, current_date + 3,
    'https://pago.ejemplo.test/ayllu-demo', null, 'pago_pendiente'),
-  ('20000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000019', '00000000-0000-0000-0000-000000000090',
+  ('20000000-0000-0000-0000-000000000002', '10000000-0000-0000-0000-000000000021', '00000000-0000-0000-0000-000000000090',
    1, 'envio',
    '{"nombre_destinatario": "Compradora Demo", "telefono": "+51900000090", "departamento": "Arequipa", "provincia": "Arequipa", "distrito": "Yanahuara", "agencia_destino": "Shalom Arequipa"}',
-   null, 20.00, 170.00, current_date + 5,
+   null, 20.00, 105.00, current_date + 5,
    'https://pago.ejemplo.test/ayllu-demo-2', 'GUIA-DEMO-0001', 'enviada')
   on conflict (id) do nothing;
 end $$;

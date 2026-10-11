@@ -1,6 +1,6 @@
 # Fotos por producto — PRP 007
 
-Selección revisada contra los 21 productos publicados existentes. Se retiraron las referencias por familia que mostraban otro objeto. Hay cinco archivos seleccionados y 18 destinos pendientes (16 publicados, uno retirado y uno borrador). Ningún archivo pendiente debe sustituirse por una imagen de otra pieza.
+Selección revisada contra los 21 productos publicados existentes. Se retiraron las referencias por familia que mostraban otro objeto. Hay cinco archivos seleccionados y 14 destinos pendientes (12 publicados, uno retirado y uno borrador). Ningún archivo pendiente debe sustituirse por una imagen de otra pieza. Los productos 05, 17, 19 y 20 se eliminaron de la semilla (CC-16) por no hallarse foto reutilizable.
 
 Estas cinco imágenes son referencias de demo del mismo tipo de objeto, no fotos originales de los artesanos ficticios. Las diferencias y los materiales no verificables se declaran a continuación. La embarcación a escala es una coincidencia visual parcial: no acredita una chalana de Cabo Blanco. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
 
@@ -32,9 +32,9 @@ Todos los JPEG tienen como máximo 1000 px en su lado mayor y menos de 300 KB (3
 
 ## Fotos pendientes
 
-### Candidatos de referencia para los 16 productos publicados pendientes
+### Candidatos de referencia para los 12 productos publicados pendientes
 
-La búsqueda incluye ahora una fuente específica para **cada uno de los 16 productos**.
+La búsqueda incluye ahora una fuente específica para **cada uno de los 12 productos**.
 Son referencias para elegir imágenes: no están aprobadas para cargar ni se incorporan
 como originales. No se ha confirmado una licencia de reutilización de estas fotografías
 comerciales. La coincidencia se apoya en las descripciones de las fuentes; los materiales
@@ -45,7 +45,6 @@ no se dan por probados solo por el aspecto de la foto.
 | 01: Top de bikini Atardecer | [Bikini naranja de crochet con flores](https://www.crochetkingdom.com/orange-crochet-bikini-with-flower-motifs/) | Naranja, crochet y algodón; motivos florales. No acredita algodón pima. Que el patrón sea gratuito no implica permiso para reutilizar su foto. |
 | 02: Falda larga calada | [Crochet Beach Maxi Skirt blanca — AmiEmi](https://amiemi.com/es/products/crochet-beach-maxi-skirt) | Falda larga blanca de playa; confirmar técnica y composición de algodón. |
 | 04: Bolso Red de Pescador | [Trenza Macrame Net Bag — Tin Marin](https://tinmarinbrand.com/products/trenza-macrame-net-bag) | Bolso de red de macramé y algodón; referencia fabricada en México. |
-| 05: Porta botella cruzado | [Porta Botella — Ponte Cuerda](https://pontecuerda.cl/producto/porta-botella/) | Macramé de cuerdas de algodón natural, correa larga; referencia chilena. |
 | 06: Tapiz Olas | [Macrame Wave Wall Hanging — OlivetCo](https://www.etsy.com/listing/695646606/macrame-wave-wall-hanging) | Patrón de ola, algodón y rama recogida en playa; revisar escala y encuadre. |
 | 08: Cartera de mano de toquilla | [Cartera cilíndrica — Asociación Virgen del Pilar](https://pajatoquilla.ruraqmaki.pe/producto/cartera-colindro-color-marron-oscuro) | Toquilla tejida y asas de cuero, Catacaos; diseño cilíndrico marrón. |
 | 09: Abanico Frescor | [Woven Straw Hand Fan — Sensi Studio](https://www.farfetch.com/ph/shopping/women/sensi-studio-woven-straw-hand-fan-item-30255167.aspx) | Abanico redondo de toquilla; incorpora cuero y marca en el mango. |
@@ -53,10 +52,7 @@ no se dan por probados solo por el aspecto de la foto.
 | 14: Collar Gota de Mar | [Collar Perla irregular — La Femme Unchained](https://www.lafemmeunchained.com/collections/collares/products/collar-perla-irregular) | Perla natural irregular y plata 925; lleva marco ennegrecido adicional. |
 | 15: Pulsera Tres Perlas | [Triple Scoop Macramé — Klara Haloho](https://www.klarahaloho.com/products/triple-scoop-macrame-freshwater-pearl-bracelet) | Tres perlas de agua dulce en macramé; usa cuero, no hilo encerado. Candidato aproximado. |
 | 16: Collar Oro Rojo | [Red & Swirls — colgante de Spondylus rojo](https://www.etsy.com/listing/1017166576/red-swirls-rare-red-spiny-oyster-red) | Colgante central rojo; montura de plata, no alpaca. Candidato aproximado. |
-| 17: Aretes Sol Tallán | [Spondylus Circles Earrings — La Vida Ventura](https://christina-lauridsen.squarespace.com/silver-jewelry/spondylus-circles-earrings) | Aretes circulares de Spondylus; incrustación morada y plata 950, no 925. |
 | 18: Pulsera de chispas moradas | [Pulsera Spondylus Morado — Viancca](https://viancca.com.pe/producto/pulsera-spondylus-morado/) | Coincide material y color; candidata aproximada de incrustación, no fragmentos ensartados en nylon. |
-| 19: Billetera de perico | [Genuine Mahi Mahi Fish Leather Wallets — Spearman Artisanry](https://www.spearmanartisanry.com/products/genuine-mahi-mahi-fish-leather-wallets) | Cuero de mahi-mahi/perico y compartimentos para tarjetas y billetes; forro reciclado no acreditado. |
-| 20: Llavero Quilla de Surf | [Hawaiian Koa Surf Fin Keychain — WoodandShell](https://www.etsy.com/listing/674772191/hawaiian-koa-surf-fin-keychain) | Candidato por forma: quilla de madera koa; no incorpora cuero de pescado ni madera balsa. Coincidencia parcial. |
 | 21: Tarjetero Marino | [Billetera tarjetero de cuero de pescado — QAYA / HAF Perú](https://hafperu.org/en-pe/products/billetera-tarjetero-by-qaya) | Tarjetero artesanal peruano de cuero de pescado; combina cuero ovino y bovino. Especie de pescado sin confirmar. |
 
 Alternativas con licencia de uso comprobada, pero diseño diferente:
@@ -74,7 +70,6 @@ aplicable a esa imagen. No se generaron imágenes con IA.
 | 01: Top de bikini Atardecer tejido a crochet | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
 | 02: Falda larga calada para la playa | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
 | 04: Bolso de macramé Red de Pescador | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 05: Porta botella cruzado de macramé | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
 | 06: Tapiz de macramé Olas | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
 | 08: Cartera de mano de paja toquilla | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
 | 09: Abanico de paja toquilla Frescor | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
@@ -82,13 +77,10 @@ aplicable a esa imagen. No se generaron imágenes con IA.
 | 14: Collar Gota de Mar con perla | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
 | 15: Pulsera de macramé Tres Perlas | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
 | 16: Collar Oro Rojo de Spondylus | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 17: Aretes Sol Tallán de Spondylus | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
 | 18: Pulsera de chispas de Spondylus morado | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 19: Billetera de cuero de pescado perico | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 20: Llavero Quilla de Surf en cuero de pescado | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
 | 21: Tarjetero Marino de cuero de pescado | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 22: Top edición especial (retirado) | Fuera de los 16 publicados pendientes; requiere foto correspondiente. |
-| 23: Billetera en creación (borrador) | Fuera de los 16 publicados pendientes; requiere foto correspondiente. |
+| 22: Top edición especial (retirado) | Fuera de los 12 publicados pendientes; requiere foto correspondiente. |
+| 23: Billetera en creación (borrador) | Fuera de los 12 publicados pendientes; requiere foto correspondiente. |
 
 Para cerrar estos pendientes se necesitan fotos propias de las piezas o permiso del autor de una imagen realmente coincidente. Las fotos comerciales encontradas sin licencia de reutilización no se incluyen. No se generaron imágenes con IA.
 
@@ -100,7 +92,7 @@ Para cerrar estos pendientes se necesitan fotos propias de las piezas o permiso 
 4. Comprobar vitrina a 360 y 1440 px y `/admin` con una cuenta real. Los usuarios de Auth de la semilla no sirven para iniciar sesión.
 5. Los teléfonos ficticios se conservan por indicación de Johann para esta etapa. No usarlos para contactar a personas; el reemplazo por el número consentido del equipo queda para antes de la demo.
 
-La semilla conserva 10 perfiles, 23 productos (21 publicados), 23 registros SQL de fotos, dos órdenes y dos mensajes al aplicarse dos veces. Los registros SQL pendientes no implican que sus archivos existan en Storage.
+La semilla conserva 10 perfiles, 19 productos (17 publicados), 19 registros SQL de fotos, dos órdenes y dos mensajes al aplicarse dos veces. Los registros SQL pendientes no implican que sus archivos existan en Storage.
 
 ## Estado comprobado el 11 de octubre de 2026 (cierre parcial)
 
@@ -109,7 +101,8 @@ La semilla conserva 10 perfiles, 23 productos (21 publicados), 23 registros SQL 
 - Foto 12 ya existente: verificada y conservada (`verified_existing_skipped`), sin sobrescritura.
 - GET público final: 03 → HTTP 200 `image/jpeg` 62 097 bytes; 07 → HTTP 200 `image/jpeg` 199 105 bytes; 12 → HTTP 200 `image/jpeg` 82 072 bytes; 13 → HTTP 200 `image/jpeg` 37 809 bytes. Cada archivo coincide en SHA256 y medidas con el JPEG revisado del commit.
 - Producto 10 excluido a propósito por coincidencia parcial (jangada brasileña, no chalana); su objeto sigue ausente y no se cargó.
-- `supabase/seed.sql` ya contiene los créditos de 03/07/12/13 y el texto "Foto correspondiente pendiente" en los 16 publicados sin foto utilizable; coincide con las fichas del servidor tras el parche.
+- `supabase/seed.sql` ya contiene los créditos de 03/07/12/13 y el texto "Foto correspondiente pendiente" en los 12 publicados sin foto utilizable; coincide con las fichas del servidor tras el parche.
+- CC-16 (2026-10-11): se eliminaron de la semilla los productos 05, 17, 19 y 20 por no hallarse foto reutilizable; la orden enviada pasó de la 19 a la 21 (mismo artesano y material), con total S/105.00. La semilla queda en 19 productos (17 publicados).
 - Vitrina https://ayllu.likadev.com responde HTTP 200. La comprobación visual a 360 y 1440 px y del panel `/admin` con cuenta real queda para el usuario con navegador.
 - `make verify` y `make build` se reejecutan antes del merge (ver salida del PR).
-- Pendiente fuera de este cierre: fotos propias o con permiso documentado para los 16 productos publicados restantes (01, 02, 04, 05, 06, 08, 09, 11, 14–21), decisión específica sobre el 10, y fotos de 22 (retirado) y 23 (borrador). Los candidatos comerciales enlazados arriba no tienen licencia de reutilización confirmada y no se cargan.
+- Pendiente fuera de este cierre: fotos propias o con permiso documentado para los 12 productos publicados restantes (01, 02, 04, 06, 08, 09, 11, 14–16, 18, 21), decisión específica sobre el 10, y fotos de 22 (retirado) y 23 (borrador). Los candidatos comerciales enlazados arriba no tienen licencia de reutilización confirmada y no se cargan.
