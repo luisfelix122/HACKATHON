@@ -83,7 +83,7 @@ begin
 end $$;
 
 -- ------------------------------------------------------------------------------------
--- 2. Productos: 17 publicados, 1 retirado (no debe verse) y 1 borrador (APK)
+-- 2. Productos: 15 publicados, 1 retirado (no debe verse) y 1 borrador (APK)
 -- Sin precio sugerido ni cantidad en stock (3FN y CC-09).
 -- ------------------------------------------------------------------------------------
 do $$
@@ -119,12 +119,6 @@ begin
    '{"titulo": "Abanico de paja toquilla Frescor", "descripcion": "Abanico de mano ligero y resistente, teñido con colores naturales. Demo ficticia. Foto de referencia del mismo tipo de objeto, no de esta artesana: James Moore200 (CC BY-SA 4.0; https://creativecommons.org/licenses/by-sa/4.0/). Fuente: https://commons.wikimedia.org/wiki/File:Picture_of_a_woven_hand-fan.jpg. Reducida a JPEG. Colores, material y origen no acreditados por la foto.", "materiales": ["paja toquilla"], "tecnica": "tejido a mano", "tipo_producto": "utilitario", "historia_pieza": "Accesorio tradicional para el intenso calor del norte peruano.", "etiquetas": ["paja toquilla", "tintes naturales"]}',
    '{"materiales": 5.00, "horas": 2, "pago_hora": 6.00, "gastos": 1.00, "ganancia": 15.00}', 30.00, 'en_stock', null, 'aprobada', 1),
   -- José Ruiz · tallado
-  ('10000000-0000-0000-0000-000000000010', '00000000-0000-0000-0000-000000000004', 'publicado', 'Chalana a escala', 'Bote de pesca tallado en madera.',
-   '{"titulo": "Chalana de Cabo Blanco a escala", "descripcion": "Réplica a escala de las chalanas pesqueras a vela de Cabo Blanco. Referencia visual parcial de una jangada brasileña; no representa una chalana de Cabo Blanco. Demo ficticia. Foto de referencia del mismo tipo de objeto, no de este artesano: roger4336 (CC BY-SA 2.0; https://creativecommons.org/licenses/by-sa/2.0/). Fuente: https://www.flickr.com/photos/24736216@N07/10445430445. Reducida a JPEG. Materiales y origen de la pieza de demo no acreditados por la foto.", "materiales": ["madera balsa", "tela de algodón"], "tecnica": "talla en madera y ensamblado", "tipo_producto": "tallado", "historia_pieza": "Homenaje a la pesca artesanal a vela de la caleta.", "etiquetas": ["madera balsa", "pesca artesanal", "decoración"]}',
-   '{"materiales": 20.00, "horas": 10, "pago_hora": 10.00, "gastos": 5.00, "ganancia": 50.00}', 180.00, 'en_stock', null, 'aprobada', 1),
-  ('10000000-0000-0000-0000-000000000011', '00000000-0000-0000-0000-000000000004', 'publicado', 'Llavero pez espada', 'Llavero tallado de merlín.',
-   '{"titulo": "Llavero tallado Pez Espada", "descripcion": "Llavero detallado en forma de merlín, ícono de la zona. Demo ficticia. Foto correspondiente pendiente; no se utiliza una imagen de otro objeto.", "materiales": ["madera de zapote", "argolla de metal"], "tecnica": "talla a mano", "tipo_producto": "tallado", "historia_pieza": "Cabo Blanco es famoso por la pesca deportiva del merlín negro.", "etiquetas": ["madera", "recuerdo"]}',
-   '{"materiales": 2.00, "horas": 1, "pago_hora": 10.00, "gastos": 1.00, "ganancia": 12.00}', 25.00, 'en_stock', null, 'aprobada', 1),
   ('10000000-0000-0000-0000-000000000012', '00000000-0000-0000-0000-000000000004', 'publicado', 'Balsa miniatura', 'Adorno de balsita.',
    '{"titulo": "Balsa miniatura atada a mano", "descripcion": "Adorno rústico que representa una balsa atada de forma artesanal. Demo ficticia. Foto de referencia del mismo tipo de objeto, no de este artesano: Autor desconocido (Public domain; https://commons.wikimedia.org/wiki/File:Bolivia,_Mosetenes_raft,_model_in_the_Vatican_Museums.jpg). Fuente: https://commons.wikimedia.org/wiki/File:Bolivia,_Mosetenes_raft,_model_in_the_Vatican_Museums.jpg. Reducida a JPEG. Materiales y origen de la pieza de demo no acreditados por la foto.", "materiales": ["madera balsa", "hilo de cáñamo"], "tecnica": "ensamblado", "tipo_producto": "otro", "historia_pieza": "Recuerda a los antiguos navegantes de nuestras costas.", "etiquetas": ["madera balsa", "decoración"]}',
    '{"materiales": 5.00, "horas": 2, "pago_hora": 10.00, "gastos": 2.00, "ganancia": 20.00}', 45.00, 'en_stock', null, 'aprobada', 1),
