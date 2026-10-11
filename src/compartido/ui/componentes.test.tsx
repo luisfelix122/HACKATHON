@@ -2,7 +2,8 @@ import '@testing-library/jest-dom/vitest'
 import { render, screen } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import tokensCss from './tokens.css?raw'
-import { Aviso, Boton, Campo, Casilla, Etiqueta, SelloRna } from './componentes'
+import { Aviso, Boton, Campo, Casilla, Matricula, SelloRna, Tablon } from './componentes'
+import { Icono } from './Icono'
 
 describe('Boton', () => {
   it('es primario por defecto y no envía formularios sin pedirlo', () => {
@@ -93,15 +94,60 @@ describe('SelloRna', () => {
   })
 })
 
-describe('Etiqueta', () => {
-  it('muestra lugar, título y quién la hizo; el precio es opcional', () => {
-    const { rerender } = render(<Etiqueta titulo="Pieza" lugar="Lugar" artesano="Persona" />)
+describe('Icono', () => {
+  it('sin etiqueta es decorativo y queda oculto para lectores', () => {
+    const { container } = render(<Icono nombre="pedidos" />)
+    expect(container.querySelector('svg')).toHaveAttribute('aria-hidden', 'true')
+  })
+
+  it('con etiqueta se anuncia como imagen con ese nombre', () => {
+    render(<Icono nombre="cerrar" etiqueta="Cerrar" />)
+    expect(screen.getByRole('img', { name: 'Cerrar' })).toBeInTheDocument()
+  })
+})
+
+describe('Matricula', () => {
+  it('muestra la caleta como placa', () => {
+    render(<Matricula>Cabo Blanco</Matricula>)
+    expect(screen.getByText('Cabo Blanco')).toHaveClass('matricula')
+  })
+})
+
+describe('Tablon', () => {
+  it('muestra caleta, título, quién la hizo y el precio opcional', () => {
+    const { rerender } = render(
+      <Tablon titulo="Pieza" lugar="Lugar" artesano="Persona" tipo="textil" />,
+    )
     expect(screen.getByRole('heading', { name: 'Pieza' })).toBeInTheDocument()
     expect(screen.getByText('Lugar')).toBeInTheDocument()
-    expect(screen.getByText('Hecho por Persona')).toBeInTheDocument()
+    expect(screen.getByText('Persona')).toBeInTheDocument()
     expect(screen.queryByText('S/ 10.00')).not.toBeInTheDocument()
-    rerender(<Etiqueta titulo="Pieza" lugar="Lugar" artesano="Persona" precio="S/ 10.00" />)
+    rerender(
+      <Tablon titulo="Pieza" lugar="Lugar" artesano="Persona" tipo="textil" precio="S/ 10.00" />,
+    )
     expect(screen.getByText('S/ 10.00')).toBeInTheDocument()
+  })
+
+  it('sin foto no inventa una imagen: dice que la foto aún no está', () => {
+    render(<Tablon titulo="Pieza" lugar="Lugar" artesano="Persona" tipo="tallado" />)
+    expect(screen.queryByRole('img', { name: /Pieza/ })).not.toBeInTheDocument()
+    expect(screen.getByText('Sin foto todavía')).toBeInTheDocument()
+  })
+
+  it('con foto la muestra con un texto alternativo', () => {
+    render(
+      <Tablon
+        titulo="Pieza"
+        lugar="Lugar"
+        artesano="Persona"
+        tipo="textil"
+        foto="https://x.test/a.jpg"
+      />,
+    )
+    expect(screen.getByRole('img', { name: 'Foto de Pieza' })).toHaveAttribute(
+      'src',
+      'https://x.test/a.jpg',
+    )
   })
 })
 
@@ -118,7 +164,7 @@ describe('Casilla', () => {
   })
 })
 
-// Contraste WCAG 2.x con los valores reales de tokens.css (decisión 0004).
+// Contraste WCAG 2.x con los valores reales de tokens.css (decisión 0006).
 function token(nombre: string): string {
   const coincidencia = new RegExp(`--${nombre}:\\s*(#[0-9a-fA-F]{6})`).exec(tokensCss)
   if (!coincidencia?.[1]) throw new Error(`Falta el token --${nombre}`)
@@ -139,29 +185,37 @@ function contraste(a: string, b: string): number {
   return (claro! + 0.05) / (oscuro! + 0.05)
 }
 
-describe('tokens: contraste AA del texto', () => {
+describe('tokens «Casco pintado»: contraste AA del texto', () => {
   const parejas: [texto: string, fondo: string][] = [
-    ['noche', 'espuma'],
-    ['noche', 'blanco'],
-    ['noche-suave', 'espuma'],
-    ['noche-suave', 'blanco'],
-    ['pacifico', 'espuma'],
-    ['blanco', 'pacifico'],
-    ['blanco', 'pacifico-hondo'],
-    ['noche', 'arena'],
-    ['noche', 'arena-clara'],
-    ['noche', 'sol'],
-    ['noche', 'sol-claro'],
-    ['noche', 'ola-clara'],
-    ['error', 'blanco'],
-    ['error', 'error-claro'],
-    ['espuma', 'noche'],
-    ['error', 'espuma'],
-    ['pacifico', 'blanco'],
-    ['pacifico', 'ola-clara'],
-    ['pacifico', 'arena'],
-    ['noche-suave', 'arena'],
-    ['sol', 'pacifico'],
+    ['brea', 'cal'],
+    ['brea', 'blanco'],
+    ['brea-suave', 'cal'],
+    ['brea-suave', 'blanco'],
+    ['brea-suave', 'mar'],
+    ['brea-suave', 'sol-claro'],
+    ['brea', 'sol'],
+    ['brea', 'sol-claro'],
+    ['brea', 'mar'],
+    ['brea', 'casco-claro'],
+    ['brea', 'borda-clara'],
+    ['brea', 'alga-clara'],
+    ['casco', 'cal'],
+    ['casco', 'blanco'],
+    ['casco', 'mar'],
+    ['casco', 'casco-claro'],
+    ['blanco', 'casco'],
+    ['blanco', 'casco-hondo'],
+    ['cal', 'casco'],
+    ['sol', 'casco'],
+    ['sol', 'casco-hondo'],
+    ['blanco', 'borda'],
+    ['blanco', 'borda-honda'],
+    ['borda-honda', 'cal'],
+    ['borda-honda', 'blanco'],
+    ['borda-honda', 'borda-clara'],
+    ['blanco', 'alga'],
+    ['alga', 'cal'],
+    ['cal', 'brea'],
   ]
 
   it.each(parejas)('%s sobre %s llega a 4,5:1', (texto, fondo) => {
@@ -169,9 +223,10 @@ describe('tokens: contraste AA del texto', () => {
   })
 
   it.each([
-    ['arena', 'blanco'],
+    ['sol', 'cal'],
     ['sol', 'blanco'],
-  ])('%s no sirve como texto sobre %s (solo como fondo)', (texto, fondo) => {
+    ['alga', 'alga-clara'],
+  ])('%s no sirve como texto sobre %s (solo como color de campo o de ícono)', (texto, fondo) => {
     expect(contraste(texto, fondo)).toBeLessThan(4.5)
   })
 })

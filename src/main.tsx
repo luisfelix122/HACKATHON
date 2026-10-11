@@ -1,10 +1,10 @@
 import { StrictMode, type ComponentType } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
-// Fuentes empaquetadas (sin CDN): la APK abre sin señal con su tipografía (decisión 0004).
+// Fuentes empaquetadas (sin CDN): la APK abre sin señal con su tipografía (decisión 0006).
+// Fraunces es la letra de nombres propios y titulares; Atkinson, la de lectura y controles.
 import '@fontsource/atkinson-hyperlegible/400.css'
 import '@fontsource/atkinson-hyperlegible/700.css'
-import '@fontsource/barlow-condensed/600.css'
-import '@fontsource/barlow-condensed/700.css'
+import '@fontsource-variable/fraunces/index.css'
 import './compartido/ui/tokens.css'
 import './compartido/ui/estilos.css'
 

@@ -1,37 +1,46 @@
 /*
- * Tokens de Ayllu: «Guía de encomienda» con la paleta «Mar de Cabo Blanco»
- * (docs/decisiones/0004-sistema-visual.md). El contraste AA de cada pareja de
- * texto se comprueba en componentes.test.tsx.
- * Arena y sol son colores de campo: nunca se usan como color de texto.
+ * Tokens de Ayllu: mundo «Rotulado de chalana» en versión sobria, paleta
+ * «Casco pintado» (docs/decisiones/0006-rotulado-de-chalana.md). El contraste AA
+ * de cada pareja de texto se comprueba en componentes.test.tsx.
+ * El sol es color de campo y de acento: nunca texto sobre claro.
  */
 :root {
-  /* Paleta */
-  --espuma: #f5fafa;
+  /* Paleta «Casco pintado», tonos de pintura envejecida */
+  --casco: #1d3f5e;
+  --casco-hondo: #142e45;
+  --casco-claro: #e6edf3;
+  --borda: #a8432c;
+  --borda-honda: #8e3522;
+  --borda-clara: #f7e6e1;
+  --sol: #e0b252;
+  --sol-claro: #f6edd9;
+  --cal: #faf8f4;
   --blanco: #ffffff;
-  --pacifico: #0b4f6c;
-  --pacifico-hondo: #083a50;
-  --ola: #1a9e97;
-  --ola-clara: #dff2f0;
-  --arena: #e3c98f;
-  --arena-clara: #f3e8cf;
-  --sol: #f2b705;
-  --sol-claro: #fdf1c9;
-  --noche: #0a2533;
-  --noche-suave: #3c5866;
-  --error: #b42318;
-  --error-claro: #fde8e6;
+  --brea: #1b1f24;
+  --brea-suave: #555a61;
+  --mar: #eaf0f4;
+  --alga: #2e7d4f;
+  --alga-clara: #ddefe3;
 
-  /* Tipografía */
+  /* Líneas y profundidad: filetes finos y sombras suaves */
+  --linea: #e4dfd6;
+  --linea-fuerte: #c9c3b8;
+  --sombra-dura: 0 1px 2px rgb(27 31 36 / 0.05), 0 6px 18px -6px rgb(27 31 36 / 0.12);
+  --sombra-dura-chica: 0 1px 2px rgb(27 31 36 / 0.06);
+  --sombra-alta: 0 2px 4px rgb(27 31 36 / 0.05), 0 18px 40px -12px rgb(27 31 36 / 0.22);
+
+  /* Tipografía: Fraunces para nombres propios y titulares, Atkinson para leer y tocar */
   --letra-texto: 'Atkinson Hyperlegible', system-ui, sans-serif;
-  --letra-rotulo: 'Barlow Condensed', 'Atkinson Hyperlegible', sans-serif;
+  --letra-rotulo: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
   --tam-chico: 1rem;
   --tam-base: 1.125rem; /* 18 px: lectura al sol en el celular */
-  --tam-h3: 1.35rem;
-  --tam-h2: 1.625rem;
-  --tam-h1: 2.1rem;
-  --tam-portada: clamp(2.4rem, 1.6rem + 3.4vw, 4.2rem);
-  --interlineado: 1.5;
+  --tam-h3: 1.3rem;
+  --tam-h2: 1.7rem;
+  --tam-h1: 2.2rem;
+  --tam-portada: clamp(2.6rem, 1.6rem + 4.2vw, 5rem);
+  --interlineado: 1.55;
   --interlineado-titulo: 1.12;
+  --sombra-rotulo: 0 0 0;
 
   /* Espacio (base de 4 px) */
   --e1: 0.25rem;
@@ -42,13 +51,17 @@
   --e6: 2rem;
   --e7: 3rem;
   --e8: 4.5rem;
+  --e9: 6rem;
 
-  /* Forma y profundidad */
-  --radio-control: 10px;
+  /* Forma */
+  --radio-control: 8px;
   --radio-panel: 14px;
-  --borde: 2px;
-  --sombra-etiqueta: 0 10px 24px -12px rgb(8 58 80 / 0.45);
+  --borde: 1px;
+  --trazo: 1px;
+  --franja-borda: 0px;
+  --linea-flotacion: 3px;
   --tactil: 3rem; /* 48 px mínimo */
+  --pestanas-alto: 4.25rem;
   --ancho-lectura: 68ch;
   --ancho-maximo: 1180px;
   --margen: 1rem;
@@ -57,6 +70,35 @@
   --salida: cubic-bezier(0.16, 1, 0.3, 1);
   --rapido: 180ms;
   --sellar: 240ms;
+
+  /*
+   * Alias de compatibilidad (CC-17, fase 3): borradores y publicación todavía
+   * usan los nombres anteriores. Apuntan a la paleta nueva y se retiran cuando
+   * esos módulos se rediseñen. No usar en código nuevo.
+   */
+  --espuma: var(--cal);
+  --pacifico: var(--casco);
+  --pacifico-hondo: var(--casco-hondo);
+  --ola: var(--alga);
+  --ola-clara: var(--mar);
+  --arena: var(--sol-claro);
+  --arena-clara: var(--cal);
+  --noche: var(--brea);
+  --noche-suave: var(--brea-suave);
+  --error: var(--borda-honda);
+  --error-claro: var(--borda-clara);
+  --fondo: var(--cal);
+  --texto: var(--brea);
+  --texto-suave: var(--brea-suave);
+  --tierra: var(--casco);
+  --tierra-oscura: var(--casco-hondo);
+  --alerta: var(--borda-honda);
+  --borde-foco: var(--casco);
+  --fuente-titulos: var(--letra-texto);
+  --radio-sm: var(--radio-control);
+  --radio-md: var(--radio-control);
+  --radio-lg: var(--radio-panel);
+  --tam-letra-chica: var(--tam-chico);
 }
 
 @media (min-width: 768px) {

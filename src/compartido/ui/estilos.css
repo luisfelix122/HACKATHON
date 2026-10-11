@@ -1,6 +1,8 @@
 /*
- * Base y componentes de Ayllu, sobre tokens.css (DESIGN.md). Adaptable de 360 px
- * a 1440 px. Los módulos agregan su propio CSS en su carpeta y no editan este.
+ * Base y componentes de Ayllu: mundo «Rotulado de chalana» en versión sobria
+ * (decisión 0006, DESIGN.md). Franjas de color a sangre, superficies claras con
+ * filete fino y sombra suave, nombres propios en Fraunces. Adaptable de 360 a 1440 px.
+ * Los módulos agregan su CSS en su carpeta y no editan este archivo.
  */
 
 /* ---------- Base ---------- */
@@ -13,6 +15,7 @@
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  scrollbar-color: var(--linea-fuerte) var(--cal);
 }
 
 body {
@@ -21,8 +24,9 @@ body {
   font-family: var(--letra-texto);
   font-size: var(--tam-base);
   line-height: var(--interlineado);
-  color: var(--noche);
-  background: var(--espuma);
+  color: var(--brea);
+  background: var(--cal);
+  caret-color: var(--casco);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -31,8 +35,16 @@ h2,
 h3 {
   margin: 0;
   line-height: var(--interlineado-titulo);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.015em;
   text-wrap: balance;
+}
+
+h1,
+h2 {
+  font-family: var(--letra-rotulo);
+  font-weight: 600;
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
 }
 
 h1 {
@@ -74,22 +86,24 @@ textarea {
 }
 
 a {
-  color: var(--pacifico);
-  text-decoration-thickness: 2px;
-  text-underline-offset: 0.18em;
+  color: var(--casco);
+  font-weight: 700;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.22em;
 }
 
 a:not(.boton):hover {
-  color: var(--pacifico-hondo);
+  color: var(--casco-hondo);
+  text-decoration-thickness: 2px;
 }
 
 ::selection {
-  background: var(--sol-claro);
-  color: var(--noche);
+  background: var(--casco-claro);
+  color: var(--brea);
 }
 
 :focus-visible {
-  outline: 3px solid var(--pacifico);
+  outline: 2px solid var(--casco);
   outline-offset: 3px;
 }
 
@@ -105,37 +119,25 @@ a:not(.boton):hover {
   border: 0;
 }
 
+.texto-secundario {
+  color: var(--brea-suave);
+}
+
+.cifra {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Rotulado: solo nombres propios (Ayllu, artesanos, caletas) y el titular de la
+   landing; nunca párrafos ni controles. */
+.rotulo {
+  font-family: var(--letra-rotulo);
+  font-weight: 600;
+  font-optical-sizing: auto;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
 /* ---------- Estructura ---------- */
-.barra {
-  background: var(--pacifico);
-  color: var(--blanco);
-}
-
-.barra-contenido {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--e4);
-  max-width: var(--ancho-maximo);
-  min-height: 4rem;
-  margin: 0 auto;
-  padding: var(--e2) var(--margen);
-}
-
-.barra a {
-  color: var(--blanco);
-  text-decoration: none;
-}
-
-.barra a:hover {
-  color: var(--blanco);
-  text-decoration: underline;
-}
-
-.barra :focus-visible {
-  outline-color: var(--sol);
-}
-
 .pagina {
   display: grid;
   gap: var(--e5);
@@ -150,39 +152,138 @@ a:not(.boton):hover {
   max-width: 40rem;
 }
 
-.portada {
-  display: grid;
+/* Franja de color a sangre. */
+.franja {
+  width: 100%;
+  position: relative;
+}
+
+.franja-contenido {
+  max-width: var(--ancho-maximo);
+  margin: 0 auto;
+  padding: var(--e8) var(--margen);
+}
+
+.franja-casco {
+  background: var(--casco);
+  color: var(--blanco);
+}
+
+.franja-casco a:not(.boton) {
+  color: var(--blanco);
+}
+
+.franja-casco .texto-secundario {
+  color: var(--casco-claro);
+}
+
+.franja-sol {
+  background: var(--sol-claro);
+  color: var(--brea);
+}
+
+.franja-mar {
+  background: var(--mar);
+}
+
+.franja-cal {
+  background: var(--cal);
+}
+
+/* ---------- Barra superior ---------- */
+.barra {
+  position: relative;
+  background: var(--casco);
+  color: var(--blanco);
+  border-bottom: 1px solid var(--casco-hondo);
+}
+
+.barra-contenido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   gap: var(--e4);
-  padding-block: var(--e4) var(--e6);
+  max-width: var(--ancho-maximo);
+  min-height: 4rem;
+  margin: 0 auto;
+  padding: var(--e2) var(--margen);
 }
 
-.portada h1 {
-  font-size: var(--tam-portada);
-  letter-spacing: -0.03em;
+.barra a:not(.boton) {
+  color: var(--blanco);
+  text-decoration: none;
 }
 
-.portada-bajada {
-  font-size: var(--tam-h3);
-  color: var(--noche-suave);
+.barra :focus-visible {
+  outline-color: var(--sol);
 }
 
-.texto-secundario {
-  color: var(--noche-suave);
+.barra-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--e1);
+}
+
+.barra-enlace {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  min-height: var(--tactil);
+  padding: 0 var(--e3);
+  border-radius: var(--radio-control);
+  font-size: var(--tam-chico);
+  font-weight: 700;
+  white-space: nowrap;
+  opacity: 0.88;
+  transition:
+    background-color var(--rapido) var(--salida),
+    opacity var(--rapido) var(--salida);
+}
+
+.barra-enlace:hover {
+  background: rgb(255 255 255 / 0.08);
+  opacity: 1;
+}
+
+.barra-enlace[aria-current='page'] {
+  opacity: 1;
+  box-shadow: inset 0 -2px 0 var(--sol);
+}
+
+/* En el celular, la barra web muestra solo los iconos con su nombre accesible. */
+@media (max-width: 639px) {
+  .barra-enlace .barra-texto {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .barra-enlace {
+    min-width: var(--tactil);
+    justify-content: center;
+    padding: 0;
+  }
 }
 
 /* ---------- Logotipo (provisional) ---------- */
 .logotipo {
-  font-weight: 700;
-  font-size: 1.75rem;
+  font-family: var(--letra-rotulo);
+  font-size: 1.7rem;
+  font-weight: 600;
+  font-optical-sizing: auto;
   line-height: 1;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
+  color: var(--blanco);
 }
 
 .logotipo-u {
   color: var(--sol);
 }
 
-/* ---------- Boton ---------- */
+/* ---------- Botón ---------- */
 .boton {
   display: inline-flex;
   align-items: center;
@@ -191,60 +292,74 @@ a:not(.boton):hover {
   min-height: var(--tactil);
   min-width: var(--tactil);
   padding: var(--e3) var(--e5);
-  border: var(--borde) solid var(--pacifico);
+  border: 1px solid transparent;
   border-radius: var(--radio-control);
-  background: var(--pacifico);
+  background: var(--casco);
   color: var(--blanco);
   font-weight: 700;
   line-height: 1.2;
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+  box-shadow: var(--sombra-dura-chica);
   transition:
+    box-shadow var(--rapido) var(--salida),
     background-color var(--rapido) var(--salida),
-    border-color var(--rapido) var(--salida),
-    transform var(--rapido) var(--salida);
+    border-color var(--rapido) var(--salida);
+}
+
+.boton .icono {
+  flex-shrink: 0;
 }
 
 .boton:hover:not(:disabled) {
-  background: var(--pacifico-hondo);
-  border-color: var(--pacifico-hondo);
+  background: var(--casco-hondo);
   color: var(--blanco);
+  box-shadow: var(--sombra-dura);
 }
 
 .boton:active:not(:disabled) {
-  transform: translateY(1px);
+  box-shadow: none;
 }
 
 .boton-secundario {
   background: var(--blanco);
-  color: var(--pacifico);
+  border-color: var(--linea-fuerte);
+  color: var(--brea);
 }
 
 .boton-secundario:hover:not(:disabled) {
-  background: var(--ola-clara);
-  border-color: var(--pacifico);
-  color: var(--pacifico);
+  background: var(--cal);
+  border-color: var(--brea-suave);
+  color: var(--brea);
 }
 
 .boton-destacado {
   background: var(--sol);
-  border-color: var(--sol);
-  color: var(--noche);
+  color: var(--brea);
 }
 
 .boton-destacado:hover:not(:disabled) {
-  background: var(--sol-claro);
-  border-color: var(--sol);
-  color: var(--noche);
+  background: #d4a23f;
+  color: var(--brea);
+}
+
+.boton-peligro {
+  background: var(--borda-honda);
+  color: var(--blanco);
+}
+
+.boton-peligro:hover:not(:disabled) {
+  background: #742a1a;
+  color: var(--blanco);
 }
 
 .boton:disabled {
   cursor: not-allowed;
-  background: var(--espuma);
-  border-color: var(--noche-suave);
-  border-style: dashed;
-  color: var(--noche-suave);
+  background: var(--cal);
+  border-color: var(--linea);
+  color: var(--brea-suave);
+  box-shadow: none;
 }
 
 .boton[aria-busy='true'] {
@@ -281,10 +396,24 @@ a:not(.boton):hover {
   width: 100%;
   min-height: var(--tactil);
   padding: var(--e3) var(--e4);
-  border: var(--borde) solid var(--noche-suave);
+  border: 1px solid var(--linea-fuerte);
   border-radius: var(--radio-control);
-  background: var(--arena-clara);
-  color: var(--noche);
+  background: var(--blanco);
+  color: var(--brea);
+  transition:
+    border-color var(--rapido) var(--salida),
+    box-shadow var(--rapido) var(--salida);
+}
+
+.campo input::placeholder,
+.campo textarea::placeholder {
+  color: var(--brea-suave);
+}
+
+.campo input:hover,
+.campo select:hover,
+.campo textarea:hover {
+  border-color: var(--brea-suave);
 }
 
 .campo textarea {
@@ -295,43 +424,45 @@ a:not(.boton):hover {
 .campo input:focus-visible,
 .campo select:focus-visible,
 .campo textarea:focus-visible {
-  outline: 3px solid var(--ola);
-  outline-offset: 1px;
-  border-color: var(--pacifico);
-  background: var(--blanco);
+  outline: none;
+  border-color: var(--casco);
+  box-shadow: 0 0 0 3px var(--casco-claro);
 }
 
 .campo :disabled {
   cursor: not-allowed;
-  border-style: dashed;
-  background: var(--espuma);
+  background: var(--cal);
+  color: var(--brea-suave);
 }
 
 .campo-ayuda {
   font-size: var(--tam-chico);
-  color: var(--noche-suave);
+  color: var(--brea-suave);
 }
 
 .campo-error {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--e2);
   font-size: var(--tam-chico);
   font-weight: 700;
-  color: var(--error);
+  color: var(--borda-honda);
 }
 
 .campo[data-error] input,
 .campo[data-error] select,
 .campo[data-error] textarea {
-  border-color: var(--error);
-  background: var(--error-claro);
+  border-color: var(--borda-honda);
+  background: var(--borda-clara);
 }
 
-/* ---------- Casilla ---------- */
+/* ---------- Casilla: un paso del proceso ---------- */
 .casilla {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: var(--e4);
-  padding: var(--e5) var(--e4);
-  border: var(--borde) solid var(--pacifico);
+  padding: var(--e5);
+  border: 1px solid var(--linea);
   border-radius: var(--radio-panel);
   background: var(--blanco);
 }
@@ -339,14 +470,14 @@ a:not(.boton):hover {
 .casilla-numero {
   display: grid;
   place-items: center;
-  width: 3.25rem;
-  height: 3.25rem;
-  border-radius: var(--radio-control);
-  background: var(--pacifico);
-  color: var(--blanco);
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--casco-claro);
+  color: var(--casco);
   font-family: var(--letra-rotulo);
-  font-weight: 700;
-  font-size: 2.25rem;
+  font-size: 1.3rem;
+  font-weight: 600;
   line-height: 1;
 }
 
@@ -358,7 +489,7 @@ a:not(.boton):hover {
 
 .casilla-titulo {
   font-size: var(--tam-h3);
-  padding-top: var(--e2);
+  padding-top: var(--e1);
 }
 
 /* ---------- Aviso ---------- */
@@ -367,155 +498,415 @@ a:not(.boton):hover {
   grid-template-columns: auto 1fr;
   gap: var(--e3);
   align-items: start;
-  padding: var(--e4);
-  border-left: 6px solid var(--pacifico);
+  padding: var(--e3) var(--e4);
+  border: 1px solid var(--casco-claro);
   border-radius: var(--radio-control);
-  background: var(--blanco);
-  color: var(--noche);
+  background: var(--mar);
+  color: var(--brea);
 }
 
-.aviso svg {
-  flex-shrink: 0;
-  margin-top: 0.1em;
+.aviso > .icono {
+  margin-top: 0.15rem;
+  color: var(--casco);
 }
 
 .aviso-texto {
   min-width: 0;
 }
 
-.aviso-info {
-  border-left-color: var(--ola);
-  background: var(--ola-clara);
-}
-
 .aviso-exito {
-  border-left-color: var(--ola);
-  background: var(--ola-clara);
+  background: var(--alga-clara);
+  border-color: #c4e2cf;
 }
 
-.aviso-exito svg {
-  color: var(--pacifico);
+.aviso-exito > .icono {
+  color: var(--alga);
 }
 
 .aviso-alerta {
-  border-left-color: var(--sol);
   background: var(--sol-claro);
+  border-color: #ecdcb5;
+}
+
+.aviso-alerta > .icono {
+  color: #8a6418;
 }
 
 .aviso-error {
-  border-left-color: var(--error);
-  background: var(--error-claro);
+  background: var(--borda-clara);
+  border-color: #efcfc6;
 }
 
-.aviso-error svg {
-  color: var(--error);
+.aviso-error > .icono {
+  color: var(--borda-honda);
 }
 
 .aviso-sin-senal {
-  border-left-color: var(--sol);
-  background: var(--noche);
-  color: var(--espuma);
+  background: var(--brea);
+  border-color: var(--brea);
+  color: var(--cal);
 }
 
-/* ---------- Etiqueta de pieza ---------- */
-.etiqueta {
-  --corte: 1.25rem;
-  position: relative;
-  display: grid;
-  gap: var(--e1);
-  max-width: 22rem;
-  padding: var(--e7) var(--e5) var(--e5);
-  background: var(--arena);
-  color: var(--noche);
-  clip-path: polygon(
-    var(--corte) 0,
-    calc(100% - var(--corte)) 0,
-    100% var(--corte),
-    100% 100%,
-    0 100%,
-    0 var(--corte)
-  );
-  filter: drop-shadow(var(--sombra-etiqueta));
+.aviso-sin-senal > .icono {
+  color: var(--sol);
 }
 
-/* Ojal centrado por donde pasa el pabilo */
-.etiqueta::before {
-  content: '';
-  position: absolute;
-  top: var(--e4);
-  left: 50%;
-  width: 0.9rem;
-  height: 0.9rem;
-  border: 3px solid var(--arena-clara);
-  border-radius: 50%;
-  background: var(--espuma);
-  transform: translateX(-50%);
-}
-
-.etiqueta-lugar {
+/* ---------- Matrícula: la caleta como etiqueta ---------- */
+.matricula {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.3em 0.7em;
+  border: 1px solid var(--linea-fuerte);
+  border-radius: 999px;
+  background: var(--blanco);
+  color: var(--brea);
+  font-family: var(--letra-texto);
+  font-size: 0.8rem;
   font-weight: 700;
-  font-size: var(--tam-chico);
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
-.etiqueta-titulo {
-  font-size: var(--tam-h3);
-}
-
-.etiqueta-precio {
-  margin-top: var(--e2);
-  font-size: var(--tam-h3);
-  font-weight: 700;
-}
-
-/* ---------- Sello RNA ---------- */
+/* ---------- Distintivo del RNA ---------- */
 .sello {
   display: inline-grid;
   place-content: center;
   justify-items: center;
-  width: 6.5rem;
-  height: 6.5rem;
-  border: 3px solid var(--pacifico);
+  gap: 0.2rem;
+  width: 5.5rem;
+  height: 5.5rem;
+  flex-shrink: 0;
+  border: 1px solid var(--casco);
   border-radius: 50%;
-  outline: 2px solid var(--pacifico);
-  outline-offset: -9px;
-  color: var(--pacifico);
+  outline: 1px solid var(--casco);
+  outline-offset: -6px;
+  background: var(--blanco);
+  color: var(--casco);
   font-family: var(--letra-rotulo);
   line-height: 1;
   text-transform: uppercase;
-  transform: rotate(-8deg);
   animation: sellar var(--sellar) var(--salida) both;
 }
 
+.franja-casco .sello {
+  border-color: var(--blanco);
+  outline-color: rgb(255 255 255 / 0.6);
+  background: transparent;
+  color: var(--blanco);
+}
+
 .sello-rna {
-  font-weight: 700;
-  font-size: 1.9rem;
-  letter-spacing: 0.04em;
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
 }
 
 .sello-texto {
-  font-weight: 600;
-  font-size: 0.95rem;
+  font-family: var(--letra-texto);
+  font-weight: 700;
+  font-size: 0.68rem;
   letter-spacing: 0.08em;
+  color: inherit;
 }
 
 .sello-pendiente {
   border-style: dashed;
+  border-color: var(--brea-suave);
   outline: none;
-  color: var(--noche-suave);
-  border-color: var(--noche-suave);
-  transform: none;
+  background: var(--cal);
+  color: var(--brea-suave);
   animation: none;
 }
 
-/* ---------- Movimiento ---------- */
+.sello-pendiente .sello-texto {
+  color: var(--brea-suave);
+}
+
+/* ---------- Tablón: una pieza ---------- */
+.tablon {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
+  color: var(--brea);
+}
+
+.tablon-media {
+  --pintura: var(--casco);
+  --tinta: var(--blanco);
+  aspect-ratio: 4 / 3;
+  background: var(--pintura);
+}
+
+.tablon[data-tipo='bisutería marina'] .tablon-media {
+  --pintura: var(--borda-honda);
+}
+
+.tablon[data-tipo='tallado'] .tablon-media {
+  --pintura: var(--sol);
+  --tinta: var(--brea);
+}
+
+.tablon[data-tipo='utilitario'] .tablon-media {
+  --pintura: var(--alga);
+}
+
+.tablon-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: scale 400ms var(--salida);
+}
+
+.tablon-sin-foto {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: var(--e2);
+  height: 100%;
+  color: var(--brea-suave);
+  font-size: var(--tam-chico);
+  font-weight: 700;
+}
+
+.tablon-sin-foto .icono {
+  color: var(--pintura);
+  opacity: 0.8;
+}
+
+/* Sin foto: un tinte claro de su color, no un bloque sólido. */
+.tablon-media:has(.tablon-sin-foto) {
+  background: var(--tinte, var(--casco-claro));
+}
+
+.tablon[data-tipo='bisutería marina'] .tablon-media {
+  --tinte: var(--borda-clara);
+}
+
+.tablon[data-tipo='tallado'] .tablon-media {
+  --tinte: var(--sol-claro);
+  --pintura: #8a6418;
+}
+
+.tablon[data-tipo='utilitario'] .tablon-media {
+  --tinte: var(--alga-clara);
+}
+
+.tablon-cuerpo {
+  display: grid;
+  align-content: start;
+  gap: var(--e2);
+  padding: var(--e4);
+}
+
+.tablon-titulo {
+  font-family: var(--letra-rotulo);
+  font-size: 1.2rem;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.tablon-autor {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e2);
+  color: var(--brea-suave);
+  font-size: var(--tam-chico);
+}
+
+.tablon-artesano {
+  font-weight: 700;
+  color: var(--casco);
+}
+
+.tablon-precio {
+  margin-top: auto;
+  padding-top: var(--e2);
+  font-size: 1.15rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Un tablón que es enlace se eleva al pasar. */
+a:has(> .tablon) {
+  display: block;
+  height: 100%;
+  color: inherit;
+  text-decoration: none;
+  border-radius: var(--radio-panel);
+}
+
+a:has(> .tablon) .tablon {
+  transition:
+    box-shadow var(--rapido) var(--salida),
+    border-color var(--rapido) var(--salida);
+}
+
+a:has(> .tablon):hover .tablon {
+  border-color: var(--linea-fuerte);
+  box-shadow: var(--sombra-alta);
+}
+
+a:has(> .tablon):hover .tablon-media img {
+  scale: 1.03;
+}
+
+/* ---------- Modal (dialog nativo) ---------- */
+.modal {
+  width: min(34rem, calc(100vw - 2rem));
+  max-height: min(90dvh, 48rem);
+  padding: 0;
+  border: 0;
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
+  color: var(--brea);
+  box-shadow: var(--sombra-alta);
+  overflow: auto;
+}
+
+.modal[open] {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  animation: abrir-modal var(--rapido) var(--salida);
+}
+
+.modal::backdrop {
+  background: rgb(20 30 40 / 0.45);
+  backdrop-filter: blur(2px);
+}
+
+.modal-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e3);
+  padding: var(--e3) var(--e3) var(--e3) var(--e5);
+  border-bottom: 1px solid var(--linea);
+}
+
+.modal-titulo {
+  font-family: var(--letra-rotulo);
+  font-size: var(--tam-h3);
+  font-weight: 600;
+}
+
+.modal-cerrar {
+  display: grid;
+  place-items: center;
+  width: var(--tactil);
+  height: var(--tactil);
+  flex-shrink: 0;
+  border: 0;
+  border-radius: var(--radio-control);
+  background: transparent;
+  color: var(--brea-suave);
+  cursor: pointer;
+}
+
+.modal-cerrar:hover {
+  background: var(--cal);
+  color: var(--brea);
+}
+
+.modal-cuerpo {
+  display: grid;
+  gap: var(--e4);
+  align-content: start;
+  padding: var(--e5);
+}
+
+.modal-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--e3);
+  padding: var(--e4) var(--e5) var(--e5);
+}
+
+/* En el celular, el modal sube desde abajo, al alcance del pulgar. */
+@media (max-width: 599px) {
+  .modal {
+    width: 100%;
+    max-width: 100%;
+    margin: auto 0 0;
+    border-radius: var(--radio-panel) var(--radio-panel) 0 0;
+  }
+
+  .modal-acciones .boton {
+    flex: 1 1 auto;
+  }
+}
+
+/* ---------- Pestañas de la APK ---------- */
+.pestanas {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 10;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  padding-bottom: env(safe-area-inset-bottom);
+  background: var(--blanco);
+  border-top: 1px solid var(--linea);
+  box-shadow: 0 -4px 16px -8px rgb(27 31 36 / 0.12);
+}
+
+.pestana {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 0.15rem;
+  min-height: var(--pestanas-alto);
+  padding: var(--e2) var(--e1);
+  color: var(--brea-suave);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+}
+
+.pestana:hover {
+  color: var(--brea);
+  background: var(--cal);
+}
+
+.pestana[aria-current='page'] {
+  color: var(--casco);
+  box-shadow: inset 0 2px 0 var(--casco);
+}
+
+.con-pestanas {
+  padding-bottom: calc(var(--pestanas-alto) + env(safe-area-inset-bottom));
+}
+
+/* ---------- Movimiento (solo como respuesta) ---------- */
 @keyframes sellar {
   from {
     opacity: 0;
-    transform: rotate(-8deg) scale(1.25);
+    transform: scale(0.92);
   }
   to {
     opacity: 1;
-    transform: rotate(-8deg) scale(1);
+    transform: none;
+  }
+}
+
+@keyframes abrir-modal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
@@ -535,8 +926,46 @@ a:not(.boton):hover {
   }
 }
 
-@media (min-width: 860px) {
-  .portada {
-    padding-block: var(--e6) var(--e7);
+/* ---------- Ingreso web ---------- */
+.ingreso-web {
+  display: grid;
+  gap: var(--e4);
+  padding: var(--e6) var(--e5);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
+  box-shadow: var(--sombra-dura);
+}
+
+.ingreso-web-lista {
+  display: grid;
+  gap: var(--e3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ingreso-web-lista li {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+}
+
+.ingreso-web-lista .icono {
+  color: var(--casco);
+  flex-shrink: 0;
+}
+
+/* En el celular, el número del paso va arriba y los campos usan todo el ancho. */
+@media (max-width: 599px) {
+  .casilla {
+    grid-template-columns: 1fr;
+    padding: var(--e4);
+  }
+
+  .casilla-numero {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 1.2rem;
   }
 }

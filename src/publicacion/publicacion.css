@@ -116,7 +116,7 @@
 
 .tarjeta-comentario-precio {
   background: var(--sol-claro);
-  border-left: 4px solid var(--sol);
+  border: 1px solid #ecdcb5;
   padding: var(--e3) var(--e4);
   border-radius: var(--radio-control);
   margin-top: var(--e2);
