@@ -24,7 +24,7 @@ body:has(.web-ayllu) {
   --arena: #f6edd9;
   --arena-clara: #faf8f4;
   --radio-control: 8px;
-  --ancho-maximo: 1280px;
+  --ancho-maximo: 1400px;
   --letra-titulo: var(--letra-rotulo);
   min-height: 100dvh;
   background: var(--cal);
@@ -129,8 +129,9 @@ body:has(.web-ayllu) {
   border-color: var(--error);
 }
 .web-ayllu .pagina {
-  padding-top: 48px;
-  gap: 24px;
+  padding-top: 28px;
+  padding-bottom: 32px;
+  gap: 16px;
 }
 .web-ayllu .pagina-artesano {
   margin-block: 48px 80px;
@@ -263,7 +264,7 @@ body:has(.web-ayllu) {
     height: 24px;
   }
   .web-ayllu .pagina {
-    padding-top: 32px;
+    padding-top: 20px;
   }
   .web-ayllu .pagina-artesano {
     width: calc(100% - 32px);
