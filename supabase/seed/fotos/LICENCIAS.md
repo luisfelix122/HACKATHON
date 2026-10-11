@@ -102,11 +102,14 @@ Para cerrar estos pendientes se necesitan fotos propias de las piezas o permiso 
 
 La semilla conserva 10 perfiles, 23 productos (21 publicados), 23 registros SQL de fotos, dos órdenes y dos mensajes al aplicarse dos veces. Los registros SQL pendientes no implican que sus archivos existan en Storage.
 
-## Estado comprobado el 11 de octubre de 2026
+## Estado comprobado el 11 de octubre de 2026 (cierre parcial)
 
-- Consulta pública: 21 productos, 7 artesanos y 21 registros de fotos. El producto retirado no aparece.
-- Foto 12: GET público HTTP 200, `image/jpeg`, 82 072 bytes; contenido idéntico al JPEG local.
-- Las otras 20 rutas publicadas devolvieron HTTP 400 en GET público. Este resultado no sustituye el listado autenticado de Storage para decidir una carga.
-- El agente del servidor informó que 03, 07, 10 y 13 estaban ausentes. No se realizó ninguna carga ni cambio de BD desde el equipo local en esta comprobación.
-- `make verify`: 110 pruebas aprobadas; seis advertencias de lint preexistentes. `make build`: web y artesano correctos.
-- Pendiente: acceso de carga desde el equipo local, atribuciones de 03/07/13, fotos utilizables para los 16 productos indicados, decisión específica sobre 10 y comprobación manual del usuario a 360 y 1440 px. PRP 007 incompleto.
+- Carga administrativa mediante el importador restringido `ayllu-import` (SSH por clave, alcance 03/07/12/13, `upsert=false`, sin cambios de RLS ni políticas).
+- Fotos 03, 07 y 13 recibidas y cargadas tras aplicar su atribución en `producto.ficha.descripcion` (solo ese campo, resto de la ficha intacto) y activar la política. Resultado `uploaded`, HTTP 200 en POST y GET público.
+- Foto 12 ya existente: verificada y conservada (`verified_existing_skipped`), sin sobrescritura.
+- GET público final: 03 → HTTP 200 `image/jpeg` 62 097 bytes; 07 → HTTP 200 `image/jpeg` 199 105 bytes; 12 → HTTP 200 `image/jpeg` 82 072 bytes; 13 → HTTP 200 `image/jpeg` 37 809 bytes. Cada archivo coincide en SHA256 y medidas con el JPEG revisado del commit.
+- Producto 10 excluido a propósito por coincidencia parcial (jangada brasileña, no chalana); su objeto sigue ausente y no se cargó.
+- `supabase/seed.sql` ya contiene los créditos de 03/07/12/13 y el texto "Foto correspondiente pendiente" en los 16 publicados sin foto utilizable; coincide con las fichas del servidor tras el parche.
+- Vitrina https://ayllu.likadev.com responde HTTP 200. La comprobación visual a 360 y 1440 px y del panel `/admin` con cuenta real queda para el usuario con navegador.
+- `make verify` y `make build` se reejecutan antes del merge (ver salida del PR).
+- Pendiente fuera de este cierre: fotos propias o con permiso documentado para los 16 productos publicados restantes (01, 02, 04, 05, 06, 08, 09, 11, 14–21), decisión específica sobre el 10, y fotos de 22 (retirado) y 23 (borrador). Los candidatos comerciales enlazados arriba no tienen licencia de reutilización confirmada y no se cargan.
