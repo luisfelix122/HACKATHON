@@ -1,15 +1,92 @@
+/* Panel de acreditación (módulo A) con el mundo «Rotulado de chalana» (decisión 0006). */
 .admin-acreditacion {
   display: grid;
-  gap: var(--e4);
+  gap: var(--e5);
 }
+
+.admin-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--e4);
+  padding-bottom: var(--e5);
+  border-bottom: 1px solid var(--linea);
+}
+
+.admin-cuenta {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 22rem), 1fr));
+  gap: var(--e5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
 .admin-solicitud {
-  padding-block: var(--e6);
-  border-top: 1px solid var(--pacifico);
   display: grid;
   gap: var(--e4);
+  height: 100%;
+  padding: var(--e5);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
 }
+
+.admin-solicitud-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e3);
+}
+
+.admin-solicitud h2 {
+  font-size: var(--tam-h3);
+}
+
+.admin-datos {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--e2) var(--e4);
+  margin: 0;
+}
+
+.admin-datos dt {
+  font-weight: 700;
+  color: var(--brea-suave);
+}
+
+.admin-datos dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+/* El dato que se revisa a mano, grande y legible. */
+.admin-rna {
+  font-size: 1.35rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.02em;
+}
+
 .admin-acciones {
   display: flex;
   flex-wrap: wrap;
+  gap: var(--e3);
+  align-self: end;
+}
+
+.admin-formulario {
+  display: grid;
   gap: var(--e4);
+}
+
+.admin-formulario-acciones {
+  padding: 0;
 }

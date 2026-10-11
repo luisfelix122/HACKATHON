@@ -1,6 +1,7 @@
 import { useCallback } from 'react'
 import { Link, useParams } from 'react-router-dom'
-import { Aviso, Boton, SelloRna } from '../compartido/ui/componentes'
+import { Aviso, Boton, Matricula, SelloRna } from '../compartido/ui/componentes'
+import { Icono } from '../compartido/ui/Icono'
 import { BotonPedir } from '../pedidos/BotonPedir'
 import { consultarProducto, precioPEN, useConsulta } from './consultas'
 import { CarruselFotos } from './CarruselFotos'
@@ -15,7 +16,9 @@ export function FichaProducto() {
       <main className="pagina vitrina">
         <h1>No pudimos cargar el producto</h1>
         <Aviso tono="error">Revisa tu conexión y reintenta.</Aviso>
-        <Boton onClick={reintentar}>Reintentar</Boton>
+        <Boton icono="adelante" onClick={reintentar}>
+          Reintentar
+        </Boton>
       </main>
     )
   if (datos === undefined)
@@ -29,28 +32,44 @@ export function FichaProducto() {
       <main className="pagina vitrina">
         <h1>Producto no disponible</h1>
         <p>La pieza no existe o ya no está publicada.</p>
-        <Link to="/">Explorar productos</Link>
+        <Link className="boton boton-secundario" to="/catalogo">
+          <Icono nombre="catalogo" />
+          Explorar el catálogo
+        </Link>
       </main>
     )
   const { producto: p, fotos, artesano } = datos
   const whatsapp = enlaceWhatsapp(artesano.whatsapp, p.nombre)
   return (
     <main className="pagina vitrina" lang="es">
-      <Link to="/">Volver a la vitrina</Link>
+      <Link className="vitrina-volver" to="/catalogo">
+        <Icono nombre="atras" />
+        Volver al catálogo
+      </Link>
       <div className="vitrina-detalle">
         <CarruselFotos key={p.id} fotos={fotos} titulo={p.titulo} />
         <section className="vitrina-ficha">
-          <p className="texto-secundario">{p.lugar}</p>
           <h1>{p.titulo}</h1>
-          <Link to={`/artesano/${p.artesano_id}`}>Hecho por {artesano.nombre}</Link>
-          <SelloRna estado="aprobada" />
+          <div className="vitrina-autor">
+            <SelloRna estado="aprobada" />
+            <p>
+              Hecho por{' '}
+              <Link className="vitrina-autor-nombre" to={`/artesano/${p.artesano_id}`}>
+                {artesano.nombre}
+              </Link>
+              <Matricula>{p.lugar}</Matricula>
+            </p>
+          </div>
           <p>{p.ficha.descripcion}</p>
-          <p className="vitrina-precio">{precioPEN(p.precio_final)}</p>
-          <p>
-            {p.disponibilidad === 'a_pedido'
-              ? `Se hace a pedido en ${p.plazo_dias} días`
-              : 'Disponible ahora'}
-          </p>
+          <div className="vitrina-precio-bloque">
+            <p className="vitrina-precio">{precioPEN(p.precio_final)}</p>
+            <p className="vitrina-disponibilidad">
+              <Icono nombre={p.disponibilidad === 'a_pedido' ? 'pedidos' : 'exito'} tamano={20} />
+              {p.disponibilidad === 'a_pedido'
+                ? `Se hace a pedido en ${p.plazo_dias} días`
+                : 'Disponible ahora'}
+            </p>
+          </div>
           <div className="vitrina-acciones">
             <BotonPedir productoId={p.id} />
             {whatsapp ? (
@@ -60,6 +79,7 @@ export function FichaProducto() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                <Icono nombre="mensaje" />
                 Contactar por WhatsApp
               </a>
             ) : (
@@ -85,7 +105,7 @@ export function FichaProducto() {
               <Link
                 className="vitrina-chip"
                 key={etiqueta}
-                to={`/?etiqueta=${encodeURIComponent(etiqueta)}`}
+                to={`/catalogo?etiqueta=${encodeURIComponent(etiqueta)}`}
               >
                 {etiqueta}
               </Link>

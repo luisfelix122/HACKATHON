@@ -1,7 +1,7 @@
 # 0004 — Sistema visual: «Guía de encomienda» con paleta «Mar de Cabo Blanco»
 
 - Fecha: 2026-10-10
-- Estado: aceptada
+- Estado: reemplazada por `0006-rotulado-de-chalana.md` (CC-17, 2026-10-11)
 - Decide: Cristopher (paleta) · Proceso: skills `impeccable` (sorteo de dirección, semilla `53771803`) y `frontend-design`
 
 ## Contexto

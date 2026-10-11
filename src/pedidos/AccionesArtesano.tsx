@@ -1,9 +1,25 @@
 import { useState } from 'react'
 import type { Orden } from '../compartido/dominio/orden'
 import { Aviso, Boton, Campo } from '../compartido/ui/componentes'
+import { Modal } from '../compartido/ui/Modal'
 import { accionesVisibles, avisoCarga } from './estadoOrden'
 import { enlaceHttps, useAccionOrden, type ContextoAcciones } from './acciones'
 import { estimarEntrega, hoyLima } from './estimarEntrega'
+
+/*
+ * Acciones del artesano sobre una orden. Los formularios cortos y las
+ * confirmaciones van en modales (CC-17). DetalleOrden remonta este componente
+ * cuando cambia el estado de la orden, así que un modal se cierra solo cuando su
+ * acción sale bien; si falla, sigue abierto con el error y lo escrito.
+ */
+type Dialogo =
+  | 'aceptar_orden'
+  | 'rechazar_orden'
+  | 'enviar_enlace_pago'
+  | 'verificar_abono'
+  | 'marcar_enviada'
+  | 'cancelar_orden'
+
 export function AccionesArtesano({
   orden,
   contexto,
@@ -15,6 +31,7 @@ export function AccionesArtesano({
 }) {
   const acciones = accionesVisibles('artesano', orden.estado, orden.modalidad)
   const { pendiente, error, ejecutar } = useAccionOrden(orden, alCambiar)
+  const [dialogo, setDialogo] = useState<Dialogo | null>(null)
   const [envio, setEnvio] = useState('0')
   const [total, setTotal] = useState(
     contexto.producto?.precio_final ? String(contexto.producto.precio_final * orden.cantidad) : '',
@@ -32,12 +49,73 @@ export function AccionesArtesano({
   const [enlace, setEnlace] = useState('')
   const [guia, setGuia] = useState('')
   const aviso = contexto.enCurso === null ? null : avisoCarga(contexto.enCurso)
+  const cerrar = () => setDialogo(null)
+  const errorEn = (d: Dialogo) =>
+    dialogo === d && error ? <Aviso tono="error">{error}</Aviso> : null
+
   return (
-    <section className="pedido-acuerdo" aria-label="Acciones del artesano">
+    <section className="pedido-acuerdo pedido-siguiente" aria-label="Acciones del artesano">
       <h2>Siguiente paso</h2>
-      {error && <Aviso tono="error">{error}</Aviso>}
-      {acciones.includes('aceptar_orden') && (
+      {error && !dialogo && <Aviso tono="error">{error}</Aviso>}
+      <div className="pedido-botones">
+        {acciones.includes('aceptar_orden') && (
+          <Boton variante="destacado" icono="exito" onClick={() => setDialogo('aceptar_orden')}>
+            Aceptar pedido
+          </Boton>
+        )}
+        {acciones.includes('enviar_enlace_pago') && (
+          <Boton icono="pago" onClick={() => setDialogo('enviar_enlace_pago')}>
+            Enviar enlace de pago
+          </Boton>
+        )}
+        {acciones.includes('verificar_abono') && (
+          <Boton icono="exito" onClick={() => setDialogo('verificar_abono')}>
+            Verificar abono
+          </Boton>
+        )}
+        {acciones.includes('marcar_enviada') && (
+          <Boton icono="envio" onClick={() => setDialogo('marcar_enviada')}>
+            Marcar enviada
+          </Boton>
+        )}
+        {acciones.includes('marcar_lista_recojo') && (
+          <Boton
+            icono="exito"
+            cargando={pendiente}
+            onClick={() => void ejecutar('marcar_lista_recojo')}
+          >
+            Lista para recojo
+          </Boton>
+        )}
+        {acciones.includes('marcar_entregada') && (
+          <Boton
+            icono="exito"
+            cargando={pendiente}
+            onClick={() => void ejecutar('marcar_entregada')}
+          >
+            Marcar entregada
+          </Boton>
+        )}
+        {acciones.includes('rechazar_orden') && (
+          <Boton variante="peligro" icono="cerrar" onClick={() => setDialogo('rechazar_orden')}>
+            Rechazar pedido
+          </Boton>
+        )}
+        {acciones.includes('cancelar_orden') && (
+          <Boton variante="peligro" icono="cerrar" onClick={() => setDialogo('cancelar_orden')}>
+            Cancelar pedido
+          </Boton>
+        )}
+      </div>
+
+      <Modal
+        abierto={dialogo === 'aceptar_orden'}
+        titulo="Aceptar el pedido"
+        descripcion="El comprador verá este total y esta fecha, y los confirmará."
+        alCerrar={cerrar}
+      >
         <form
+          className="pedido-modal-formulario"
           onSubmit={(evento) => {
             evento.preventDefault()
             void ejecutar('aceptar_orden', {
@@ -48,14 +126,16 @@ export function AccionesArtesano({
           }}
         >
           {aviso && <Aviso tono="alerta">{aviso}</Aviso>}
+          {errorEn('aceptar_orden')}
           <fieldset disabled={pendiente}>
-            <legend>Cotización y entrega</legend>
+            <legend className="solo-lectores">Cotización y entrega</legend>
             {orden.modalidad === 'envio' && (
               <Campo etiqueta="Costo de envío (S/)">
                 {(atributos) => (
                   <input
                     {...atributos}
                     type="number"
+                    inputMode="decimal"
                     min="0"
                     max="99999999.99"
                     step="0.01"
@@ -71,6 +151,7 @@ export function AccionesArtesano({
                 <input
                   {...atributos}
                   type="number"
+                  inputMode="decimal"
                   min="0.01"
                   max="99999999.99"
                   step="0.01"
@@ -95,33 +176,38 @@ export function AccionesArtesano({
                 />
               )}
             </Campo>
-            <Boton type="submit" cargando={pendiente}>
+          </fieldset>
+          <div className="modal-acciones pedido-modal-acciones">
+            <Boton variante="secundario" onClick={cerrar}>
+              Volver
+            </Boton>
+            <Boton type="submit" variante="destacado" icono="exito" cargando={pendiente}>
               Aceptar pedido
             </Boton>
-          </fieldset>
+          </div>
         </form>
-      )}
-      {acciones.includes('rechazar_orden') && (
-        <Boton
-          variante="secundario"
-          cargando={pendiente}
-          onClick={() => void ejecutar('rechazar_orden')}
-        >
-          Rechazar pedido
-        </Boton>
-      )}
-      {acciones.includes('enviar_enlace_pago') && (
+      </Modal>
+
+      <Modal
+        abierto={dialogo === 'enviar_enlace_pago'}
+        titulo="Enviar enlace de pago"
+        descripcion="Pega el enlace de cobro de tu proveedor (por ejemplo, Izipay)."
+        alCerrar={cerrar}
+      >
         <form
+          className="pedido-modal-formulario"
           onSubmit={(e) => {
             e.preventDefault()
             if (enlaceHttps(enlace)) void ejecutar('enviar_enlace_pago', { enlace_pago: enlace })
           }}
         >
+          {errorEn('enviar_enlace_pago')}
           <Campo etiqueta="Enlace de pago" ayuda="Debe comenzar con https://.">
             {(atributos) => (
               <input
                 {...atributos}
                 type="url"
+                inputMode="url"
                 pattern="https://.*"
                 required
                 disabled={pendiente}
@@ -130,26 +216,54 @@ export function AccionesArtesano({
               />
             )}
           </Campo>
-          <Boton type="submit" disabled={!enlaceHttps(enlace)} cargando={pendiente}>
-            Enviar enlace de pago
-          </Boton>
+          <div className="modal-acciones pedido-modal-acciones">
+            <Boton variante="secundario" onClick={cerrar}>
+              Volver
+            </Boton>
+            <Boton type="submit" icono="pago" disabled={!enlaceHttps(enlace)} cargando={pendiente}>
+              Enviar enlace de pago
+            </Boton>
+          </div>
         </form>
-      )}
-      {acciones.includes('verificar_abono') && (
-        <>
-          <p>Comprueba el abono en tu cuenta antes de marcarlo como pagado.</p>
-          <Boton cargando={pendiente} onClick={() => void ejecutar('verificar_abono')}>
-            Verificar abono
-          </Boton>
-        </>
-      )}
-      {acciones.includes('marcar_enviada') && (
+      </Modal>
+
+      <Modal
+        abierto={dialogo === 'verificar_abono'}
+        titulo="¿Ya viste el abono?"
+        descripcion="Comprueba el abono en tu cuenta antes de marcarlo como pagado. Una captura del comprador no basta."
+        alCerrar={cerrar}
+        acciones={
+          <>
+            <Boton variante="secundario" onClick={cerrar}>
+              Todavía no
+            </Boton>
+            <Boton
+              icono="exito"
+              cargando={pendiente}
+              onClick={() => void ejecutar('verificar_abono')}
+            >
+              Verificar abono
+            </Boton>
+          </>
+        }
+      >
+        {errorEn('verificar_abono')}
+      </Modal>
+
+      <Modal
+        abierto={dialogo === 'marcar_enviada'}
+        titulo="Marcar como enviada"
+        descripcion="El comprador verá el número de guía junto al botón para rastrear el envío."
+        alCerrar={cerrar}
+      >
         <form
+          className="pedido-modal-formulario"
           onSubmit={(e) => {
             e.preventDefault()
             void ejecutar('marcar_enviada', { numero_guia: guia.trim() })
           }}
         >
+          {errorEn('marcar_enviada')}
           <Campo etiqueta="Número de guía">
             {(atributos) => (
               <input
@@ -162,30 +276,64 @@ export function AccionesArtesano({
               />
             )}
           </Campo>
-          <Boton type="submit" disabled={!guia.trim()} cargando={pendiente}>
-            Marcar enviada
-          </Boton>
+          <div className="modal-acciones pedido-modal-acciones">
+            <Boton variante="secundario" onClick={cerrar}>
+              Volver
+            </Boton>
+            <Boton type="submit" icono="envio" disabled={!guia.trim()} cargando={pendiente}>
+              Marcar enviada
+            </Boton>
+          </div>
         </form>
-      )}
-      {acciones.includes('marcar_lista_recojo') && (
-        <Boton cargando={pendiente} onClick={() => void ejecutar('marcar_lista_recojo')}>
-          Lista para recojo
-        </Boton>
-      )}
-      {acciones.includes('marcar_entregada') && (
-        <Boton cargando={pendiente} onClick={() => void ejecutar('marcar_entregada')}>
-          Marcar entregada
-        </Boton>
-      )}
-      {acciones.includes('cancelar_orden') && (
-        <Boton
-          variante="secundario"
-          cargando={pendiente}
-          onClick={() => void ejecutar('cancelar_orden')}
-        >
-          Cancelar pedido
-        </Boton>
-      )}
+      </Modal>
+
+      <Modal
+        abierto={dialogo === 'rechazar_orden'}
+        titulo="¿Rechazar este pedido?"
+        descripcion="El comprador verá que no puedes atenderlo. No se puede deshacer."
+        alCerrar={cerrar}
+        acciones={
+          <>
+            <Boton variante="secundario" onClick={cerrar}>
+              Volver
+            </Boton>
+            <Boton
+              variante="peligro"
+              icono="cerrar"
+              cargando={pendiente}
+              onClick={() => void ejecutar('rechazar_orden')}
+            >
+              Rechazar pedido
+            </Boton>
+          </>
+        }
+      >
+        {errorEn('rechazar_orden')}
+      </Modal>
+
+      <Modal
+        abierto={dialogo === 'cancelar_orden'}
+        titulo="¿Cancelar este pedido?"
+        descripcion="El pedido queda cancelado para las dos partes. No se puede deshacer."
+        alCerrar={cerrar}
+        acciones={
+          <>
+            <Boton variante="secundario" onClick={cerrar}>
+              Volver
+            </Boton>
+            <Boton
+              variante="peligro"
+              icono="cerrar"
+              cargando={pendiente}
+              onClick={() => void ejecutar('cancelar_orden')}
+            >
+              Cancelar pedido
+            </Boton>
+          </>
+        }
+      >
+        {errorEn('cancelar_orden')}
+      </Modal>
     </section>
   )
 }

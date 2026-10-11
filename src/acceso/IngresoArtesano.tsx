@@ -1,6 +1,8 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { Aviso, Boton, Campo } from '../compartido/ui/componentes'
+import { Icono } from '../compartido/ui/Icono'
+import { Modal } from '../compartido/ui/Modal'
 import { ingresarArtesano } from './sesionArtesano'
 import { iniciarGoogleApk } from './googleApk'
 import { guardarCopia, useSesionApk } from './usePerfil'
@@ -15,6 +17,7 @@ export function IngresoArtesano() {
     return typeof estado?.error === 'string' ? estado.error : null
   })
   const [cargando, setCargando] = useState(false)
+  const [ayuda, setAyuda] = useState(false)
   useEffect(() => {
     if (sesion && !leyendo && !cargando) navegar('/', { replace: true })
   }, [sesion, leyendo, cargando, navegar])
@@ -52,8 +55,10 @@ export function IngresoArtesano() {
   }
   return (
     <main className="pagina pagina-artesano acceso">
-      <h1>Entrar a Ayllu</h1>
-      <p>Tu taller, tus piezas y tus pedidos.</p>
+      <header className="acceso-cabecera">
+        <h1>Entrar a Ayllu</h1>
+        <p className="texto-secundario">Tu taller, tus piezas y tus pedidos.</p>
+      </header>
       {(error || errorRetorno) && <Aviso tono="error">{error ?? errorRetorno}</Aviso>}
       <form onSubmit={(evento) => void entrar(evento)} className="acceso-formulario">
         <Campo etiqueta="Correo">
@@ -72,21 +77,44 @@ export function IngresoArtesano() {
             />
           )}
         </Campo>
-        <Boton type="submit" variante="destacado" cargando={cargando}>
+        <Boton type="submit" variante="destacado" icono="ingresar" ancho cargando={cargando}>
           Entrar
         </Boton>
+        <button type="button" className="acceso-enlace" onClick={() => setAyuda(true)}>
+          ¿Olvidaste tu contraseña?
+        </button>
       </form>
-      <details>
-        <summary>¿Olvidaste tu contraseña?</summary>
+      <div className="acceso-separador" role="presentation">
+        <span>o</span>
+      </div>
+      <Boton
+        variante="secundario"
+        icono="cuenta"
+        ancho
+        cargando={cargando}
+        onClick={() => void google()}
+      >
+        Entrar con Google
+      </Boton>
+      <Link className="boton boton-secundario boton-ancho" to="/registro">
+        <Icono nombre="nuevo" />
+        Crear cuenta con correo
+      </Link>
+      <Modal
+        abierto={ayuda}
+        titulo="¿Olvidaste tu contraseña?"
+        alCerrar={() => setAyuda(false)}
+        acciones={
+          <Boton variante="secundario" onClick={() => setAyuda(false)}>
+            Entendido
+          </Boton>
+        }
+      >
         <p>
           Si tu correo es de Google, entra con Google y cambia la contraseña en Tu cuenta. Si no,
           pide al administrador que la restablezca.
         </p>
-      </details>
-      <Boton variante="secundario" cargando={cargando} onClick={() => void google()}>
-        Entrar con Google
-      </Boton>
-      <Link to="/registro">Crear cuenta con correo</Link>
+      </Modal>
     </main>
   )
 }

@@ -42,14 +42,17 @@ export function BotonPedir({ productoId }: { productoId: string }) {
     <div className="boton-pedir" data-producto-id={productoId}>
       <Boton
         variante="destacado"
+        icono="pedidos"
         disabled={cargando}
         cargando={ingresando}
         onClick={() => void pedir()}
       >
         Pedir
       </Boton>
-      <Link to="/pedidos">Mis pedidos</Link>
       {error && <Aviso tono="error">{error}</Aviso>}
+      <p className="boton-pedir-nota texto-secundario">
+        ¿Ya pediste? Revisa <Link to="/pedidos">Mis pedidos</Link>.
+      </p>
       {abierto && sesion && (
         <FormularioPedido key={productoId} productoId={productoId} alCerrar={cerrar} />
       )}

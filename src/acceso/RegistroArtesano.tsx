@@ -4,6 +4,7 @@ import { cerrarSesion } from '../compartido/sesion'
 import { LUGARES } from '../compartido/dominio/lugares'
 import type { Perfil } from '../compartido/dominio/perfil'
 import { Aviso, Boton, Campo, Casilla } from '../compartido/ui/componentes'
+import { Icono } from '../compartido/ui/Icono'
 import { guardarPerfil, validarContrasena, validarPerfil } from './perfil'
 import { cambiarContrasena, registrarCorreo } from './sesionArtesano'
 import { guardarCopia, usePerfil, useSesionApk } from './usePerfil'
@@ -162,16 +163,29 @@ export function RegistroArtesano({ cuenta = false }: { cuenta?: boolean }) {
             )}
           </Campo>
         </Casilla>
-        <Boton type="submit" variante="destacado" cargando={cargando}>
+        <Boton
+          type="submit"
+          variante="destacado"
+          icono={cuenta ? 'exito' : 'adelante'}
+          ancho
+          cargando={cargando}
+        >
           {cuenta ? 'Guardar cambios' : 'Enviar solicitud de acreditación'}
         </Boton>
       </form>
       {!cuenta && sesion && (
-        <Boton variante="secundario" cargando={cargando} onClick={() => void otraCuenta()}>
+        <Boton
+          variante="secundario"
+          icono="cuenta"
+          ancho
+          cargando={cargando}
+          onClick={() => void otraCuenta()}
+        >
           Usar otra cuenta de Google
         </Boton>
       )}
-      <Link to={cuenta ? '/' : '/ingresar'}>
+      <Link className="acceso-volver" to={cuenta ? '/' : '/ingresar'}>
+        <Icono nombre={cuenta ? 'atras' : 'ingresar'} />
         {cuenta ? 'Volver a Mis productos' : 'Ya tengo cuenta'}
       </Link>
     </main>

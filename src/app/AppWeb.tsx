@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import {
   createBrowserRouter,
   Link,
+  NavLink,
   Outlet,
   RouterProvider,
   useLocation,
@@ -16,6 +17,7 @@ import * as vitrina from '../vitrina/rutas'
 import { PantallaIngresoWeb } from '../compartido/PantallaIngresoWeb'
 import { asegurarPerfilComprador, cerrarSesion, ErrorSesion, useSesion } from '../compartido/sesion'
 import { Aviso, Boton, Logotipo } from '../compartido/ui/componentes'
+import { Icono, type NombreIcono } from '../compartido/ui/Icono'
 
 // Web del comprador y del administrador. Cada módulo declara sus rutas en su
 // rutas.tsx (CC-11); este archivo no se edita para agregar pantallas.
@@ -79,14 +81,27 @@ function combinarRutas(deModulos: RouteObject[], deRelleno: RouteObject[]): Rout
   return [...deModulos, ...deRelleno.filter((ruta) => !declaradas.has(ruta.path))]
 }
 
+/** Enlace de la barra: icono y etiqueta; en el celular la etiqueta queda solo para lectores. */
+function EnlaceBarra({ a, icono, children }: { a: string; icono: NombreIcono; children: string }) {
+  return (
+    <NavLink to={a} className="barra-enlace">
+      <Icono nombre={icono} />
+      <span className="barra-texto">{children}</span>
+    </NavLink>
+  )
+}
+
 function Marco() {
   const { sesion, cargando } = useSesion()
+  // Guarda para qué usuario se comprobó el rol: al cambiar de cuenta no queda el de la anterior.
+  const [adminDe, setAdminDe] = useState<string | null>(null)
   const { pathname, search } = useLocation()
   const [errorPerfil, setErrorPerfil] = useState<string | null>(null)
   const [intento, setIntento] = useState(0)
   const [saliendo, setSaliendo] = useState(false)
   const [errorSalida, setErrorSalida] = useState<string | null>(null)
   const usuario = sesion?.user
+  const esAdmin = usuario !== undefined && adminDe === usuario.id
 
   async function salir() {
     if (saliendo) return
@@ -106,9 +121,14 @@ function Marco() {
     if (!usuario) return
     let vigente = true
     asegurarPerfilComprador(usuario)
-      .then(() => vigente && setErrorPerfil(null))
+      .then((perfil) => {
+        if (!vigente) return
+        setErrorPerfil(null)
+        setAdminDe(perfil.rol === 'admin' ? usuario.id : null)
+      })
       .catch((causa: unknown) => {
         if (!vigente) return
+        setAdminDe(null)
         setErrorPerfil(
           causa instanceof ErrorSesion ? causa.message : 'No pudimos cargar tu cuenta.',
         )
@@ -125,16 +145,41 @@ function Marco() {
           <Link to="/" aria-label="Ayllu, inicio">
             <Logotipo />
           </Link>
-          {sesion ? (
-            <Boton variante="secundario" cargando={saliendo} onClick={() => void salir()}>
-              Salir
-            </Boton>
-          ) : (
-            !cargando &&
-            pathname !== '/ingresar' && (
-              <Link to={`/ingresar?volver=${encodeURIComponent(pathname + search)}`}>Ingresar</Link>
-            )
-          )}
+          <nav aria-label="Principal" className="barra-nav">
+            <EnlaceBarra a="/catalogo" icono="catalogo">
+              Catálogo
+            </EnlaceBarra>
+            <EnlaceBarra a="/pedidos" icono="pedidos">
+              Mis pedidos
+            </EnlaceBarra>
+            {/* Atajo para el administrador; /admin sigue protegido por AccesoAdmin y RLS. */}
+            {sesion && esAdmin && (
+              <EnlaceBarra a="/admin" icono="admin">
+                Administración
+              </EnlaceBarra>
+            )}
+            {sesion ? (
+              <Boton
+                variante="secundario"
+                icono="salir"
+                cargando={saliendo}
+                onClick={() => void salir()}
+              >
+                Salir
+              </Boton>
+            ) : (
+              !cargando &&
+              pathname !== '/ingresar' && (
+                <Link
+                  className="barra-enlace"
+                  to={`/ingresar?volver=${encodeURIComponent(pathname + search)}`}
+                >
+                  <Icono nombre="ingresar" />
+                  <span className="barra-texto">Ingresar</span>
+                </Link>
+              )
+            )}
+          </nav>
         </div>
       </header>
       {errorSalida && (

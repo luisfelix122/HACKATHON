@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom'
 import type { MensajeOrden, Orden } from '../compartido/dominio/orden'
 import { useSesion } from '../compartido/sesion'
 import { Aviso, Boton } from '../compartido/ui/componentes'
+import { Icono } from '../compartido/ui/Icono'
 import { leerMensajes, obtenerOrden } from './consultas'
 import { HiloMensajes } from './HiloMensajes'
 import { suscribirOrden } from './tiempoReal'
@@ -69,7 +70,10 @@ export function DetalleOrden() {
   const actual = resultado?.clave === clave ? resultado : null
   return (
     <main className="pagina pagina-artesano pedidos">
-      <Link to="/pedidos">Mis pedidos</Link>
+      <Link className="pedido-volver" to="/pedidos">
+        <Icono nombre="atras" />
+        Mis pedidos
+      </Link>
       <h1>Tu pedido</h1>
       {cargando ? (
         <Aviso>Cargando…</Aviso>
@@ -78,7 +82,9 @@ export function DetalleOrden() {
       ) : error ? (
         <Aviso tono="error">
           {error}
-          <Boton onClick={() => setIntento((valor) => valor + 1)}>Reintentar</Boton>
+          <Boton icono="adelante" onClick={() => setIntento((valor) => valor + 1)}>
+            Reintentar
+          </Boton>
         </Aviso>
       ) : !actual ? (
         <Aviso>Cargando…</Aviso>
@@ -87,7 +93,11 @@ export function DetalleOrden() {
       ) : (
         <>
           <div className="pedido-acciones">
-            <Boton variante="secundario" onClick={() => setIntento((valor) => valor + 1)}>
+            <Boton
+              variante="secundario"
+              icono="adelante"
+              onClick={() => setIntento((valor) => valor + 1)}
+            >
               Actualizar
             </Boton>
           </div>
@@ -96,8 +106,10 @@ export function DetalleOrden() {
               La actualización en vivo no está disponible. Toca Actualizar para ver novedades.
             </Aviso>
           )}
-          <section className="pedido-acuerdo" aria-label="Datos del pedido">
-            <h2>{etiquetaEstado(actual.orden.estado)}</h2>
+          <section className="pedido-acuerdo pedido-datos" aria-label="Datos del pedido">
+            <h2 className="pedido-estado" data-estado={actual.orden.estado}>
+              {etiquetaEstado(actual.orden.estado)}
+            </h2>
             <dl>
               <dt>Cantidad</dt>
               <dd>{actual.orden.cantidad}</dd>

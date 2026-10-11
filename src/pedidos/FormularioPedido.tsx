@@ -130,10 +130,10 @@ export function FormularioPedido({
         </fieldset>
         {error && <Aviso tono="error">{error}</Aviso>}
         <div className="pedido-acciones">
-          <Boton type="submit" cargando={enviando}>
+          <Boton type="submit" variante="destacado" icono="pedidos" cargando={enviando}>
             Solicitar pedido
           </Boton>
-          <Boton variante="secundario" disabled={enviando} onClick={alCerrar}>
+          <Boton variante="secundario" icono="cerrar" disabled={enviando} onClick={alCerrar}>
             Cerrar formulario
           </Boton>
         </div>

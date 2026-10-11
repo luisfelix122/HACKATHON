@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { Navigate, useSearchParams } from 'react-router-dom'
 import { ErrorSesion, iniciarSesionGoogle, rutaSegura, useSesion } from './sesion'
 import { Aviso, Boton } from './ui/componentes'
+import { Icono } from './ui/Icono'
 
 /**
  * /ingresar en la web: ingreso del comprador con Google (§Acceso). Al volver,
@@ -30,14 +31,28 @@ export function PantallaIngresoWeb() {
 
   return (
     <main className="pagina pagina-artesano">
-      <h1>Ingresar</h1>
-      <p className="texto-secundario">Necesitas una cuenta para pedir y escribir al artesano.</p>
-      {error && <Aviso tono="error">{error}</Aviso>}
-      <p>
-        <Boton variante="destacado" cargando={enCurso} onClick={continuar}>
+      <section className="ingreso-web" aria-labelledby="titulo-ingreso">
+        <h1 id="titulo-ingreso">Ingresar</h1>
+        <p className="texto-secundario">Necesitas una cuenta para pedir y escribir al artesano.</p>
+        <ul className="ingreso-web-lista">
+          <li>
+            <Icono nombre="pedidos" />
+            Pedir piezas con recojo o envío
+          </li>
+          <li>
+            <Icono nombre="mensaje" />
+            Hablar con el artesano sobre tu pedido
+          </li>
+          <li>
+            <Icono nombre="envio" />
+            Seguir tus pedidos hasta recibirlos
+          </li>
+        </ul>
+        {error && <Aviso tono="error">{error}</Aviso>}
+        <Boton variante="destacado" icono="ingresar" ancho cargando={enCurso} onClick={continuar}>
           Continuar con Google
         </Boton>
-      </p>
+      </section>
     </main>
   )
 }

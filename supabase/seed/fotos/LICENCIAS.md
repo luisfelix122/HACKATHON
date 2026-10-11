@@ -1,6 +1,6 @@
 # Fotos por producto — PRP 007
 
-Selección revisada contra los 15 productos publicados existentes (CC-16, CC-17). Los 15 tienen foto de referencia cargada en Storage: once del mismo tipo de objeto y cuatro aproximados con diferencias declaradas. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
+Selección revisada contra los 15 productos publicados existentes (CC-16, CC-18). Los 15 tienen foto de referencia cargada en Storage: once del mismo tipo de objeto y cuatro aproximados con diferencias declaradas. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
 
 Estas cinco imágenes son referencias de demo del mismo tipo de objeto, no fotos originales de los artesanos ficticios. Las diferencias y los materiales no verificables se declaran a continuación. La embarcación a escala es una coincidencia visual parcial: no acredita una chalana de Cabo Blanco. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
 
@@ -54,7 +54,7 @@ Todos los JPEG tienen como máximo 1000 px en su lado mayor y menos de 300 KB (3
 
 ### Sin pendientes entre los publicados
 
-Los productos 10 y 11 salieron de la semilla (CC-17). Los productos
+Los productos 10 y 11 salieron de la semilla (CC-18). Los productos
 22 (retirado) y 23 (borrador) requieren foto correspondiente.
 
 Las referencias aproximadas de 02, 15, 16 y 18 fueron aprobadas por Johann el 2026-10-11
@@ -76,7 +76,7 @@ a los vendedores ficticios. No se generaron imágenes con IA.
 | 22: Top edición especial (retirado) | Fuera de los publicados; requiere foto correspondiente. |
 | 23: Billetera en creación (borrador) | Fuera de los publicados; requiere foto correspondiente. |
 
-Los productos 05, 10, 11, 17, 19 y 20 salieron de la semilla (CC-16, CC-17). No se generaron imágenes con IA.
+Los productos 05, 10, 11, 17, 19 y 20 salieron de la semilla (CC-16, CC-18). No se generaron imágenes con IA.
 
 ## Carga y validación
 
@@ -94,7 +94,7 @@ La semilla conserva 10 perfiles, 17 productos (15 publicados), 17 registros SQL 
 - Tercera carga (11-oct, mediodía): 02, 15, 16 y 18 recibidos y subidos como referencias aproximadas aprobadas por Johann, con diferencias declaradas en ficha. Todo `uploaded`, POST 200 y GET público 200 con SHA256 coincidente:
   02 → 96 310 B; 15 → 165 506 B; 16 → 216 832 B; 18 → 108 623 B.
 - Totales en Storage: 15 fotos publicadas de 15 productos publicados. Cobertura total.
-- CC-17 (2026-10-11): Johann retiró del servidor los productos 10 y 11 (verificado: sin fotos ni órdenes huérfanas); la semilla los elimina y quita el JPEG del 10. La semilla queda en 17 productos (15 publicados).
+- CC-18 (2026-10-11): Johann retiró del servidor los productos 10 y 11 (verificado: sin fotos ni órdenes huérfanas); la semilla los elimina y quita el JPEG del 10. La semilla queda en 17 productos (15 publicados).
 - `supabase/seed.sql` contiene los créditos de las 15 fotos y coincide con las fichas del servidor.
 - Vitrina https://ayllu.likadev.com responde HTTP 200. La comprobación visual a 360 y 1440 px y del panel `/admin` con cuenta real queda para el usuario con navegador.
 - `make verify` y `make build` se reejecutan antes del merge (ver salida del PR).

@@ -1,83 +1,238 @@
-/* Guía de encomienda: acuerdo separado del hilo, sin estilos fuera del módulo. */
+/*
+ * Pedidos (módulo C) con el mundo «Rotulado de chalana» (decisión 0006): el
+ * acuerdo va en un tablón aparte del hilo, y cada estado tiene su color.
+ */
 .pedidos,
 .pedido-formulario {
   display: grid;
   gap: var(--e5);
 }
+
+.pedido-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  min-height: var(--tactil);
+  width: fit-content;
+}
+
 .boton-pedir {
   display: grid;
   gap: var(--e4);
 }
-.pedido-formulario {
-  margin-block: var(--e5);
-  border-top: var(--borde) solid var(--pacifico);
-  padding-top: var(--e5);
+
+.boton-pedir-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e4);
 }
-.pedido-formulario fieldset {
+
+/* Formulario largo del comprador: en pantalla, como un tablón. */
+.pedido-formulario {
+  padding: var(--e5);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
+}
+
+.pedido-formulario fieldset,
+.pedido-modal-formulario fieldset {
   border: 0;
   padding: 0;
+  margin: 0;
   min-width: 0;
   display: grid;
   gap: var(--e4);
 }
+
 .pedido-formulario legend {
   font-weight: 700;
+  font-size: var(--tam-h3);
   margin-bottom: var(--e4);
 }
+
+.pedido-formulario form,
+.pedido-modal-formulario {
+  display: grid;
+  gap: var(--e4);
+}
+
+.pedido-modal-acciones {
+  padding: 0;
+}
+
 .pedido-acciones {
   display: flex;
   flex-wrap: wrap;
   gap: var(--e3);
-  margin-block: var(--e4);
 }
-.pedidos-lista,
-.pedido-hilo {
-  list-style: none;
-  padding: 0;
+
+/* El acuerdo y el siguiente paso, cada uno en su tablón. */
+.pedido-acuerdo {
   display: grid;
   gap: var(--e4);
+  padding: var(--e5);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
 }
-.pedidos-lista li {
-  display: grid;
-  gap: var(--e2);
-  border-bottom: var(--borde) solid var(--arena);
-  padding-block: var(--e4);
+
+.pedido-siguiente {
+  background: var(--casco-claro);
 }
-.pedido-acuerdo {
-  border-left: 4px solid var(--pacifico);
-  padding-left: var(--e4);
+
+.pedido-botones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e3);
 }
+
 .pedido-acuerdo dl {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: var(--e2);
+  gap: var(--e1) var(--e4);
+  margin: 0;
 }
+
 .pedido-acuerdo dt {
   font-weight: 700;
+  color: var(--brea-suave);
 }
+
 .pedido-acuerdo dd {
   margin: 0 0 var(--e3);
   overflow-wrap: anywhere;
+  font-variant-numeric: tabular-nums;
 }
-.pedido-hilo li {
-  background: var(--blanco);
-  border-left: 3px solid var(--arena);
+
+/* Estado de la orden, pintado como una placa. */
+.pedido-estado {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: var(--e1) var(--e3);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio-control);
+  background: var(--casco-claro);
+  color: var(--brea);
+  font-weight: 700;
+  font-size: var(--tam-chico);
+}
+
+h2.pedido-estado {
+  font-size: var(--tam-h3);
+  padding: var(--e2) var(--e4);
+}
+
+.pedido-estado[data-estado='solicitada'],
+.pedido-estado[data-estado='pago_pendiente'] {
+  background: var(--sol-claro);
+}
+
+.pedido-estado[data-estado='pagada'],
+.pedido-estado[data-estado='entregada'] {
+  background: var(--alga-clara);
+}
+
+.pedido-estado[data-estado='rechazada'],
+.pedido-estado[data-estado='cancelada'] {
+  background: var(--borda-clara);
+}
+
+/* Lista de pedidos: cada uno, una fila tocable. */
+.pedidos-lista,
+.pedido-hilo {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: var(--e3);
+}
+
+.pedidos-fila {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--e1) var(--e3);
+  align-items: center;
   padding: var(--e4);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
+  color: var(--brea);
+  text-decoration: none;
+  box-shadow: var(--sombra-dura-chica);
+}
+
+.pedidos-fila > :not(.icono) {
+  grid-column: 1;
+}
+
+.pedidos-fila > .icono {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+  color: var(--casco);
+}
+
+.pedidos-fila:hover {
+  background: var(--casco-claro);
+}
+
+.pedidos-fila-titulo {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  font-weight: 700;
+}
+
+/* Hilo: burbujas de la conversación */
+.pedido-hilo-seccion {
+  display: grid;
+  gap: var(--e4);
+}
+
+.pedido-hilo li {
+  max-width: 85%;
+  padding: var(--e3) var(--e4);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio-panel) var(--radio-panel) var(--radio-panel) 2px;
+  background: var(--blanco);
   overflow-wrap: anywhere;
 }
+
 .pedido-hilo li[data-propio='true'] {
-  border-color: var(--ola);
-  background: var(--ola-clara);
+  justify-self: end;
+  border-radius: var(--radio-panel) var(--radio-panel) 2px var(--radio-panel);
+  background: var(--mar);
 }
+
 .pedido-hilo p {
   white-space: pre-wrap;
 }
+
 .pedido-hilo time {
   font-size: var(--tam-chico);
-  color: var(--noche-suave);
+  color: var(--brea-suave);
 }
+
+.pedido-hilo-formulario {
+  display: grid;
+  gap: var(--e3);
+  justify-items: start;
+}
+
+.pedido-hilo-formulario .campo {
+  width: 100%;
+}
+
 @media (min-width: 600px) {
   .pedido-acuerdo dl {
     grid-template-columns: minmax(8rem, 1fr) minmax(0, 2fr);
   }
+}
+
+/* El número de guía, legible y alineado. */
+.pedido-guia {
+  font-weight: 700;
+  font-size: 1.15rem;
 }

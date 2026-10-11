@@ -1,196 +1,834 @@
+/*
+ * Vitrina (módulo B) con el mundo «Rotulado de chalana» (decisión 0006).
+ * Solo usa tokens y componentes de src/compartido/ui/.
+ */
+
+/* ---------- Landing ---------- */
+.portada-landing {
+  overflow-x: clip;
+}
+
+.landing-contenido {
+  max-width: var(--ancho-maximo);
+  margin: 0 auto;
+  padding: 0 var(--margen);
+}
+
+.landing-seccion {
+  padding: var(--e8) 0;
+}
+
+/* Títulos de sección en Atkinson: el rotulado queda para los nombres propios. */
+.landing-titulo-seccion {
+  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  letter-spacing: -0.025em;
+  margin-bottom: var(--e3);
+}
+
+.landing-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--e3);
+  margin-bottom: var(--e5);
+}
+
+.landing-cuenta {
+  font-size: var(--tam-chico);
+  font-weight: 400;
+  color: var(--brea-suave);
+  font-variant-numeric: tabular-nums;
+}
+
+.landing-estado {
+  display: grid;
+  gap: var(--e4);
+  justify-items: start;
+  padding-block: var(--e7);
+}
+
+/* Primera pantalla: el casco */
+.landing-casco .franja-contenido {
+  display: grid;
+  gap: var(--e7);
+  align-items: center;
+  min-height: min(78svh, 46rem);
+  padding-block: var(--e7) var(--e8);
+}
+
+.landing-casco-texto {
+  display: grid;
+  gap: var(--e5);
+  justify-items: start;
+}
+
+.landing-titulo {
+  font-size: var(--tam-portada);
+  line-height: 0.98;
+  max-width: 11ch;
+}
+
+.landing-bajada {
+  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.45rem);
+  color: var(--cal);
+  max-width: 34ch;
+}
+
+.landing-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e4);
+}
+
+/* Tablones reales con foto clavados en diagonal, como tablas del casco. Se asientan una vez al cargar. */
+.landing-tablas {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--e3);
+  align-items: start;
+}
+
+.landing-tablas[data-cantidad='1'] {
+  grid-template-columns: minmax(0, 22rem);
+  justify-content: center;
+}
+
+.landing-tablas[data-cantidad='2'] {
+  grid-template-columns: repeat(2, minmax(0, 17rem));
+  justify-content: center;
+}
+
+.landing-tablas .tablon {
+  animation: asentar 520ms var(--salida) both;
+}
+
+.landing-tablas .tablon:nth-child(2) {
+  animation-delay: 90ms;
+}
+
+.landing-tablas .tablon:nth-child(3) {
+  animation-delay: 180ms;
+}
+
+@keyframes asentar {
+  from {
+    opacity: 0;
+    translate: 0 -18px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+.landing-tablas .tablon {
+  pointer-events: none;
+}
+
+.landing-tablas .tablon {
+  border-color: transparent;
+  box-shadow: 0 24px 48px -20px rgb(0 0 0 / 0.45);
+}
+
+.landing-tablas .tablon:nth-child(1) {
+  transform: translateY(var(--e5));
+}
+
+.landing-tablas .tablon:nth-child(3) {
+  transform: translateY(var(--e7));
+}
+
+.landing-tablas .tablon-precio,
+.landing-tablas .tablon-autor {
+  display: none;
+}
+
+@media (max-width: 859px) {
+  .landing-tablas {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--e4);
+    padding-bottom: var(--e5);
+  }
+
+  .landing-tablas .tablon:nth-child(3) {
+    display: none;
+  }
+
+  .landing-tablas .tablon-titulo {
+    font-size: 1rem;
+  }
+}
+
+@media (min-width: 860px) {
+  .landing-casco .franja-contenido {
+    grid-template-columns: 1.15fr 1fr;
+  }
+}
+
+/* Las caletas: matrículas */
+.landing-matriculas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e3);
+  margin: var(--e5) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.landing-matricula {
+  display: grid;
+  gap: var(--e1);
+  justify-items: start;
+  min-height: var(--tactil);
+  padding: var(--e3) var(--e4);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-control);
+  background: var(--blanco);
+  color: var(--brea);
+  text-decoration: none;
+  box-shadow: var(--sombra-dura-chica);
+  transition:
+    transform var(--rapido) var(--salida),
+    box-shadow var(--rapido) var(--salida);
+}
+
+.landing-matricula .matricula {
+  font-family: var(--letra-rotulo);
+  font-size: 1.15rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-transform: none;
+  box-shadow: none;
+  border: 0;
+  padding: 0;
+  color: var(--casco);
+}
+
+.landing-matricula:hover {
+  border-color: var(--linea-fuerte);
+  box-shadow: var(--sombra-alta);
+}
+
+/* Lo que se hace aquí */
+.landing-tipos .franja-contenido {
+  padding-block: var(--e8);
+}
+
+/* Una lista pintada sobre la franja de sol, no tarjetas. */
+.landing-tipos-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  column-gap: var(--e7);
+  margin: var(--e5) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--linea);
+}
+
+.landing-tipos-lista li {
+  border-bottom: 1px solid var(--linea);
+}
+
+.landing-tipo {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  column-gap: var(--e4);
+  align-items: center;
+  min-height: 5.5rem;
+  padding: var(--e3) 0;
+  color: var(--brea);
+  text-decoration: none;
+}
+
+.landing-tipo:hover .landing-tipo-nombre {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.landing-tipo-icono {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 50%;
+  background: var(--blanco);
+  color: var(--casco);
+}
+
+.landing-tipo[data-tipo='bisutería marina'] .landing-tipo-icono {
+  color: var(--borda-honda);
+}
+
+.landing-tipo[data-tipo='tallado'] .landing-tipo-icono {
+  color: #8a6418;
+}
+
+.landing-tipo[data-tipo='utilitario'] .landing-tipo-icono {
+  color: var(--alga);
+}
+
+.landing-tipo-nombre {
+  font-family: var(--letra-rotulo);
+  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.85rem);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+}
+
+.landing-tipo .landing-cuenta {
+  color: var(--brea);
+}
+
+.landing-tipo-nombre::first-letter {
+  text-transform: uppercase;
+}
+
+/* Piezas: dos tablones por fila en el celular, más desde la tableta. En la landing,
+   la pieza con foto va más grande y los tablones quedan clavados a distintas alturas. */
+.landing-cuadricula,
+.vitrina-cuadricula {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--e5) var(--e4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (max-width: 599px) {
+  .landing-cuadricula .tablon-cuerpo,
+  .vitrina-cuadricula .tablon-cuerpo {
+    padding: var(--e3);
+  }
+
+  .landing-cuadricula .tablon-titulo,
+  .vitrina-cuadricula .tablon-titulo {
+    font-size: 1rem;
+  }
+
+  .landing-cuadricula .tablon-sin-foto span,
+  .vitrina-cuadricula .tablon-sin-foto span {
+    font-size: 0.85rem;
+  }
+}
+
+@media (min-width: 600px) {
+  .landing-cuadricula,
+  .vitrina-cuadricula {
+    grid-template-columns: repeat(auto-fill, minmax(15.5rem, 1fr));
+    gap: var(--e6) var(--e5);
+  }
+}
+
+/* Quién lo hace: cada artesano como el nombre de un bote */
+.landing-artesanos {
+  background: var(--mar);
+  border-top: 1px solid var(--linea);
+  border-bottom: 1px solid var(--linea);
+}
+
+.landing-artesanos-cabecera {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e5);
+}
+
+/* Cada artesano, su nombre rotulado como el de un bote: una lista, no tarjetas. */
+.landing-botes {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 24rem), 1fr));
+  column-gap: var(--e7);
+  margin: var(--e6) 0 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--linea);
+}
+
+.landing-botes li {
+  border-bottom: 1px solid var(--linea);
+}
+
+.landing-bote {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e2) var(--e4);
+  min-height: 4.5rem;
+  padding: var(--e3) 0;
+  color: var(--brea);
+  text-decoration: none;
+}
+
+.landing-bote:hover .landing-bote-nombre {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
+
+.landing-bote-nombre {
+  font-family: var(--letra-rotulo);
+  font-size: clamp(1.2rem, 1rem + 0.8vw, 1.55rem);
+  line-height: 1.1;
+  color: var(--casco);
+}
+
+/* Cómo se pide */
+.landing-pasos-lista {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  gap: var(--e5);
+  margin: var(--e5) 0 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: paso;
+}
+
+.landing-pasos-lista li {
+  display: grid;
+  gap: var(--e2);
+  align-content: start;
+  padding-top: var(--e4);
+  border-top: 1px solid var(--linea);
+}
+
+.landing-paso-numero {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 50%;
+  background: var(--casco-claro);
+  color: var(--casco);
+  font-family: var(--letra-rotulo);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.landing-pasos-lista h3 {
+  font-size: 1.2rem;
+}
+
+/* Cierre */
+.landing-cierre .franja-contenido {
+  display: grid;
+  gap: var(--e4);
+  justify-items: start;
+  padding-block: var(--e8);
+}
+
+.landing-cierre p {
+  color: var(--cal);
+}
+
+/* ---------- Catálogo y perfil ---------- */
 .vitrina {
   padding-bottom: var(--e8);
 }
-.vitrina a {
-  text-underline-offset: 0.2em;
-}
+
 .vitrina section {
   min-width: 0;
 }
+
+.vitrina-casco .franja-contenido,
+.vitrina-perfil .franja-contenido {
+  display: grid;
+  gap: var(--e4);
+  padding-block: var(--e6) var(--e7);
+}
+
+.vitrina-casco h1 {
+  font-size: clamp(2.2rem, 1.5rem + 3vw, 3.5rem);
+  letter-spacing: -0.03em;
+}
+
+.vitrina-bajada {
+  color: var(--cal);
+}
+
 .vitrina-costa {
-  margin-bottom: var(--e7);
-  padding: var(--e5);
-  background: var(--pacifico);
-  color: var(--blanco);
-}
-.vitrina-costa h2 {
-  margin-top: 0;
-}
-.vitrina-costa > div {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--e2) var(--e4);
+  gap: var(--e2) var(--e3);
+  margin-top: var(--e3);
 }
-.vitrina-costa button {
-  color: var(--blanco);
-  background: transparent;
-  border: 0;
-  border-bottom: 2px dashed var(--arena);
+
+/* Matrícula que filtra por caleta: se pinta de sol al activarse. */
+.vitrina-matricula {
   min-height: var(--tactil);
-  font: inherit;
+  padding: var(--e2) var(--e3);
+  border: 1px solid rgb(255 255 255 / 0.35);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--blanco);
+  font-size: var(--tam-chico);
+  font-weight: 700;
   cursor: pointer;
+  transition:
+    background-color var(--rapido) var(--salida),
+    border-color var(--rapido) var(--salida);
 }
-.vitrina-costa button[aria-pressed='true'],
-.vitrina-costa button:hover {
+
+.vitrina-matricula:hover {
+  background: rgb(255 255 255 / 0.1);
+  border-color: rgb(255 255 255 / 0.7);
+}
+
+.vitrina-matricula[aria-pressed='true'] {
   background: var(--blanco);
-  color: var(--pacifico);
+  border-color: var(--blanco);
+  color: var(--casco);
 }
-.vitrina-costa button:focus-visible {
+
+.vitrina-matricula:focus-visible {
   outline-color: var(--sol);
 }
+
 .vitrina-filtros {
   display: grid;
   gap: var(--e4);
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+  padding: var(--e5);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
 }
+
 .vitrina-chips {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   gap: var(--e2);
-  margin: var(--e5) 0 var(--e7);
+  margin: var(--e5) 0 var(--e6);
 }
+
 .vitrina-chip {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: var(--tactil);
   padding: var(--e2) var(--e4);
-  border: 2px solid var(--pacifico);
-  border-radius: var(--radio-control);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: 999px;
   background: var(--blanco);
-  color: var(--pacifico);
+  color: var(--brea);
   font: inherit;
+  font-weight: 700;
   text-decoration: none;
   overflow-wrap: anywhere;
   cursor: pointer;
 }
-.vitrina-chip[aria-pressed='true'],
+
 .vitrina-chip:hover {
-  background: var(--pacifico);
+  background: var(--casco-claro);
+  color: var(--brea);
+}
+
+.vitrina-chip[aria-pressed='true'] {
+  background: var(--casco);
   color: var(--blanco);
 }
+
 .vitrina-cabecera {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
   justify-content: space-between;
   gap: var(--e3);
+  margin-bottom: var(--e5);
 }
-.vitrina-cuadricula {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
-  gap: var(--e7) var(--e5);
+
+.vitrina-cabecera p {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
-.vitrina-tarjeta {
+
+.vitrina-disponibilidad {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  font-size: var(--tam-chico);
+  font-weight: 700;
+  color: var(--brea-suave);
+}
+
+.vitrina-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  min-height: var(--tactil);
+  width: fit-content;
+}
+
+/* Perfil del artesano */
+.vitrina-perfil-cabecera {
   display: flex;
-  flex-direction: column;
-  color: var(--noche);
-  text-decoration: none;
-  min-width: 0;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e5);
 }
-.vitrina-tarjeta:hover .etiqueta-titulo {
-  text-decoration: underline;
+
+.vitrina-perfil-nombre {
+  font-size: clamp(2rem, 1.4rem + 2.6vw, 3.25rem);
 }
-.vitrina-imagen {
-  aspect-ratio: 4 / 3;
-  background: var(--ola-clara);
-  display: grid;
-  place-items: center;
-  overflow: hidden;
+
+.vitrina-perfil-lugar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e3);
+  margin-top: var(--e3);
+  color: var(--cal);
 }
-.vitrina-imagen img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+
+.vitrina-perfil-historia {
+  color: var(--cal);
+  font-size: 1.15rem;
 }
-.vitrina-tarjeta .etiqueta {
-  margin: calc(-1 * var(--e4)) var(--e4) 0;
-  position: relative;
-  flex: 1;
-}
+
+/* ---------- Ficha del producto ---------- */
 .vitrina-detalle {
   display: grid;
   gap: var(--e7);
-  margin-top: var(--e6);
+  margin-top: var(--e4);
   align-items: start;
 }
+
+.vitrina-carrusel {
+  display: grid;
+  gap: var(--e3);
+}
+
 .vitrina-foto {
   aspect-ratio: 1;
-  background: var(--ola-clara);
   display: grid;
   place-items: center;
-  touch-action: pan-y;
   overflow: hidden;
+  touch-action: pan-y;
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  background: var(--casco-claro);
 }
+
+/* Con foto: paspartú de cal alrededor de la pieza, nunca recortada ni con bandas. */
+.vitrina-foto:has(img) {
+  background: var(--blanco);
+}
+
 .vitrina-foto img {
   width: 100%;
   height: 100%;
+  padding: var(--e4);
   object-fit: contain;
 }
+
+.vitrina-sin-foto {
+  display: grid;
+  justify-items: center;
+  gap: var(--e2);
+  color: var(--casco);
+  font-weight: 700;
+}
+
 .vitrina-controles {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--e2);
-  margin: var(--e4) 0;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
 }
+
 .vitrina-ficha {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+  gap: var(--e4);
   min-width: 0;
   overflow-wrap: anywhere;
 }
+
 .vitrina-ficha h1 {
-  margin-top: 0;
+  font-size: clamp(1.9rem, 1.4rem + 1.8vw, 2.75rem);
 }
-.vitrina-ficha .sello {
-  margin-top: var(--e5);
+
+.vitrina-autor {
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
 }
+
+.vitrina-autor .sello {
+  width: 5.75rem;
+  height: 5.75rem;
+  outline-offset: -8px;
+}
+
+.vitrina-autor .sello-rna {
+  font-size: 1.35rem;
+}
+
+.vitrina-autor .sello-texto {
+  font-size: 0.75rem;
+}
+
+.vitrina-autor-nombre {
+  font-family: var(--letra-rotulo);
+  font-weight: 400;
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+
+.vitrina-autor-nombre:hover {
+  text-decoration: underline;
+}
+
+.vitrina-precio-bloque {
+  display: grid;
+  gap: var(--e1);
+  padding: var(--e4) var(--e5);
+  border: 1px solid var(--linea);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
+}
+
 .vitrina-precio {
   font-size: var(--tam-h2);
   font-weight: 700;
   font-variant-numeric: tabular-nums;
-  margin-bottom: 0;
 }
+
 .vitrina-acciones {
   display: flex;
   flex-wrap: wrap;
   align-items: start;
   gap: var(--e4);
-  margin: var(--e5) 0;
 }
+
 .vitrina-datos {
   display: grid;
   grid-template-columns: auto 1fr;
   gap: var(--e3) var(--e4);
+  width: 100%;
+  margin: 0;
+  padding: var(--e4) 0;
+  border-top: 1px solid var(--linea);
+  border-bottom: 1px solid var(--linea);
 }
+
 .vitrina-datos dt {
   font-weight: 700;
 }
+
 .vitrina-datos dd {
   margin: 0;
 }
-.vitrina-perfil {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
-  gap: var(--e6);
-  margin: var(--e7) 0;
+
+.vitrina-ficha h2 {
+  font-size: var(--tam-h3);
 }
-.vitrina-perfil > div {
-  max-width: var(--ancho-lectura);
-  flex: 1 1 260px;
-}
-.vitrina-perfil .sello {
-  align-self: start;
-}
+
 @media (min-width: 768px) {
-  .vitrina-filtros {
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-  }
   .vitrina-detalle {
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
   }
+}
+
+/* Landing: tres tablones por fila, clavados a distintas alturas. */
+@media (min-width: 900px) {
+  .landing-cuadricula {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    align-items: start;
+  }
+
+  .landing-cuadricula li:nth-child(3n + 2) {
+    margin-top: var(--e6);
+  }
+
+  .landing-cuadricula li:nth-child(3n) {
+    margin-top: var(--e3);
+  }
+}
+
+/* ---------- Horizonte de la primera pantalla (CSS, sin imagen) ---------- */
+.landing-proa {
+  position: relative;
+  display: grid;
+  align-items: end;
+  justify-items: start;
+  aspect-ratio: 4 / 3;
+  width: 100%;
+  max-width: 34rem;
+  justify-self: center;
+  overflow: hidden;
+  padding: var(--e6);
+  border: 1px solid rgb(255 255 255 / 0.14);
+  border-radius: var(--radio-panel);
+  /* Sol bajo sobre el Pacífico: cielo, sol, línea del horizonte y mar. */
+  background:
+    linear-gradient(
+      180deg,
+      transparent 0 52%,
+      rgb(255 255 255 / 0.55) 52% calc(52% + 1px),
+      #173a57 calc(52% + 1px) 100%
+    ),
+    radial-gradient(circle at 68% 52%, var(--sol) 0 11%, transparent 11.4%),
+    linear-gradient(180deg, #24507a 0%, #4b7799 100%);
+  box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.55);
+  animation: asentar 600ms var(--salida) both;
+}
+
+/* El reflejo del sol en el agua. */
+.landing-proa::after {
+  content: '';
+  position: absolute;
+  inset: 52% 0 0;
+  background: radial-gradient(ellipse 10% 40% at 68% 0%, rgb(224 178 82 / 0.45), transparent 70%);
+}
+
+.landing-proa-nombre {
+  position: relative;
+  z-index: 1;
+  font-family: var(--letra-rotulo);
+  font-size: clamp(2.5rem, 1.6rem + 3.5vw, 4.25rem);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--blanco);
+}
+
+@media (max-width: 859px) {
+  .landing-proa {
+    max-width: 26rem;
+  }
+}
+
+/* Cierre de la página: la línea de flotación */
+.landing-pie {
+  padding: var(--e6) 0;
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+  background: var(--brea);
+  color: var(--cal);
+}
+
+.landing-pie .landing-contenido {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--e3) var(--e5);
+}
+
+.landing-pie-logo {
+  font-size: 1.4rem;
+}
+
+.landing-pie p {
+  color: var(--cal);
+}
+
+.boton-pedir-nota {
+  font-size: var(--tam-chico);
 }

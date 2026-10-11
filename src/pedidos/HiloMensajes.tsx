@@ -39,7 +39,7 @@ export function HiloMensajes({
     }
   }
   return (
-    <section aria-label="Hilo del pedido">
+    <section className="pedido-hilo-seccion" aria-label="Hilo del pedido">
       <h2>Hablar sobre este pedido</h2>
       <p className="texto-secundario">
         Acuerden los detalles aquí. El total y el destino válidos son los que aparecen en el pedido.
@@ -56,7 +56,7 @@ export function HiloMensajes({
         ))}
       </ol>
       {mensajes.length === 0 && <p>Aún no hay mensajes. Escribe para coordinar el pedido.</p>}
-      <form onSubmit={(evento) => void enviar(evento)}>
+      <form className="pedido-hilo-formulario" onSubmit={(evento) => void enviar(evento)}>
         <Campo etiqueta="Mensaje" ayuda="Entre 1 y 1000 caracteres." error={error ?? undefined}>
           {(atributos) => (
             <textarea
@@ -69,7 +69,7 @@ export function HiloMensajes({
             />
           )}
         </Campo>
-        <Boton type="submit" cargando={enviando}>
+        <Boton type="submit" icono="mensaje" cargando={enviando}>
           Enviar mensaje
         </Boton>
       </form>

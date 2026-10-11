@@ -1,6 +1,7 @@
-import { useCallback, useState } from 'react'
+import { useCallback } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { Aviso, Boton, Campo, Etiqueta } from '../compartido/ui/componentes'
+import { Aviso, Boton, Campo, Franja, Tablon } from '../compartido/ui/componentes'
+import { Icono } from '../compartido/ui/Icono'
 import { LUGARES } from '../compartido/dominio/lugares'
 import { TIPOS_PRODUCTO } from '../compartido/dominio/producto'
 import {
@@ -9,7 +10,6 @@ import {
   urlFoto,
   useConsulta,
   type CatalogoPublico,
-  type FotoPublica,
 } from './consultas'
 import { coincideProducto, escribirFiltros, leerFiltros } from './filtros'
 
@@ -45,20 +45,22 @@ export function Catalogo({ artesanoId }: { artesanoId?: string }) {
             />
           )}
         </Campo>
-        <Campo etiqueta="Lugar">
-          {(atributos) => (
-            <select
-              {...atributos}
-              value={filtros.lugar}
-              onChange={(e) => cambiar('lugar', e.target.value)}
-            >
-              <option value="">Todos los lugares</option>
-              {LUGARES.map((lugar) => (
-                <option key={lugar}>{lugar}</option>
-              ))}
-            </select>
-          )}
-        </Campo>
+        {!artesanoId && (
+          <Campo etiqueta="Lugar">
+            {(atributos) => (
+              <select
+                {...atributos}
+                value={filtros.lugar}
+                onChange={(e) => cambiar('lugar', e.target.value)}
+              >
+                <option value="">Todos los lugares</option>
+                {LUGARES.map((lugar) => (
+                  <option key={lugar}>{lugar}</option>
+                ))}
+              </select>
+            )}
+          </Campo>
+        )}
         <Campo etiqueta="Tipo de producto">
           {(atributos) => (
             <select
@@ -73,23 +75,25 @@ export function Catalogo({ artesanoId }: { artesanoId?: string }) {
             </select>
           )}
         </Campo>
-        <Campo etiqueta="Asociación">
-          {(atributos) => (
-            <select
-              {...atributos}
-              value={filtros.asociacion}
-              onChange={(e) => cambiar('asociacion', e.target.value)}
-            >
-              <option value="">Todas las asociaciones</option>
-              {filtros.asociacion && !asociaciones.includes(filtros.asociacion) && (
-                <option>{filtros.asociacion}</option>
-              )}
-              {asociaciones.map((asociacion) => (
-                <option key={asociacion}>{asociacion}</option>
-              ))}
-            </select>
-          )}
-        </Campo>
+        {!artesanoId && (
+          <Campo etiqueta="Asociación">
+            {(atributos) => (
+              <select
+                {...atributos}
+                value={filtros.asociacion}
+                onChange={(e) => cambiar('asociacion', e.target.value)}
+              >
+                <option value="">Todas las asociaciones</option>
+                {filtros.asociacion && !asociaciones.includes(filtros.asociacion) && (
+                  <option>{filtros.asociacion}</option>
+                )}
+                {asociaciones.map((asociacion) => (
+                  <option key={asociacion}>{asociacion}</option>
+                ))}
+              </select>
+            )}
+          </Campo>
+        )}
       </section>
       <div className="vitrina-chips" aria-label="Etiquetas de los productos visibles">
         {etiquetas.map(([etiqueta]) => (
@@ -112,7 +116,7 @@ export function Catalogo({ artesanoId }: { artesanoId?: string }) {
           </button>
         )}
         {Object.values(filtros).some(Boolean) && (
-          <Boton variante="secundario" onClick={() => setUrl(new URLSearchParams())}>
+          <Boton variante="secundario" icono="cerrar" onClick={() => setUrl(new URLSearchParams())}>
             Limpiar filtros
           </Boton>
         )}
@@ -136,7 +140,9 @@ export function Catalogo({ artesanoId }: { artesanoId?: string }) {
             <Aviso tono="error">
               No pudimos cargar los productos. Revisa tu conexión y reintenta.
             </Aviso>
-            <Boton onClick={reintentar}>Reintentar</Boton>
+            <Boton icono="adelante" onClick={reintentar}>
+              Reintentar
+            </Boton>
           </>
         ) : !datos ? (
           <Aviso>Cargando productos…</Aviso>
@@ -154,65 +160,60 @@ export function Catalogo({ artesanoId }: { artesanoId?: string }) {
   )
   if (artesanoId) return <div className="vitrina">{contenido}</div>
   return (
-    <main className="pagina vitrina" lang="es">
-      <section className="portada">
-        <h1>Hecho a mano, junto al mar.</h1>
-        <p className="portada-bajada">
-          Descubre piezas de las caletas del norte de Piura y conoce a quienes las hacen.
+    <main className="vitrina" lang="es">
+      <Franja tono="casco" className="vitrina-casco">
+        <h1>Catálogo</h1>
+        <p className="vitrina-bajada">
+          Piezas hechas a mano en las caletas del norte de Piura, con el nombre de quien las hizo.
         </p>
-      </section>
-      <nav className="vitrina-costa" aria-label="Explorar por lugar">
-        <h2>La ruta de la costa</h2>
-        <div>
+        <nav className="vitrina-costa" aria-label="Explorar por lugar">
           {LUGARES.map((lugar) => (
             <button
               key={lugar}
+              type="button"
+              className="vitrina-matricula"
               aria-pressed={filtros.lugar === lugar}
               onClick={() => cambiar('lugar', filtros.lugar === lugar ? '' : lugar)}
             >
               {lugar}
             </button>
           ))}
-        </div>
-      </nav>
-      {contenido}
+        </nav>
+      </Franja>
+      <div className="pagina">{contenido}</div>
     </main>
   )
 }
 
 function Cuadricula({ datos }: { datos: CatalogoPublico }) {
   return (
-    <div className="vitrina-cuadricula">
+    <ul className="vitrina-cuadricula">
       {datos.productos.map((producto) => {
         const foto = datos.fotos.find((f) => f.producto_id === producto.id && f.publicada)
         return (
-          <Link key={producto.id} className="vitrina-tarjeta" to={`/producto/${producto.id}`}>
-            <div className="vitrina-imagen">
-              <FotoTarjeta key={foto?.ruta} foto={foto} titulo={producto.titulo} />
-            </div>
-            <Etiqueta
-              titulo={producto.titulo}
-              lugar={producto.lugar}
-              artesano={producto.artesano_nombre}
-              precio={precioPEN(producto.precio_final)}
-            />
-          </Link>
+          <li key={producto.id}>
+            <Link
+              to={`/producto/${producto.id}`}
+              aria-label={`${producto.titulo}, de ${producto.artesano_nombre}`}
+            >
+              <Tablon
+                titulo={producto.titulo}
+                lugar={producto.lugar}
+                artesano={producto.artesano_nombre}
+                tipo={producto.tipo_producto}
+                precio={precioPEN(producto.precio_final)}
+                foto={foto ? urlFoto(foto.ruta) : undefined}
+              >
+                {producto.disponibilidad === 'a_pedido' && (
+                  <p className="vitrina-disponibilidad">
+                    <Icono nombre="pedidos" tamano={18} />A pedido, en {producto.plazo_dias} días
+                  </p>
+                )}
+              </Tablon>
+            </Link>
+          </li>
         )
       })}
-    </div>
-  )
-}
-
-function FotoTarjeta({ foto, titulo }: { foto: FotoPublica | undefined; titulo: string }) {
-  const [fallida, setFallida] = useState(false)
-  return foto && !fallida ? (
-    <img
-      src={urlFoto(foto.ruta)}
-      alt={`${titulo}, ${foto.variante ?? 'foto original'}`}
-      loading="lazy"
-      onError={() => setFallida(true)}
-    />
-  ) : (
-    <span>Foto no disponible</span>
+    </ul>
   )
 }
