@@ -340,7 +340,7 @@ h2.pedido-estado {
   padding-bottom: 8px;
 }
 .pedido-detalle .pedido-detalle-titulo {
-  font-size: clamp(1.6rem, 2.3vw, 2rem);
+  font-size: clamp(1.35rem, 2vw, 1.6rem);
   line-height: 1.15;
 }
 .pedido-detalle-cabecera p {
@@ -418,7 +418,7 @@ h2.pedido-estado {
 }
 .pedido-detalle .pedido-chat-cabecera h2 {
   font-family: var(--letra-texto);
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   font-weight: 700;
   overflow-wrap: anywhere;
   line-height: 1.25;

@@ -37,13 +37,13 @@ body:has(.web-ayllu) {
   font-weight: 600;
 }
 .web-ayllu h1 {
-  font-size: clamp(2.2rem, 4vw, 3.8rem);
+  font-size: clamp(1.9rem, 3.2vw, 3rem);
 }
 .web-ayllu h2 {
-  font-size: clamp(1.8rem, 3.2vw, 2.75rem);
+  font-size: clamp(1.5rem, 2.6vw, 2.1rem);
 }
 .web-ayllu h3 {
-  font-size: 1.35rem;
+  font-size: 1.2rem;
 }
 .web-ayllu .barra {
   position: relative;
@@ -84,7 +84,7 @@ body:has(.web-ayllu) {
   display: inline-flex;
   align-items: center;
   font-family: var(--letra-titulo);
-  font-size: 18px;
+  font-size: 16px;
 }
 .menu-web a[aria-current='page'] {
   text-decoration: underline;
@@ -146,7 +146,7 @@ body:has(.web-ayllu) {
   margin-block: 8px;
 }
 .web-ayllu .vitrina-ficha h1 {
-  font-size: clamp(2rem, 3.5vw, 3rem);
+  font-size: clamp(1.7rem, 3vw, 2.4rem);
 }
 .web-ayllu .vitrina-datos {
   width: 100%;
@@ -155,7 +155,7 @@ body:has(.web-ayllu) {
 }
 .web-ayllu .vitrina-precio {
   font-family: var(--letra-texto);
-  font-size: 28px;
+  font-size: 24px;
 }
 .web-ayllu .vitrina-perfil {
   padding-block: 24px 48px;
@@ -223,7 +223,7 @@ body:has(.web-ayllu) {
     gap: 12px;
   }
   .web-ayllu .logotipo {
-    font-size: 30px;
+    font-size: 26px;
     gap: 8px;
   }
   .web-ayllu .logotipo-emblema {

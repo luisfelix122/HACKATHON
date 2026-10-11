@@ -32,12 +32,12 @@
   /* Tipografía: Fraunces para nombres propios y titulares, Atkinson para leer y tocar */
   --letra-texto: 'Atkinson Hyperlegible', system-ui, sans-serif;
   --letra-rotulo: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
-  --tam-chico: 1rem;
-  --tam-base: 1.125rem; /* 18 px: lectura al sol en el celular */
-  --tam-h3: 1.3rem;
-  --tam-h2: 1.7rem;
-  --tam-h1: 2.2rem;
-  --tam-portada: clamp(2.6rem, 1.6rem + 4.2vw, 5rem);
+  --tam-chico: 0.875rem;
+  --tam-base: 1rem; /* 16 px */
+  --tam-h3: 1.15rem;
+  --tam-h2: 1.4rem;
+  --tam-h1: 1.75rem;
+  --tam-portada: clamp(2.1rem, 1.4rem + 3vw, 3.75rem);
   --interlineado: 1.55;
   --interlineado-titulo: 1.12;
   --sombra-rotulo: 0 0 0;

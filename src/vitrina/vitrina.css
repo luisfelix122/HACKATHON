@@ -20,7 +20,7 @@
 
 /* Títulos de sección en Atkinson: el rotulado queda para los nombres propios. */
 .landing-titulo-seccion {
-  font-size: clamp(1.75rem, 1.2rem + 2vw, 2.75rem);
+  font-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.2rem);
   letter-spacing: -0.025em;
   margin-bottom: var(--e3);
 }
@@ -70,7 +70,7 @@
 }
 
 .landing-bajada {
-  font-size: clamp(1.15rem, 1rem + 0.6vw, 1.45rem);
+  font-size: clamp(1.05rem, 1rem + 0.4vw, 1.25rem);
   color: var(--cal);
   max-width: 34ch;
 }
@@ -272,7 +272,7 @@
 
 .landing-tipo-nombre {
   font-family: var(--letra-rotulo);
-  font-size: clamp(1.35rem, 1.1rem + 1vw, 1.85rem);
+  font-size: clamp(1.15rem, 1rem + 0.8vw, 1.5rem);
   font-weight: 600;
   letter-spacing: -0.015em;
 }
