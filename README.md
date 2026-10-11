@@ -42,7 +42,16 @@ Con Supabase local, `npx supabase start` imprime la URL y la clave publicable.
 | `make test-db` | pruebas pgTAP de la base (requiere Docker y `npx supabase start`) |
 
 ### Despliegue
-La web se publica copiando `dist-web/` al servidor propio con HTTPS; el procedimiento lo define el PRP 010 (`docs/prp/010--supabase-autohospedado-y-web.md`). El servidor debe devolver `index.html` en cualquier ruta desconocida para que funcionen las rutas profundas. La APK de debug se instala con `adb install android/app/build/outputs/apk/debug/app-debug.apk` o copiándola al celular.
+La guía del operador está en [infra/supabase/README.md](infra/supabase/README.md)
+(PRP 010). Configura Supabase compartido, acceso privado de administración,
+migraciones, validaciones de las ramas y respaldos. Los integrantes pueden
+desarrollar sin Docker local usando la URL y la clave publicable del servidor;
+las pruebas SQL las coordina el operador. El despliegue sigue pendiente.
+
+La web se publica copiando `dist-web/` al servidor propio con HTTPS. El Caddyfile
+de `infra/web/` resuelve las rutas profundas de la SPA. La APK de debug se instala
+con `adb install android/app/build/outputs/apk/debug/app-debug.apk` o copiándola al
+celular, compilada con la URL de Supabase del servidor.
 
 ## Documentación
 | Documento | Contenido |
