@@ -5,6 +5,9 @@
 - Estado: listo (actualizado por CC-09: sin reserva de stock; CC-11). Módulo C; requiere el PRP 005 en `main`
 - Rama: `cu-06/confirmacion-pago`
 
+- Ejecución: Luis, por solicitud del usuario; responsable original sin cambios.
+- Ampliación aprobada: CC-16, únicamente `src/pedidos/MisPedidos.tsx`.
+
 ## Objetivo
 La orden recorre su ciclo completo como un acuerdo entre comprador y artesano, con botones claros para cada parte:
 1. El artesano acepta y propone el total con envío y la fecha estimada, que la app prellena según el plazo y el destino.
@@ -56,6 +59,8 @@ Cierra los criterios 3 y 4 del reto (confirmación de abono digital y despacho).
 | crear | `src/pedidos/AccionesArtesano.tsx` | aceptar (total, envío y fecha prellenada), rechazar, enlace, verificar, enviado/recojo, entregado |
 | crear | `src/pedidos/AccionesComprador.tsx` | confirmar el total, abrir el enlace, cancelar, rastrear el envío |
 | modificar | `src/pedidos/DetalleOrden.tsx` | integrar las acciones y el botón «Rastrear envío» |
+
+| modificar | `src/pedidos/MisPedidos.tsx` | mostrar conteo de pedidos en curso en APK (CC-16) |
 
 Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 

@@ -4,6 +4,7 @@ import type { Orden } from '../compartido/dominio/orden'
 import { useSesion } from '../compartido/sesion'
 import { Aviso, Boton } from '../compartido/ui/componentes'
 import { listarOrdenes } from './consultas'
+import { contarEnCurso, etiquetaEstado } from './estadoOrden'
 import './pedidos.css'
 
 export function MisPedidos() {
@@ -51,6 +52,9 @@ export function MisPedidos() {
         <Aviso>Cargando…</Aviso>
       ) : (
         <>
+          {import.meta.env.MODE === 'artesano' && (
+            <Aviso>Tienes {contarEnCurso(resultado.ordenes)} pedidos en curso.</Aviso>
+          )}
           <Boton variante="secundario" onClick={() => setIntento((valor) => valor + 1)}>
             Actualizar
           </Boton>
@@ -69,8 +73,7 @@ export function MisPedidos() {
                 <li key={orden.id}>
                   <Link to={`/pedidos/${orden.id}`}>Pedido {orden.id.slice(0, 8)}</Link>
                   <span>
-                    {orden.estado.replaceAll('_', ' ')} · {orden.cantidad} pieza(s) ·{' '}
-                    {orden.modalidad}
+                    {etiquetaEstado(orden.estado)} · {orden.cantidad} pieza(s) · {orden.modalidad}
                   </span>
                   <time dateTime={orden.creado_en}>
                     {new Date(orden.creado_en).toLocaleDateString('es-PE', {
