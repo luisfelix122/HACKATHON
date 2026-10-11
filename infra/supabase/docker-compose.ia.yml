@@ -1,0 +1,17 @@
+# CC-20: las Edge Functions llaman a LiteLLM por la red interna ayllu-ia.
+# En el servidor se incluye con COMPOSE_FILE en el .env de Supabase
+# (docs/entrega/conectar-ia-servidor.md), sin reescribir el override propio.
+services:
+  functions:
+    networks:
+      - default
+      - ayllu-ia
+    environment:
+      IA_BASE_URL: ${IA_BASE_URL:-http://litellm:4000}
+      IA_API_KEY: ${IA_API_KEY:-}
+      IA_TIMEOUT_MS: ${IA_TIMEOUT_MS:-8000}
+
+networks:
+  ayllu-ia:
+    external: true
+    name: ayllu-ia

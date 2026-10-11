@@ -1,6 +1,17 @@
 # Conectar la IA en el servidor
 
-Estado: archivos preparados localmente; ningún comando de esta guía se ejecutó en el servidor. La captura del agente anterior enumera archivos y pasos pendientes, pero no demuestra que los contenedores estén arrancados ni que exista una inferencia exitosa. No hace falta generar un APK para desplegar las funciones.
+Estado (2026-10-11): aplicado en el servidor.
+- LiteLLM corre en `/datos/trabajo/proyectos/ayllu/litellm`; `ayllu-texto` respondió 200.
+- `functions` está en la red `ayllu-ia` con `IA_*`.
+- `procesar-producto` y `traducir-mensaje` están instalados y responden 401 sin sesión por el gateway público.
+
+Faltan las pruebas de la sección 5 desde la app. No hace falta generar un APK para desplegar las funciones.
+
+## Lo que se aprendió en el servidor
+
+- **`COMPOSE_FILE`:** el `.env` de Supabase traía `COMPOSE_FILE=docker-compose.yml`, sin el override. Un `docker compose up` sin `-f` recreaba el gateway sin el override: chocaba en el puerto 8000 con `api-publica` y la API pública daba 502. Ahora la línea es `COMPOSE_FILE=docker-compose.yml:docker-compose.override.yml:docker-compose.ia.yml`. Revisarla antes de cualquier `up`.
+- **Archivo de IA aparte:** el servidor no usa el override del repo para la IA. La red y las variables de `functions` viven en `docker-compose.ia.yml` (copia en `infra/supabase/docker-compose.ia.yml`). Así no se reescribe el override propio del servidor.
+- **Reiniciar el gateway tras recrear `functions`:** `envoy` conserva la IP vieja del contenedor y responde `503 no healthy upstream`. Después de `up --force-recreate functions`, ejecutar `docker compose restart api-gw`.
 
 ## 1. Preparar el proxy
 
