@@ -1,0 +1,19 @@
+# Solo se formatea el código del producto; la documentación y las herramientas
+# del equipo conservan su formato.
+node_modules
+dist-web
+dist-artesano
+android
+package-lock.json
+*.md
+docs
+.agents
+.claude
+.gemini
+.opencode
+.github
+.engram
+.impeccable
+supabase/.temp
+supabase/config.toml
+supabase/seed.sql

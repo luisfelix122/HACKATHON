@@ -1,0 +1,79 @@
+/* Estilos base adaptables, de 360 px a 1440 px. El sistema visual completo
+   (tokens, tipografía y componentes) llega con el PRP 011. */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-width: 360px;
+  font-family:
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #1f1a17;
+  background: #fbf8f3;
+}
+
+img,
+video {
+  max-width: 100%;
+  height: auto;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid #b4531f;
+  outline-offset: 2px;
+}
+
+.pagina {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 1.5rem 1rem;
+}
+
+.pagina h1 {
+  margin: 0 0 1rem;
+  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
+  line-height: 1.15;
+}
+
+.vacio {
+  color: #5c534c;
+}
+
+@media (min-width: 768px) {
+  .pagina {
+    padding: 2.5rem 2rem;
+  }
+}
+
+@media (min-width: 1200px) {
+  .pagina {
+    padding: 3rem 4rem;
+  }
+}

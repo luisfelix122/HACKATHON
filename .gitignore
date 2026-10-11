@@ -37,9 +37,6 @@ CLAUDE.local.md
 .idea/
 *.swp
 
-# Stack: PENDIENTE. Al elegirlo, agregar sus artefactos locales
-# (dependencias, builds, caches, coverage, entornos virtuales).
-
 # Ayllu: builds y Android
 dist-web/
 dist-artesano/
