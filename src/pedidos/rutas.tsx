@@ -1,13 +1,12 @@
 import type { RouteObject } from 'react-router-dom'
+import { DetalleOrden } from './DetalleOrden'
+import { MisPedidos } from './MisPedidos'
 
-// Costura del módulo (CC-11, docs/modulos.md regla 2): este módulo declara aquí sus
-// rutas y su menú. src/app/ las monta sin editarse. Empieza vacío.
-
-/** Rutas de la web del comprador y del administrador. */
-export const rutasWeb: RouteObject[] = []
-
-/** Rutas de la APK del artesano. */
-export const rutasArtesano: RouteObject[] = []
-
-/** Entradas del menú de la APK, en orden. */
-export const menuArtesano: { ruta: string; etiqueta: string }[] = []
+export const rutasWeb: RouteObject[] = [
+  { path: '/pedidos', element: <MisPedidos /> },
+  { path: '/pedidos/:id', element: <DetalleOrden /> },
+]
+export const rutasArtesano: RouteObject[] = [...rutasWeb]
+export const menuArtesano: { ruta: string; etiqueta: string }[] = [
+  { ruta: '/pedidos', etiqueta: 'Mis pedidos' },
+]

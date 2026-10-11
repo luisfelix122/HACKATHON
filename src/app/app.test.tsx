@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { act } from 'react'
+import { MemoryRouter } from 'react-router-dom'
 import type { Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { AppArtesano } from './AppArtesano'
@@ -189,12 +190,24 @@ describe('AppArtesano', () => {
   })
 })
 
-describe('BotonPedir (stub de la Fase 0)', () => {
-  it('muestra «Pedir» deshabilitado con el texto «Muy pronto»', () => {
-    render(<BotonPedir productoId="p-1" />)
+describe('BotonPedir (PRP 005)', () => {
+  it('sin sesión inicia Google y conserva la ficha, los filtros y el pedido', async () => {
+    render(
+      <MemoryRouter initialEntries={['/producto/p-1?lugar=Lobitos']}>
+        <BotonPedir productoId="p-1" />
+      </MemoryRouter>,
+    )
     const boton = screen.getByRole('button', { name: 'Pedir' })
-    expect(boton).toBeDisabled()
-    expect(boton).toHaveAccessibleDescription('Muy pronto')
+    await vi.waitFor(() => expect(boton).toBeEnabled())
+    fireEvent.click(boton)
+    await vi.waitFor(() =>
+      expect(supabaseFalso.cliente.auth.signInWithOAuth).toHaveBeenCalledWith({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/producto/p-1?lugar=Lobitos&pedir=p-1`,
+        },
+      }),
+    )
   })
 })
 
