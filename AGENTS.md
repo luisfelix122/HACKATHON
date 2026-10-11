@@ -83,6 +83,8 @@ Antigravity, Cursor, OpenCode, Windsurf/Devin).
 - El prompt del revisor tiene una sola fuente: `.claude/agents/reviewer.md`. Si tu herramienta
   no tiene subagentes, abre una sesión nueva sin permisos de escritura y pásale ese archivo
   junto con PRP, contratos, diff y salida de `make verify`.
+- Servidores MCP del proyecto: `.mcp.json` (`chrome-devtools`, `context7`, `supabase-local`), sin credenciales y
+  con versión fija (CC-10). Nunca escribir tokens en ese archivo.
 - No agregar archivos de reglas propios de una herramienta (`.cursor/rules`, `GEMINI.md`,
   `.agents/rules/`, etc.) que dupliquen este archivo.
 
