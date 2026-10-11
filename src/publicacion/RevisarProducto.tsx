@@ -16,6 +16,14 @@ import {
 import { procesarProductoConIa, suscribirReintentoOnline } from './procesar'
 import { ElegirFotos, type ItemFotoUI } from './ElegirFotos'
 import { validarPublicacion, ejecutarPublicacion } from './publicar'
+import {
+  MAX_FOTOS_ADICIONALES,
+  agregarFotoAdicional,
+  eliminarProducto,
+  quitarFoto,
+} from './fotosProducto'
+import { Modal } from '../compartido/ui/Modal'
+import { eliminarBorrador } from '../borradores/db'
 import { normalizarEtiquetas } from '../../supabase/functions/procesar-producto/ficha'
 import './publicacion.css'
 
@@ -54,6 +62,11 @@ export const RevisarProducto: React.FC = () => {
   const [guardandoPublicacion, setGuardandoPublicacion] = useState(false)
   const [erroresPublicacion, setErroresPublicacion] = useState<string[]>([])
   const [publicadoExito, setPublicadoExito] = useState(false)
+  const [agregandoFoto, setAgregandoFoto] = useState(false)
+  const [errorFotos, setErrorFotos] = useState<string | null>(null)
+  const [confirmarEliminar, setConfirmarEliminar] = useState(false)
+  const [eliminando, setEliminando] = useState(false)
+  const [errorEliminar, setErrorEliminar] = useState<string | null>(null)
 
   // Escuchar conectividad
   useEffect(() => {
@@ -312,6 +325,72 @@ export const RevisarProducto: React.FC = () => {
     }
   }
 
+  const manejarAgregarFoto = async (archivo: File) => {
+    if (!id || !producto) return
+    setErrorFotos(null)
+    setAgregandoFoto(true)
+    try {
+      const supabase = obtenerSupabase()
+      const foto = await agregarFotoAdicional(supabase, {
+        artesanoId: producto.artesano_id,
+        productoId: id,
+        archivo,
+        posicion: fotosUI.length,
+      })
+      // La nueva foto queda marcada para publicarse; se guarda con «Actualizar».
+      setFotosUI((actuales) => [
+        ...actuales,
+        {
+          id: foto.id,
+          origen: foto.origen,
+          variante: foto.variante,
+          ruta: foto.ruta,
+          urlVisual: supabase.storage.from('fotos').getPublicUrl(foto.ruta).data.publicUrl,
+          publicada: true,
+          posicion: actuales.length,
+        },
+      ])
+    } catch (error) {
+      setErrorFotos(error instanceof Error ? error.message : 'No pudimos agregar la foto.')
+    } finally {
+      setAgregandoFoto(false)
+    }
+  }
+
+  const manejarQuitarFoto = async (foto: ItemFotoUI) => {
+    const quedanPublicadas = fotosUI.some((f) => f.id !== foto.id && f.publicada)
+    if (foto.publicada && !quedanPublicadas) {
+      setErrorFotos('Deja al menos otra foto marcada antes de quitar esta.')
+      return
+    }
+    setErrorFotos(null)
+    try {
+      await quitarFoto(obtenerSupabase(), foto)
+      setFotosUI((actuales) =>
+        actuales.filter((f) => f.id !== foto.id).map((f, posicion) => ({ ...f, posicion })),
+      )
+    } catch (error) {
+      setErrorFotos(error instanceof Error ? error.message : 'No pudimos quitar la foto.')
+    }
+  }
+
+  const manejarEliminar = async () => {
+    if (!id || !producto) return
+    setEliminando(true)
+    setErrorEliminar(null)
+    try {
+      await eliminarProducto(obtenerSupabase(), {
+        artesanoId: producto.artesano_id,
+        productoId: id,
+      })
+      await eliminarBorrador(id)
+      navigate('/')
+    } catch (error) {
+      setErrorEliminar(error instanceof Error ? error.message : 'No pudimos eliminar el producto.')
+      setEliminando(false)
+    }
+  }
+
   if (cargando) {
     return (
       <main className="revisar-producto-pagina" role="main">
@@ -367,7 +446,7 @@ export const RevisarProducto: React.FC = () => {
           Volver a Mis productos
         </button>
         <h1 className="revisar-titulo">
-          {esActualizacion ? 'Actualizar producto' : 'Revisar y publicar'}
+          {esActualizacion ? 'Editar producto' : 'Revisar y publicar'}
         </h1>
         <p className="revisar-bajada">
           Optimiza la ficha comercial y las fotos con IA antes de poner tu pieza en la vitrina.
@@ -466,8 +545,19 @@ export const RevisarProducto: React.FC = () => {
       <ElegirFotos
         fotos={fotosUI}
         alCambiarFotos={setFotosUI}
-        deshabilitado={procesandoIa || guardandoPublicacion}
+        deshabilitado={procesandoIa || guardandoPublicacion || !enLinea}
+        alAgregar={(archivo) => void manejarAgregarFoto(archivo)}
+        alQuitar={(foto) => void manejarQuitarFoto(foto)}
+        agregando={agregandoFoto}
+        puedeAgregar={
+          fotosUI.filter((f) => f.origen === 'adicional').length < MAX_FOTOS_ADICIONALES
+        }
       />
+      {errorFotos && (
+        <p className="aviso-fotos-incompletas" role="alert">
+          {errorFotos}
+        </p>
+      )}
 
       {/* Formulario de Ficha Técnica */}
       <FormularioModal
@@ -704,6 +794,52 @@ export const RevisarProducto: React.FC = () => {
             </button>
           </section>
         </form>
+
+        <section className="zona-eliminar" aria-label="Eliminar producto">
+          <button
+            type="button"
+            className="boton boton-peligro"
+            disabled={
+              !enLinea || procesandoIa || guardandoPublicacion || producto.estado === 'procesando'
+            }
+            onClick={() => setConfirmarEliminar(true)}
+          >
+            Eliminar producto
+          </button>
+        </section>
+
+        <Modal
+          abierto={confirmarEliminar}
+          titulo="¿Eliminar este producto?"
+          descripcion="Deja de verse en la vitrina. Si ya tiene pedidos, se retira y su historial se conserva."
+          alCerrar={() => {
+            if (!eliminando) setConfirmarEliminar(false)
+          }}
+          ocupado={eliminando}
+          acciones={
+            <>
+              <button
+                type="button"
+                className="boton boton-secundario"
+                disabled={eliminando}
+                onClick={() => setConfirmarEliminar(false)}
+              >
+                Cancelar
+              </button>
+              <button
+                type="button"
+                className="boton boton-peligro"
+                aria-busy={eliminando}
+                disabled={eliminando}
+                onClick={() => void manejarEliminar()}
+              >
+                {eliminando ? 'Eliminando…' : 'Eliminar'}
+              </button>
+            </>
+          }
+        >
+          {errorEliminar && <p role="alert">{errorEliminar}</p>}
+        </Modal>
       </FormularioModal>
     </main>
   )

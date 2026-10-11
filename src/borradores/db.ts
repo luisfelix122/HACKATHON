@@ -14,6 +14,8 @@ export interface BorradorLocal {
   audio_ruta: string | null
   foto_blob: Blob
   foto_id: string
+  /** Fotos propias además de la original (CC-21). Opcional: los borradores viejos no la tienen. */
+  fotos_extra?: { id: string; blob: Blob }[]
   costeo: Costeo | null
   precio_final: number
   disponibilidad: Disponibilidad

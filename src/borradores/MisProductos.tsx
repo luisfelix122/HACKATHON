@@ -145,10 +145,9 @@ export function MisProductos() {
   }
 
   const propios = borradores.filter((b) => b.artesano_id === artesanoId)
-  const productos =
-    remotos && remotos.cuenta === artesanoId
-      ? remotos.productos.filter((p) => !propios.some((b) => b.id === p.id))
-      : []
+  const remotosVigentes = remotos && remotos.cuenta === artesanoId ? remotos.productos : []
+  const productos = remotosVigentes.filter((p) => !propios.some((b) => b.id === p.id))
+  const estadoRemoto = (id: string) => remotosVigentes.find((p) => p.id === id)?.estado
   const tienePendientes = propios.some(
     (b) => b.estado_sincronizacion === 'pendiente' || b.estado_sincronizacion === 'error',
   )
@@ -211,6 +210,7 @@ export function MisProductos() {
             <TarjetaBorrador
               key={b.id}
               borrador={b}
+              estadoRemoto={estadoRemoto(b.id)}
               conectado={conectado}
               sincronizando={sincronizando}
               alReintentar={() => reintentarBorrador(b)}
@@ -222,7 +222,11 @@ export function MisProductos() {
                 <h3>{p.nombre}</h3>
                 <p>{p.estado.replaceAll('_', ' ')}</p>
                 {p.precio_final !== null && <p>S/ {p.precio_final.toFixed(2)}</p>}
-                {conectado && <Link to={`/revisar/${p.id}`}>Revisar y publicar</Link>}
+                {conectado && (
+                  <Link to={`/revisar/${p.id}`} className="enlace-editar">
+                    {textoEnlaceRevisar(p.estado)}
+                  </Link>
+                )}
               </div>
             </article>
           ))}
@@ -232,13 +236,22 @@ export function MisProductos() {
   )
 }
 
+/** Un producto publicado o retirado se edita (y elimina) desde la misma pantalla. */
+function textoEnlaceRevisar(estado: string | undefined): string {
+  return estado === 'publicado' || estado === 'retirado'
+    ? 'Editar o eliminar'
+    : 'Revisar y publicar'
+}
+
 function TarjetaBorrador({
   borrador,
+  estadoRemoto,
   conectado,
   sincronizando,
   alReintentar,
 }: {
   borrador: BorradorLocal
+  estadoRemoto: string | undefined
   conectado: boolean
   sincronizando: boolean
   alReintentar: () => void
@@ -297,7 +310,7 @@ function TarjetaBorrador({
         <div className="tarjeta-acciones">
           {borrador.estado_sincronizacion === 'sincronizado' ? (
             <Link to={`/revisar/${borrador.id}`} className="enlace-editar">
-              Revisar y publicar
+              {textoEnlaceRevisar(estadoRemoto)}
             </Link>
           ) : (
             !borrador.sincronizacion_iniciada && (

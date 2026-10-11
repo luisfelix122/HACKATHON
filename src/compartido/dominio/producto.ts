@@ -74,7 +74,8 @@ export type Producto = {
   actualizado_en: string
 }
 
-export const ORIGENES_FOTO = ['original', 'ia'] as const
+/** `adicional`: foto propia del artesano, sin IA (CC-21). */
+export const ORIGENES_FOTO = ['original', 'ia', 'adicional'] as const
 export type OrigenFoto = (typeof ORIGENES_FOTO)[number]
 
 export const VARIANTES_FOTO = ['estudio', 'luz', 'vitrina', 'contexto'] as const
@@ -84,7 +85,7 @@ export type FotoProducto = {
   id: string
   producto_id: string
   origen: OrigenFoto
-  /** Nula en la original. */
+  /** Solo en las de IA; nula en la original y en las adicionales. */
   variante: VarianteFoto | null
   /** Ruta en el bucket fotos. */
   ruta: string

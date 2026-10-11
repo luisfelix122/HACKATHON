@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import type { VarianteFoto, OrigenFoto } from '../compartido/dominio/producto'
 
 export interface ItemFotoUI {
@@ -15,6 +15,12 @@ export interface ElegirFotosProps {
   fotos: ItemFotoUI[]
   alCambiarFotos: (fotosActualizadas: ItemFotoUI[]) => void
   deshabilitado?: boolean
+  /** Sube una foto propia del artesano. Sin esta prop no se muestra el botón. */
+  alAgregar?: (archivo: File) => void
+  /** Borra una foto que no sea la original. */
+  alQuitar?: (foto: ItemFotoUI) => void
+  agregando?: boolean
+  puedeAgregar?: boolean
 }
 
 const ETIQUETAS_VARIANTES: Record<VarianteFoto, string> = {
@@ -28,7 +34,12 @@ export const ElegirFotos: React.FC<ElegirFotosProps> = ({
   fotos,
   alCambiarFotos,
   deshabilitado = false,
+  alAgregar,
+  alQuitar,
+  agregando = false,
+  puedeAgregar = true,
 }) => {
+  const entradaArchivo = useRef<HTMLInputElement>(null)
   const togglePublicada = (id: string) => {
     if (deshabilitado) return
     const actualizadas = fotos.map((f) => (f.id === id ? { ...f, publicada: !f.publicada } : f))
@@ -57,7 +68,7 @@ export const ElegirFotos: React.FC<ElegirFotosProps> = ({
       <header className="elegir-fotos-cabecera">
         <h3 className="subtitulo-elegir-fotos">Fotos del producto</h3>
         <p className="descripcion-elegir-fotos">
-          Elige qué fotos mostrarás en la vitrina para los turistas y define su orden de aparición.
+          Elige qué fotos se ven en la vitrina y su orden. Puedes agregar fotos tuyas.
         </p>
       </header>
 
@@ -72,9 +83,11 @@ export const ElegirFotos: React.FC<ElegirFotosProps> = ({
           const esOriginal = foto.origen === 'original'
           const etiqueta = esOriginal
             ? 'Original'
-            : foto.variante
-              ? ETIQUETAS_VARIANTES[foto.variante]
-              : 'IA'
+            : foto.origen === 'adicional'
+              ? 'Tu foto'
+              : foto.variante
+                ? ETIQUETAS_VARIANTES[foto.variante]
+                : 'IA'
 
           return (
             <article
@@ -140,6 +153,17 @@ export const ElegirFotos: React.FC<ElegirFotosProps> = ({
                 </div>
               </div>
 
+              {!esOriginal && alQuitar && (
+                <button
+                  type="button"
+                  className="boton-quitar-foto"
+                  onClick={() => alQuitar(foto)}
+                  disabled={deshabilitado}
+                >
+                  Quitar foto
+                </button>
+              )}
+
               {esOriginal && (
                 <div className="pie-foto-original">
                   <a
@@ -156,6 +180,34 @@ export const ElegirFotos: React.FC<ElegirFotosProps> = ({
           )
         })}
       </div>
+
+      {alAgregar && (
+        <div className="agregar-foto">
+          <input
+            ref={entradaArchivo}
+            type="file"
+            accept="image/*"
+            hidden
+            onChange={(evento) => {
+              const archivo = evento.target.files?.[0]
+              evento.target.value = ''
+              if (archivo) alAgregar(archivo)
+            }}
+          />
+          <button
+            type="button"
+            className="boton boton-secundario"
+            disabled={deshabilitado || agregando || !puedeAgregar}
+            aria-busy={agregando}
+            onClick={() => entradaArchivo.current?.click()}
+          >
+            {agregando ? 'Subiendo foto…' : 'Agregar foto'}
+          </button>
+          {!puedeAgregar && (
+            <p className="descripcion-elegir-fotos">Llegaste al máximo de fotos propias.</p>
+          )}
+        </div>
+      )}
     </section>
   )
 }

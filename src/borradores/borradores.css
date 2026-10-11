@@ -72,7 +72,7 @@
 
 .control-gigante {
   min-height: calc(var(--tactil) + 0.5rem);
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: 700;
   padding: var(--e3) var(--e4);
   border-width: 2px;
@@ -444,4 +444,40 @@
 
 .boton-volver-atras:hover {
   text-decoration: underline;
+}
+
+/* Fotos adicionales del borrador (CC-21) */
+.fotos-extra-titulo {
+  margin-top: var(--e5);
+  font-size: var(--tam-base);
+}
+
+.fotos-extra {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
+  gap: var(--e3);
+  margin: var(--e3) 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fotos-extra li {
+  display: grid;
+  gap: var(--e1);
+}
+
+.fotos-extra img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  border-radius: var(--radio-control);
+}
+
+.fotos-extra button {
+  min-height: var(--tactil);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio-control);
+  background: var(--blanco);
+  font: inherit;
+  cursor: pointer;
 }

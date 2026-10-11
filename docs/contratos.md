@@ -66,14 +66,16 @@ Lo crea el cliente con `insert` (una sola vez) en el primer inicio de sesión; l
 | --- | --- | --- | --- |
 | `id` | uuid | sí | La original la genera el cliente, junto con el borrador |
 | `producto_id` | uuid → `producto.id` | sí | Borrado en cascada |
-| `origen` | `original` \| `ia` | sí | Exactamente una `original` por producto (índice único parcial) |
-| `variante` | `estudio` \| `luz` \| `vitrina` \| `contexto` | si `ia` | Nula en la original |
+| `origen` | `original` \| `ia` \| `adicional` | sí | Exactamente una `original` por producto (índice único parcial). `adicional` = foto propia del artesano, sin IA; hasta 8 por producto (CC-21) |
+| `variante` | `estudio` \| `luz` \| `vitrina` \| `contexto` | si `ia` | Nula en la original y en las adicionales |
 | `ruta` | text | sí | Ruta en el bucket `fotos` |
 | `publicada` | boolean | sí | La original nace en `true` y las de IA en `false`. Publicar exige al menos una |
 | `posicion` | int | sí | Orden en el carrusel, empezando en 0 |
 | `creado_en` | timestamptz | sí | |
 
-La foto original nunca se borra ni se sobrescribe. Si el artesano no la publica, la ficha pública igual enlaza a ella («Ver foto original»).
+La foto original nunca se borra ni se sobrescribe. Si el artesano no la publica, la ficha pública igual enlaza a ella («Ver foto original»). El dueño puede borrar las fotos de IA y las adicionales.
+
+**Eliminar producto (CC-21):** RPC `eliminar_producto(p_producto_id uuid) returns text`, solo para el artesano dueño y no durante `procesando`. Sin pedidos, borra el producto y sus fotos en cascada (`'eliminado'`). Con pedidos, lo pasa a `retirado` y conserva el historial (`'retirado'`).
 
 ### `orden`
 | Campo | Tipo | Obligatorio | Notas |
@@ -119,7 +121,7 @@ Al aceptar, la interfaz propone `fecha_entrega_estimada = hoy + plazo_dias (si a
 ## Archivos (Supabase Storage)
 | Bucket | Ruta | Lectura | Escritura |
 | --- | --- | --- | --- |
-| `fotos` | `{artesano_id}/{producto_id}/original.jpg` y `.../ia-{variante}.png` | Pública | Solo el artesano dueño, o la Edge Function |
+| `fotos` | `{artesano_id}/{producto_id}/original.jpg`, `.../ia-{variante}.png` y `.../foto-{id}.jpg` (adicionales) | Pública | Solo el artesano dueño, o la Edge Function |
 | `audios` | `{artesano_id}/{producto_id}/descripcion.{ext}` | Solo el artesano dueño | Solo el artesano dueño |
 
 La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y calidad JPEG de 0,8 **(supuesto)**.

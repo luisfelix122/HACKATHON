@@ -229,6 +229,41 @@ async function sincronizarUna(
     return { exito: false, id: borrador.id, error: mensaje }
   }
 
+  // 4b. Fotos adicionales (CC-21). Idempotente: el id y la ruta salen del borrador
+  // local, el archivo se sobrescribe y la fila repetida se ignora.
+  try {
+    for (const [indice, extra] of (borrador.fotos_extra ?? []).entries()) {
+      const ruta = `${borrador.artesano_id}/${borrador.id}/foto-${extra.id}.jpg`
+      const subida = await cliente.storage
+        .from('fotos')
+        .upload(ruta, extra.blob, { upsert: true, contentType: 'image/jpeg' })
+      if (subida.error) throw new Error(`Error al subir una foto: ${subida.error.message}`)
+      const { error } = await cliente.from('foto_producto').upsert(
+        {
+          id: extra.id,
+          producto_id: borrador.id,
+          origen: 'adicional',
+          variante: null,
+          ruta,
+          publicada: true,
+          posicion: indice + 1,
+        },
+        { onConflict: 'id', ignoreDuplicates: true },
+      )
+      if (error) throw new Error(`Error al registrar una foto: ${error.message}`)
+    }
+  } catch (error) {
+    const mensaje = error instanceof Error ? error.message : 'Error al subir las fotos'
+    await db.borrador_local.put({
+      ...borrador,
+      sincronizacion_iniciada: true,
+      estado_sincronizacion: 'error',
+      error_sincronizacion: mensaje,
+      actualizado_en: new Date().toISOString(),
+    })
+    return { exito: false, id: borrador.id, error: mensaje }
+  }
+
   // El upsert ignorado puede corresponder a un producto que ya avanzó con IA.
   // Confirmar contenido evita marcar recibido un borrador diferente.
   try {

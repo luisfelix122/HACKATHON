@@ -15,6 +15,7 @@ import {
 } from './audio'
 import { Calculadora } from './Calculadora'
 import { comprimirFoto } from './comprimirFoto'
+import { MAX_FOTOS_ADICIONALES } from '../publicacion/fotosProducto'
 import {
   validarDisponibilidad,
   validarPrecioFinal,
@@ -45,6 +46,7 @@ export function EditorBorrador() {
   const [nombre, setNombre] = useState<string>('')
   const [fotoBlob, setFotoBlob] = useState<Blob | null>(null)
   const [fotoPreview, setFotoPreview] = useState<string | null>(null)
+  const [fotosExtra, setFotosExtra] = useState<{ id: string; blob: Blob; url: string }[]>([])
   const [descripcionTexto, setDescripcionTexto] = useState<string>('')
   const [audioBlob, setAudioBlob] = useState<Blob | null>(null)
   const [audioMime, setAudioMime] = useState<string | null>(null)
@@ -94,6 +96,9 @@ export function EditorBorrador() {
           setFotoBlob(b.foto_blob)
           setFotoPreview(URL.createObjectURL(b.foto_blob))
         }
+        setFotosExtra(
+          (b.fotos_extra ?? []).map((f) => ({ ...f, url: URL.createObjectURL(f.blob) })),
+        )
         if (b.audio_blob) {
           setAudioBlob(b.audio_blob)
           setAudioMime(b.audio_mime)
@@ -118,9 +123,8 @@ export function EditorBorrador() {
     }
   }, [fotoPreview, audioUrl])
 
-  // Selección de foto
-  const tomarOSeleccionarFoto = async () => {
-    setErrorPaso(null)
+  // Toma o elige una foto y la devuelve comprimida; null si se cancela.
+  const obtenerFoto = async (): Promise<Blob | null> => {
     try {
       const imagen = await Camera.getPhoto({
         quality: 90,
@@ -130,35 +134,57 @@ export function EditorBorrador() {
         promptLabelPhoto: 'Elegir de galería',
         promptLabelPicture: 'Tomar foto con la cámara',
       })
-
-      if (imagen.webPath) {
-        const respuesta = await fetch(imagen.webPath)
-        const blobOriginal = await respuesta.blob()
-        const blobComprimido = await comprimirFoto(blobOriginal)
-        setFotoBlob(blobComprimido)
-        if (fotoPreview) URL.revokeObjectURL(fotoPreview)
-        setFotoPreview(URL.createObjectURL(blobComprimido))
-      }
+      if (!imagen.webPath) return null
+      const respuesta = await fetch(imagen.webPath)
+      return comprimirFoto(await respuesta.blob())
     } catch {
       // Si el plugin falla o se cancela, ofrecemos input de archivo tradicional
-      const input = document.createElement('input')
-      input.type = 'file'
-      input.accept = 'image/*'
-      input.onchange = async (e) => {
-        const archivo = (e.target as HTMLInputElement).files?.[0]
-        if (archivo) {
-          try {
-            const blobComprimido = await comprimirFoto(archivo)
-            setFotoBlob(blobComprimido)
-            if (fotoPreview) URL.revokeObjectURL(fotoPreview)
-            setFotoPreview(URL.createObjectURL(blobComprimido))
-          } catch {
-            setErrorPaso('No se pudo procesar la foto seleccionada')
-          }
+      return new Promise((resolver) => {
+        const input = document.createElement('input')
+        input.type = 'file'
+        input.accept = 'image/*'
+        input.onchange = async (e) => {
+          const archivo = (e.target as HTMLInputElement).files?.[0]
+          resolver(archivo ? await comprimirFoto(archivo) : null)
         }
-      }
-      input.click()
+        input.click()
+      })
     }
+  }
+
+  const tomarOSeleccionarFoto = async () => {
+    setErrorPaso(null)
+    try {
+      const blobComprimido = await obtenerFoto()
+      if (!blobComprimido) return
+      setFotoBlob(blobComprimido)
+      if (fotoPreview) URL.revokeObjectURL(fotoPreview)
+      setFotoPreview(URL.createObjectURL(blobComprimido))
+    } catch {
+      setErrorPaso('No se pudo procesar la foto seleccionada')
+    }
+  }
+
+  const agregarFotoExtra = async () => {
+    setErrorPaso(null)
+    try {
+      const blob = await obtenerFoto()
+      if (!blob) return
+      setFotosExtra((actuales) => [
+        ...actuales,
+        { id: crypto.randomUUID(), blob, url: URL.createObjectURL(blob) },
+      ])
+    } catch {
+      setErrorPaso('No se pudo procesar la foto seleccionada')
+    }
+  }
+
+  const quitarFotoExtra = (idFoto: string) => {
+    setFotosExtra((actuales) => {
+      const quitada = actuales.find((f) => f.id === idFoto)
+      if (quitada) URL.revokeObjectURL(quitada.url)
+      return actuales.filter((f) => f.id !== idFoto)
+    })
   }
 
   // Grabación de voz (offline u online)
@@ -291,6 +317,7 @@ export function EditorBorrador() {
         audio_ruta: audioBlob ? null : audioRuta,
         foto_blob: fotoBlob!,
         foto_id: fotoId,
+        fotos_extra: fotosExtra.map(({ id: idFoto, blob }) => ({ id: idFoto, blob })),
         costeo: {
           materiales: costeo.materiales || 0,
           horas: costeo.horas || 0,
@@ -405,6 +432,25 @@ export function EditorBorrador() {
                     Cambiar foto
                   </Boton>
                 </div>
+
+                <h3 className="fotos-extra-titulo">Más fotos (opcional)</h3>
+                {fotosExtra.length > 0 && (
+                  <ul className="fotos-extra">
+                    {fotosExtra.map((foto, indice) => (
+                      <li key={foto.id}>
+                        <img src={foto.url} alt={`Foto adicional ${indice + 1}`} />
+                        <button type="button" onClick={() => quitarFotoExtra(foto.id)}>
+                          Quitar
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {fotosExtra.length < MAX_FOTOS_ADICIONALES && (
+                  <Boton variante="secundario" onClick={agregarFotoExtra}>
+                    Agregar otra foto
+                  </Boton>
+                )}
               </div>
             ) : (
               <div className="foto-vacia">

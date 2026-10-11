@@ -425,3 +425,32 @@
   margin-top: var(--e3);
   font-weight: bold;
 }
+
+/* Fotos propias y eliminación (CC-21) */
+.agregar-foto {
+  display: grid;
+  justify-items: start;
+  gap: var(--e2);
+  margin-top: var(--e4);
+}
+
+.boton-quitar-foto {
+  min-height: var(--tactil);
+  margin-top: var(--e2);
+  padding: 0 var(--e3);
+  border: 1px solid var(--linea-fuerte);
+  border-radius: var(--radio-control);
+  background: var(--blanco);
+  color: var(--borda-honda);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.zona-eliminar {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: var(--e6);
+  padding-top: var(--e5);
+  border-top: 1px solid var(--linea);
+}
