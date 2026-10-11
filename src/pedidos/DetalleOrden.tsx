@@ -6,6 +6,11 @@ import { Aviso, Boton } from '../compartido/ui/componentes'
 import { leerMensajes, obtenerOrden } from './consultas'
 import { HiloMensajes } from './HiloMensajes'
 import { suscribirOrden } from './tiempoReal'
+import { AccionesArtesano } from './AccionesArtesano'
+import { AccionesComprador } from './AccionesComprador'
+import { leerContextoAcciones, type ContextoAcciones } from './acciones'
+import { etiquetaEstado } from './estadoOrden'
+import { mostrarFecha } from './estimarEntrega'
 import './pedidos.css'
 
 export function DetalleOrden() {
@@ -16,6 +21,7 @@ export function DetalleOrden() {
     clave: string
     orden: Orden | null
     mensajes: MensajeOrden[]
+    contexto: ContextoAcciones | null
   } | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [sinTiempoReal, setSinTiempoReal] = useState(false)
@@ -30,7 +36,9 @@ export function DetalleOrden() {
       try {
         const [orden, mensajes] = await Promise.all([obtenerOrden(id!), leerMensajes(id!)])
         if (vigente && numero === peticion) {
-          setResultado({ clave, orden, mensajes })
+          const contexto = orden ? await leerContextoAcciones(orden, usuario!) : null
+          if (!vigente || numero !== peticion) return
+          setResultado({ clave, orden, mensajes, contexto })
           setError(null)
         }
       } catch (causa) {
@@ -89,7 +97,7 @@ export function DetalleOrden() {
             </Aviso>
           )}
           <section className="pedido-acuerdo" aria-label="Datos del pedido">
-            <h2>{actual.orden.estado.replaceAll('_', ' ')}</h2>
+            <h2>{etiquetaEstado(actual.orden.estado)}</h2>
             <dl>
               <dt>Cantidad</dt>
               <dd>{actual.orden.cantidad}</dd>
@@ -116,7 +124,11 @@ export function DetalleOrden() {
                   : `S/ ${actual.orden.costo_envio.toFixed(2)}`}
               </dd>
               <dt>Fecha estimada</dt>
-              <dd>{actual.orden.fecha_entrega_estimada ?? 'Pendiente de confirmación'}</dd>
+              <dd>
+                {actual.orden.fecha_entrega_estimada
+                  ? mostrarFecha(actual.orden.fecha_entrega_estimada)
+                  : 'Pendiente de confirmación'}
+              </dd>
               {actual.orden.datos_envio && (
                 <>
                   <dt>Destinatario</dt>
@@ -140,6 +152,21 @@ export function DetalleOrden() {
               )}
             </dl>
           </section>
+          {actual.contexto?.actor === 'artesano' && (
+            <AccionesArtesano
+              key={`${clave}:${actual.orden.estado}`}
+              orden={actual.orden}
+              contexto={actual.contexto}
+              alCambiar={() => setIntento((valor) => valor + 1)}
+            />
+          )}
+          {actual.contexto?.actor === 'comprador' && (
+            <AccionesComprador
+              key={`${clave}:${actual.orden.estado}`}
+              orden={actual.orden}
+              alCambiar={() => setIntento((valor) => valor + 1)}
+            />
+          )}
           <HiloMensajes
             key={clave}
             ordenId={actual.orden.id}
