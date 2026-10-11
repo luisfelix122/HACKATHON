@@ -74,6 +74,7 @@ La **acreditación** es la verificación de que el artesano tiene Registro Nacio
 | modificar | `src/acceso/rutas.tsx`, `src/admin/rutas.tsx` | rutas de la APK (registro, ingreso, «Tu cuenta») y `/admin` protegida |
 | crear | `src/acceso/rutas.test.tsx` | rutas protegidas con Supabase simulado |
 | crear | `src/acceso/acceso.css`, `src/admin/admin.css` | estilos propios con los tokens del PRP 011 |
+| modificar | `src/app/app.test.tsx` | pruebas de integración del acceso protegido en web y APK (CC-15) |
 
 Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 

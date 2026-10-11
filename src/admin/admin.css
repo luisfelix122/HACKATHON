@@ -1,0 +1,15 @@
+.admin-acreditacion {
+  display: grid;
+  gap: var(--e4);
+}
+.admin-solicitud {
+  padding-block: var(--e6);
+  border-top: 1px solid var(--pacifico);
+  display: grid;
+  gap: var(--e4);
+}
+.admin-acciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--e4);
+}

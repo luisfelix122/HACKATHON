@@ -112,10 +112,12 @@ describe('AppWeb', () => {
     expect(screen.getByRole('heading', { level: 1, name: 'Producto' })).toBeInTheDocument()
   })
 
-  it('monta el panel en /admin', () => {
+  it('/admin sin sesión exige ingreso y conserva el destino', async () => {
     irA('/admin')
     render(<AppWeb />)
-    expect(screen.getByRole('heading', { level: 1, name: 'Administración' })).toBeInTheDocument()
+    expect(await screen.findByRole('button', { name: 'Continuar con Google' })).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/ingresar')
+    expect(new URLSearchParams(window.location.search).get('volver')).toBe('/admin')
   })
 
   it('muestra «Página no encontrada» en una ruta desconocida', () => {
@@ -167,17 +169,22 @@ describe('AppWeb', () => {
 describe('AppArtesano', () => {
   beforeEach(() => irA('/'))
 
-  it('abre en «Mis productos» vacío, sin vitrina ni administración', () => {
+  it('sin sesión abre el ingreso, sin vitrina ni administración', async () => {
     render(<AppArtesano />)
-    expect(screen.getByRole('heading', { level: 1, name: 'Mis productos' })).toBeInTheDocument()
-    expect(screen.getByText('Aún no tienes productos. Toca Nuevo.')).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Entrar a Ayllu' }),
+    ).toBeInTheDocument()
+    expect(screen.queryByRole('heading', { name: 'Mis productos' })).not.toBeInTheDocument()
     expect(screen.queryByRole('heading', { name: 'Administración' })).not.toBeInTheDocument()
   })
 
-  it('no ofrece las rutas de la web: /admin vuelve a «Mis productos»', () => {
+  it('no ofrece /admin y exige ingreso del artesano', async () => {
     irA('/admin')
     render(<AppArtesano />)
-    expect(screen.getByRole('heading', { level: 1, name: 'Mis productos' })).toBeInTheDocument()
+    expect(
+      await screen.findByRole('heading', { level: 1, name: 'Entrar a Ayllu' }),
+    ).toBeInTheDocument()
+    expect(window.location.pathname).toBe('/ingresar')
   })
 
   it('arma su ruta y su menú desde el rutas.tsx de un módulo', () => {
@@ -221,7 +228,7 @@ describe('main.tsx elige la App según el modo', () => {
   it('con --mode artesano monta AppArtesano', async () => {
     vi.stubEnv('MODE', 'artesano')
     await montarMain()
-    expect(await screen.findByRole('heading', { name: 'Mis productos' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: 'Entrar a Ayllu' })).toBeInTheDocument()
   })
 
   it('con --mode web monta AppWeb', async () => {

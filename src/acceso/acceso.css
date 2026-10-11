@@ -1,0 +1,16 @@
+.acceso {
+  display: grid;
+  gap: var(--e4);
+}
+.acceso-formulario {
+  display: grid;
+  gap: var(--e6);
+}
+.acceso .casilla-cuerpo {
+  display: grid;
+  gap: var(--e4);
+}
+.acceso details summary {
+  cursor: pointer;
+  padding-block: var(--e3);
+}
