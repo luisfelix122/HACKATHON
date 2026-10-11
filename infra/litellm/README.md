@@ -146,5 +146,6 @@ protegido y el digest anterior para una actualización posterior.
 - [Versión fijada](https://github.com/BerriAI/litellm/releases/tag/v1.101.5).
 - [Cuotas por proyecto y nivel](https://ai.google.dev/gemini-api/docs/rate-limits).
 
-Presupuesto, llaves reales, restricción de UI/túnel y pruebas pagadas los
-coordina el operador del servidor.
+Resultados locales y checklist no aprobada de despliegue:
+`docs/traspasos/CU-09-cristopher.md`. Despliegue, presupuesto, llaves reales,
+restricción de UI/túnel, audio CU-03 y pruebas pagadas siguen pendientes.
