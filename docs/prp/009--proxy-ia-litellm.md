@@ -71,7 +71,7 @@ Es la decisión `0002-proxy-ia-litellm.md` (CC-02).
   - **Cloudflare Access interactivo:** una pantalla de login rompería un cliente de API, según el informe. La autenticación obligatoria es la clave de LiteLLM (`Authorization: Bearer`). Si Johann exige Access, usar un **service token** de Cloudflare, cuyas cabeceras enviaría la Edge Function (**sin verificar**: revisar la documentación de Cloudflare Access antes).
   - **Permisos en el servidor:** no pedir acceso a los grupos `sudo` ni `docker` para colaboradores; el grupo `docker` equivale a control del host. Las operaciones privilegiadas las decide Johann.
   - **Llaves:** las escribe el propietario en el `.env` del servidor. Nunca van en git, chat ni logs.
-  - **Proveedor (CC-12):** Gemini directo. Varias llaves de un mismo proyecto de Google no multiplican la cuota; usar proyectos distintos. **Bloqueante:** confirmar con los organizadores la restricción «Gemini con OpenRouter».
+  - **Proveedor (CC-12):** Gemini directo. Varias llaves de un mismo proyecto de Google no multiplican la cuota; usar proyectos distintos. Restricción de la hackatón resuelta: confirmado por Cristopher el 2026-10-10: usar Gemini directo no incumple la restricción de la hackatón.
   - **Puerto 8080:** está ocupado; no usarlo.
 
 ## Archivos (alcance cerrado)

@@ -75,7 +75,7 @@ Detalle completo en `docs/revision-alcance.md` §5.
 - Falla la red o se agota la cuota en la demo → video de respaldo y llaves de Gemini de proyectos distintos en el proxy.
 - Servidor propio caído (sin UPS ni internet de respaldo confirmados) → con 0003 cae **todo** el producto, no solo la IA: revisar el servidor antes de presentar y tener el video de respaldo.
 - Servidor del proxy apagado o sin internet → sin respaldo (CC-12): la Edge Function responde `502 ia_no_disponible` tras `IA_TIMEOUT_MS` y el artesano completa la ficha a mano; probarlo apagando el contenedor.
-- Llaves de Gemini directo en el proxy → **bloqueante (CC-12):** confirmar con los organizadores la restricción «Gemini con OpenRouter».
+- Llaves de Gemini directo en el proxy → resuelto (CC-12): confirmado por Cristopher el 2026-10-10: usar Gemini directo no incumple la restricción de la hackatón.
 - Contraseña sobre una cuenta de Google (`updateUser({ password })`, CC-03) → probarlo en la hora 2; si exige reautenticación, aplicarla inmediatamente después del login con Google.
 - La compilación de Android se traba (Android Studio/JDK, firma) → la APK se compila en la máquina de Cristopher, a cargo de Claude Code. Ahí hay Android Studio con su JDK 25, el SDK con la plataforma android-37 y build-tools 36. En la hora 1 se compila una APK de debug vacía y se instala en un celular. Si el Gradle que genera Capacitor no admite JDK 25, se instala el JDK que pida Capacitor.
 - Descripción hablada → con conexión se dicta en vivo con el reconocimiento de voz nativo y a la IA va solo texto. Sin conexión se graba el audio; al volver la señal se dicta de nuevo o, si la prueba de formato de la hora 1 funciona, se envía el audio. Siempre se puede escribir a mano.

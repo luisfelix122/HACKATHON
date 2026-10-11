@@ -9,7 +9,7 @@ CosteARTE tiene dos experiencias:
 - **Comprador y administrador:** una página web.
 - **Artesano:** una **APK de Android** (CC-01).
 
-El artesano tiene que poder crear un borrador sin conexión, con foto y voz, y la IA lo procesa cuando vuelve la señal. La IA disponible es Gemini vía OpenRouter, restricción oficial de la hackatón.
+El artesano tiene que poder crear un borrador sin conexión, con foto y voz, y la IA lo procesa cuando vuelve la señal. La IA disponible es Gemini, restricción oficial de la hackatón. Al principio se usaba vía OpenRouter; desde CC-12 es Gemini directo por LiteLLM (confirmado por Cristopher el 2026-10-10: usar Gemini directo no incumple la restricción de la hackatón).
 
 Comprador y artesano entran con Google. Quedan 15 h y somos 5 personas: conviene no escribir ni desplegar un servidor propio y no mantener dos bases de código.
 

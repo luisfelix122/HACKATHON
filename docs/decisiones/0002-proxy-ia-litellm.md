@@ -38,7 +38,7 @@ LiteLLM implementa de forma estándar el balanceo entre llaves y la conmutación
   - Disponibilidad atada al servidor doméstico (luz, internet, reinicios).
   - Otro secreto que gestionar (`LITELLM_MASTER_KEY`).
   - Sin base de datos no hay seguimiento de gasto por clave.
-  - **Pendiente de confirmar con los organizadores (bloqueante desde CC-12):** las llaves son de Gemini directo, así que la IA ya no pasa por OpenRouter, que es la restricción oficial.
+  - **Resuelto (CC-12):** las llaves son de Gemini directo y la IA ya no pasa por OpenRouter; confirmado por Cristopher el 2026-10-10: usar Gemini directo no incumple la restricción de la hackatón.
 - **Qué cambia en otros documentos:**
   - `docs/cambios/CC-02.md`.
   - `docs/plan.md`.
