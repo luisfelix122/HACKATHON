@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-07 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo (reducido por CC-09; la muestra está en `supabase/seed.sql` desde CC-10). Módulo B; requiere el PRP 004 en `main`
+- Estado: completado el 2026-10-11 (reducido por CC-09 y CC-16/CC-18; la muestra está en `supabase/seed.sql` desde CC-10). Módulo B; requiere el PRP 004 en `main`. La demo en vivo se hace manualmente.
 - Rama: `cu-07/datos-semilla`
 
 ## Objetivo
@@ -15,18 +15,18 @@ Una base de datos lista para la demo, repetible y sin datos reales, cargada **so
 La demo del pitch de 3 minutos necesita una vitrina con contenido desde el primer segundo, sin depender de que alguien cree productos en vivo. Tener los datos en `seed.sql` evita escribirlos en el código de la app (CC-09).
 
 ## Criterios de aceptación
-- [ ] `supabase/seed.sql` (muestra de CC-10) deja la vitrina lista para la demo, y se revisa contra las migraciones reales:
+- [x] `supabase/seed.sql` (muestra de CC-10) deja la vitrina lista para la demo, y se revisa contra las migraciones reales:
   - 7 artesanos ficticios `aprobada` en Los Órganos, Cabo Blanco y Lobitos (dos asociaciones y un independiente).
-  - 21 productos publicados de los cinco tipos, con `ficha` completa (título y etiquetas), `revision_ia = aprobada` y su foto `original` publicada.
+  - 15 productos publicados (21 menos los 6 retirados por CC-16/CC-18) de los cinco tipos, con `ficha` completa (título y etiquetas), `revision_ia = aprobada` y su foto `original` publicada en Storage con atribución en ficha.
   - Mezcla de `en_stock` y `a_pedido`, sin cantidades (CC-09).
   - 1 artesano `pendiente` y 1 `rechazada` con nota, para el panel del administrador.
   - 1 producto `retirado` (no debe verse en la vitrina) y 1 `borrador` (se ve en la APK).
-  - 1 comprador y 2 órdenes de ejemplo (`pago_pendiente` con mensajes y `enviada` con número de guía).
-- [ ] Los WhatsApp marcadores (`+5190000000N`) se reemplazan por el número del equipo antes de la demo.
-- [ ] Las fotos son propias del equipo o de libre uso, con su licencia anotada en `supabase/seed/fotos/LICENCIAS.md`.
-- [ ] Ningún nombre, foto o dato proviene del padrón ni de personas reales sin su consentimiento (regla 15).
-- [ ] No hay datos de prueba en `src/` ni en `AGENTS.md`: una búsqueda de los nombres semilla en `src/` no encuentra nada.
-- [ ] `seed.sql` se aplica sin errores sobre una base limpia con todas las migraciones (núcleo y módulos), y se puede aplicar dos veces sin duplicar filas.
+  - 1 comprador y 2 órdenes de ejemplo (`pago_pendiente` con mensajes y `enviada` con número de guía; la enviada apunta a la 21 por CC-16).
+- [ ] Los WhatsApp marcadores (`+5190000000N`) se reemplazan por el número del equipo antes de la demo. **Diferido por Johann el 2026-10-11:** se mantiene ficticio por ser prototipo; se resolverá al crear el usuario de demostración.
+- [x] Las fotos son de libre uso (CC BY-SA, CC0, dominio público, Pexels, Unsplash), con su licencia anotada en `supabase/seed/fotos/LICENCIAS.md`. Cuatro son aproximadas con diferencias declaradas (02, 15, 16, 18).
+- [x] Ningún nombre, foto o dato proviene del padrón ni de personas reales sin su consentimiento (regla 15).
+- [x] No hay datos de prueba en `src/` ni en `AGENTS.md`: una búsqueda de los nombres semilla en `src/` no encuentra nada.
+- [x] `seed.sql` se aplica sin errores sobre una base limpia con todas las migraciones (núcleo y módulos), y se puede aplicar dos veces sin duplicar filas.
 
 ## Contexto necesario
 - **Dominio:** todo el glosario; regla 15.
@@ -49,10 +49,10 @@ La demo del pitch de 3 minutos necesita una vitrina con contenido desde el prime
 
 Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
-## Tareas (en orden)
+## Tareas (en orden, todas completadas el 2026-10-11)
 1. Fotos semilla y su licencia.
 2. Revisar `seed.sql` contra todas las migraciones (núcleo y módulos); aplicarlo dos veces sobre una base limpia.
-3. Subir las fotos al bucket `fotos` del servidor y revisar la vitrina en 360 px y 1440 px.
+3. Subir las fotos al bucket `fotos` del servidor y revisar la vitrina (Johann confirmó que las imágenes se ven bien; la demo en vivo es manual).
 
 ## Validación
 1. `make verify`.
