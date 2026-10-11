@@ -1,6 +1,9 @@
-/* Estilos base adaptables, de 360 px a 1440 px. El sistema visual completo
-   (tokens, tipografía y componentes) llega con el PRP 011. */
+/*
+ * Base y componentes de Ayllu, sobre tokens.css (DESIGN.md). Adaptable de 360 px
+ * a 1440 px. Los módulos agregan su propio CSS en su carpeta y no editan este.
+ */
 
+/* ---------- Base ---------- */
 *,
 *::before,
 *::after {
@@ -15,21 +18,50 @@ html {
 body {
   margin: 0;
   min-width: 360px;
-  font-family:
-    system-ui,
-    -apple-system,
-    'Segoe UI',
-    Roboto,
-    sans-serif;
-  font-size: 1rem;
-  line-height: 1.5;
-  color: #1f1a17;
-  background: #fbf8f3;
+  font-family: var(--letra-texto);
+  font-size: var(--tam-base);
+  line-height: var(--interlineado);
+  color: var(--noche);
+  background: var(--espuma);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  line-height: var(--interlineado-titulo);
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: var(--tam-h1);
+}
+
+h2 {
+  font-size: var(--tam-h2);
+}
+
+h3 {
+  font-size: var(--tam-h3);
+}
+
+p {
+  margin: 0;
+  max-width: var(--ancho-lectura);
+  text-wrap: pretty;
+}
+
+img,
+svg,
+video {
+  display: block;
+  max-width: 100%;
 }
 
 img,
 video {
-  max-width: 100%;
   height: auto;
 }
 
@@ -38,42 +70,473 @@ input,
 select,
 textarea {
   font: inherit;
-}
-
-a {
   color: inherit;
 }
 
+a {
+  color: var(--pacifico);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 0.18em;
+}
+
+a:not(.boton):hover {
+  color: var(--pacifico-hondo);
+}
+
+::selection {
+  background: var(--sol-claro);
+  color: var(--noche);
+}
+
 :focus-visible {
-  outline: 3px solid #b4531f;
-  outline-offset: 2px;
+  outline: 3px solid var(--pacifico);
+  outline-offset: 3px;
+}
+
+.solo-lectores {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Estructura ---------- */
+.barra {
+  background: var(--pacifico);
+  color: var(--blanco);
+}
+
+.barra-contenido {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--e4);
+  max-width: var(--ancho-maximo);
+  min-height: 4rem;
+  margin: 0 auto;
+  padding: var(--e2) var(--margen);
+}
+
+.barra a {
+  color: var(--blanco);
+  text-decoration: none;
+}
+
+.barra a:hover {
+  color: var(--blanco);
+  text-decoration: underline;
+}
+
+.barra :focus-visible {
+  outline-color: var(--sol);
 }
 
 .pagina {
+  display: grid;
+  gap: var(--e5);
+  align-content: start;
   width: 100%;
-  max-width: 1440px;
+  max-width: var(--ancho-maximo);
   margin: 0 auto;
-  padding: 1.5rem 1rem;
+  padding: var(--e6) var(--margen) var(--e8);
 }
 
-.pagina h1 {
-  margin: 0 0 1rem;
-  font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2.5rem);
-  line-height: 1.15;
+.pagina-artesano {
+  max-width: 40rem;
 }
 
-.vacio {
-  color: #5c534c;
+.portada {
+  display: grid;
+  gap: var(--e4);
+  padding-block: var(--e4) var(--e6);
 }
 
-@media (min-width: 768px) {
-  .pagina {
-    padding: 2.5rem 2rem;
+.portada h1 {
+  font-size: var(--tam-portada);
+  letter-spacing: -0.03em;
+}
+
+.portada-bajada {
+  font-size: var(--tam-h3);
+  color: var(--noche-suave);
+}
+
+.texto-secundario {
+  color: var(--noche-suave);
+}
+
+/* ---------- Logotipo (provisional) ---------- */
+.logotipo {
+  font-weight: 700;
+  font-size: 1.75rem;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.logotipo-u {
+  color: var(--sol);
+}
+
+/* ---------- Boton ---------- */
+.boton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--e2);
+  min-height: var(--tactil);
+  min-width: var(--tactil);
+  padding: var(--e3) var(--e5);
+  border: var(--borde) solid var(--pacifico);
+  border-radius: var(--radio-control);
+  background: var(--pacifico);
+  color: var(--blanco);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--rapido) var(--salida),
+    border-color var(--rapido) var(--salida),
+    transform var(--rapido) var(--salida);
+}
+
+.boton:hover:not(:disabled) {
+  background: var(--pacifico-hondo);
+  border-color: var(--pacifico-hondo);
+  color: var(--blanco);
+}
+
+.boton:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.boton-secundario {
+  background: var(--blanco);
+  color: var(--pacifico);
+}
+
+.boton-secundario:hover:not(:disabled) {
+  background: var(--ola-clara);
+  border-color: var(--pacifico);
+  color: var(--pacifico);
+}
+
+.boton-destacado {
+  background: var(--sol);
+  border-color: var(--sol);
+  color: var(--noche);
+}
+
+.boton-destacado:hover:not(:disabled) {
+  background: var(--sol-claro);
+  border-color: var(--sol);
+  color: var(--noche);
+}
+
+.boton:disabled {
+  cursor: not-allowed;
+  background: var(--espuma);
+  border-color: var(--noche-suave);
+  border-style: dashed;
+  color: var(--noche-suave);
+}
+
+.boton[aria-busy='true'] {
+  cursor: progress;
+}
+
+.boton[aria-busy='true']::before {
+  content: '';
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: girar 800ms linear infinite;
+}
+
+.boton-ancho {
+  width: 100%;
+}
+
+/* ---------- Campo ---------- */
+.campo {
+  display: grid;
+  gap: var(--e2);
+}
+
+.campo-etiqueta {
+  font-weight: 700;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  width: 100%;
+  min-height: var(--tactil);
+  padding: var(--e3) var(--e4);
+  border: var(--borde) solid var(--noche-suave);
+  border-radius: var(--radio-control);
+  background: var(--arena-clara);
+  color: var(--noche);
+}
+
+.campo textarea {
+  min-height: 7.5rem;
+  resize: vertical;
+}
+
+.campo input:focus-visible,
+.campo select:focus-visible,
+.campo textarea:focus-visible {
+  outline: 3px solid var(--ola);
+  outline-offset: 1px;
+  border-color: var(--pacifico);
+  background: var(--blanco);
+}
+
+.campo :disabled {
+  cursor: not-allowed;
+  border-style: dashed;
+  background: var(--espuma);
+}
+
+.campo-ayuda {
+  font-size: var(--tam-chico);
+  color: var(--noche-suave);
+}
+
+.campo-error {
+  font-size: var(--tam-chico);
+  font-weight: 700;
+  color: var(--error);
+}
+
+.campo[data-error] input,
+.campo[data-error] select,
+.campo[data-error] textarea {
+  border-color: var(--error);
+  background: var(--error-claro);
+}
+
+/* ---------- Casilla ---------- */
+.casilla {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--e4);
+  padding: var(--e5) var(--e4);
+  border: var(--borde) solid var(--pacifico);
+  border-radius: var(--radio-panel);
+  background: var(--blanco);
+}
+
+.casilla-numero {
+  display: grid;
+  place-items: center;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: var(--radio-control);
+  background: var(--pacifico);
+  color: var(--blanco);
+  font-family: var(--letra-rotulo);
+  font-weight: 700;
+  font-size: 2.25rem;
+  line-height: 1;
+}
+
+.casilla-cuerpo {
+  display: grid;
+  gap: var(--e4);
+  min-width: 0;
+}
+
+.casilla-titulo {
+  font-size: var(--tam-h3);
+  padding-top: var(--e2);
+}
+
+/* ---------- Aviso ---------- */
+.aviso {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--e3);
+  align-items: start;
+  padding: var(--e4);
+  border-left: 6px solid var(--pacifico);
+  border-radius: var(--radio-control);
+  background: var(--blanco);
+  color: var(--noche);
+}
+
+.aviso svg {
+  flex-shrink: 0;
+  margin-top: 0.1em;
+}
+
+.aviso-texto {
+  min-width: 0;
+}
+
+.aviso-info {
+  border-left-color: var(--ola);
+  background: var(--ola-clara);
+}
+
+.aviso-exito {
+  border-left-color: var(--ola);
+  background: var(--ola-clara);
+}
+
+.aviso-exito svg {
+  color: var(--pacifico);
+}
+
+.aviso-alerta {
+  border-left-color: var(--sol);
+  background: var(--sol-claro);
+}
+
+.aviso-error {
+  border-left-color: var(--error);
+  background: var(--error-claro);
+}
+
+.aviso-error svg {
+  color: var(--error);
+}
+
+.aviso-sin-senal {
+  border-left-color: var(--sol);
+  background: var(--noche);
+  color: var(--espuma);
+}
+
+/* ---------- Etiqueta de pieza ---------- */
+.etiqueta {
+  --corte: 1.25rem;
+  position: relative;
+  display: grid;
+  gap: var(--e1);
+  max-width: 22rem;
+  padding: var(--e7) var(--e5) var(--e5);
+  background: var(--arena);
+  color: var(--noche);
+  clip-path: polygon(
+    var(--corte) 0,
+    calc(100% - var(--corte)) 0,
+    100% var(--corte),
+    100% 100%,
+    0 100%,
+    0 var(--corte)
+  );
+  filter: drop-shadow(var(--sombra-etiqueta));
+}
+
+/* Ojal centrado por donde pasa el pabilo */
+.etiqueta::before {
+  content: '';
+  position: absolute;
+  top: var(--e4);
+  left: 50%;
+  width: 0.9rem;
+  height: 0.9rem;
+  border: 3px solid var(--arena-clara);
+  border-radius: 50%;
+  background: var(--espuma);
+  transform: translateX(-50%);
+}
+
+.etiqueta-lugar {
+  font-weight: 700;
+  font-size: var(--tam-chico);
+}
+
+.etiqueta-titulo {
+  font-size: var(--tam-h3);
+}
+
+.etiqueta-precio {
+  margin-top: var(--e2);
+  font-size: var(--tam-h3);
+  font-weight: 700;
+}
+
+/* ---------- Sello RNA ---------- */
+.sello {
+  display: inline-grid;
+  place-content: center;
+  justify-items: center;
+  width: 6.5rem;
+  height: 6.5rem;
+  border: 3px solid var(--pacifico);
+  border-radius: 50%;
+  outline: 2px solid var(--pacifico);
+  outline-offset: -9px;
+  color: var(--pacifico);
+  font-family: var(--letra-rotulo);
+  line-height: 1;
+  text-transform: uppercase;
+  transform: rotate(-8deg);
+  animation: sellar var(--sellar) var(--salida) both;
+}
+
+.sello-rna {
+  font-weight: 700;
+  font-size: 1.9rem;
+  letter-spacing: 0.04em;
+}
+
+.sello-texto {
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+}
+
+.sello-pendiente {
+  border-style: dashed;
+  outline: none;
+  color: var(--noche-suave);
+  border-color: var(--noche-suave);
+  transform: none;
+  animation: none;
+}
+
+/* ---------- Movimiento ---------- */
+@keyframes sellar {
+  from {
+    opacity: 0;
+    transform: rotate(-8deg) scale(1.25);
+  }
+  to {
+    opacity: 1;
+    transform: rotate(-8deg) scale(1);
   }
 }
 
-@media (min-width: 1200px) {
-  .pagina {
-    padding: 3rem 4rem;
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (min-width: 860px) {
+  .portada {
+    padding-block: var(--e6) var(--e7);
   }
 }
