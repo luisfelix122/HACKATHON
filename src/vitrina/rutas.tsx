@@ -10,6 +10,7 @@ import './vitrina.css'
 /** Rutas de la web del comprador y del administrador. */
 export const rutasWeb: RouteObject[] = [
   { path: '/', element: <Catalogo /> },
+  { path: '/catalogo', element: <Catalogo soloCatalogo /> },
   { path: '/producto/:id', element: <FichaProducto /> },
   { path: '/artesano/:id', element: <PerfilArtesano /> },
 ]

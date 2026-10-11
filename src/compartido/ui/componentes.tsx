@@ -187,11 +187,12 @@ export function Etiqueta(props: {
   )
 }
 
-/** Logotipo tipográfico provisional: todavía no hay logo (PRP 011, fuera de alcance). */
+/** Emblema costero: sol, chalana y una A entrelazada (PRP 013). */
 export function Logotipo() {
   return (
     <span className="logotipo">
-      Ayll<span className="logotipo-u">u</span>
+      <img className="logotipo-emblema" src="/ayllu-icono.svg" alt="" width="56" height="44" />
+      <span>Ayllu</span>
     </span>
   )
 }

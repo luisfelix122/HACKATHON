@@ -16,6 +16,9 @@ import * as vitrina from '../vitrina/rutas'
 import { PantallaIngresoWeb } from '../compartido/PantallaIngresoWeb'
 import { asegurarPerfilComprador, cerrarSesion, ErrorSesion, useSesion } from '../compartido/sesion'
 import { Aviso, Boton, Logotipo } from '../compartido/ui/componentes'
+import '@fontsource/fraunces/600.css'
+import '@fontsource/fraunces/700.css'
+import './web.css'
 
 // Web del comprador y del administrador. Cada módulo declara sus rutas en su
 // rutas.tsx (CC-11); este archivo no se edita para agregar pantallas.
@@ -81,12 +84,18 @@ function combinarRutas(deModulos: RouteObject[], deRelleno: RouteObject[]): Rout
 
 function Marco() {
   const { sesion, cargando } = useSesion()
-  const { pathname, search } = useLocation()
+  const { pathname, search, hash } = useLocation()
   const [errorPerfil, setErrorPerfil] = useState<string | null>(null)
   const [intento, setIntento] = useState(0)
   const [saliendo, setSaliendo] = useState(false)
   const [errorSalida, setErrorSalida] = useState<string | null>(null)
+  const [menuAbierto, setMenuAbierto] = useState(false)
   const usuario = sesion?.user
+
+  useEffect(() => {
+    if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
+    else window.scrollTo(0, 0)
+  }, [pathname, hash])
 
   async function salir() {
     if (saliendo) return
@@ -119,12 +128,42 @@ function Marco() {
   }, [usuario, intento])
 
   return (
-    <>
+    <div className="web-ayllu">
+      <a className="saltar-contenido" href="#contenido">
+        Saltar al contenido
+      </a>
       <header className="barra">
         <div className="barra-contenido">
           <Link to="/" aria-label="Ayllu, inicio">
             <Logotipo />
           </Link>
+          <button
+            className="menu-abrir"
+            aria-expanded={menuAbierto}
+            aria-controls="menu-web"
+            onClick={() => setMenuAbierto(!menuAbierto)}
+          >
+            {menuAbierto ? 'Cerrar' : 'Menú'}
+          </button>
+          <nav
+            id="menu-web"
+            className={menuAbierto ? 'menu-web abierto' : 'menu-web'}
+            aria-label="Navegación principal"
+          >
+            <Link
+              to="/catalogo"
+              aria-current={pathname === '/catalogo' ? 'page' : undefined}
+              onClick={() => setMenuAbierto(false)}
+            >
+              Catálogo
+            </Link>
+            <Link to="/#caletas" onClick={() => setMenuAbierto(false)}>
+              Las caletas
+            </Link>
+            <Link to="/#como-pedir" onClick={() => setMenuAbierto(false)}>
+              Cómo pedir
+            </Link>
+          </nav>
           {sesion ? (
             <Boton variante="secundario" cargando={saliendo} onClick={() => void salir()}>
               Salir
@@ -132,7 +171,26 @@ function Marco() {
           ) : (
             !cargando &&
             pathname !== '/ingresar' && (
-              <Link to={`/ingresar?volver=${encodeURIComponent(pathname + search)}`}>Ingresar</Link>
+              <Link
+                className="cuenta-web"
+                aria-label="Ingresar"
+                to={`/ingresar?volver=${encodeURIComponent(pathname + search)}`}
+              >
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 32 32"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  aria-hidden="true"
+                >
+                  <circle cx="16" cy="16" r="14" />
+                  <circle cx="16" cy="12" r="4" />
+                  <path d="M8 25v-3c0-7 16-7 16 0v3" />
+                </svg>
+                <span>Mi cuenta</span>
+              </Link>
             )
           )}
         </div>
@@ -155,8 +213,22 @@ function Marco() {
           </p>
         </div>
       )}
-      <Outlet />
-    </>
+      <div id="contenido" tabIndex={-1}>
+        <Outlet />
+      </div>
+      <footer className="pie-web">
+        <Link to="/" aria-label="Ayllu, inicio">
+          <Logotipo />
+        </Link>
+        <p>Oficio, mar y un origen que viaja contigo.</p>
+        <nav aria-label="Navegación del pie">
+          <Link to="/catalogo">Explorar las piezas</Link>
+          <Link to="/#como-pedir">Cómo pedir</Link>
+          <Link to="/pedidos">Mis pedidos</Link>
+        </nav>
+        <small>Ayllu · Artesanía de las caletas del norte de Piura</small>
+      </footer>
+    </div>
   )
 }
 
