@@ -379,6 +379,25 @@
   font-size: var(--tam-base);
 }
 
+.enlace-publicar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tactil);
+  padding: var(--e2) var(--e3);
+  background-color: var(--tierra);
+  color: var(--blanco, #fff);
+  border-radius: var(--radio-md);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: var(--tam-letra-chica);
+  transition: opacity var(--duracion-rapida);
+}
+
+.enlace-publicar:hover {
+  opacity: 0.9;
+}
+
 /* Badges de estado */
 .badge-estado {
   display: inline-block;
@@ -407,4 +426,22 @@
 .estado-error {
   background-color: #fee2e2;
   color: #b91c1c;
+}
+
+.boton-volver-atras {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  background: none;
+  border: none;
+  color: var(--tierra);
+  font-weight: 600;
+  font-size: var(--tam-letra);
+  cursor: pointer;
+  padding: var(--e2) 0;
+  text-decoration: none;
+}
+
+.boton-volver-atras:hover {
+  text-decoration: underline;
 }

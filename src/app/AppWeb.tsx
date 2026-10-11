@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import {
   createBrowserRouter,
   Link,
-  NavLink,
   Outlet,
   RouterProvider,
   useLocation,
@@ -17,7 +16,8 @@ import * as vitrina from '../vitrina/rutas'
 import { PantallaIngresoWeb } from '../compartido/PantallaIngresoWeb'
 import { asegurarPerfilComprador, cerrarSesion, ErrorSesion, useSesion } from '../compartido/sesion'
 import { Aviso, Boton, Logotipo } from '../compartido/ui/componentes'
-import { Icono, type NombreIcono } from '../compartido/ui/Icono'
+import { Terminos } from '../compartido/Terminos'
+import './web.css'
 
 // Web del comprador y del administrador. Cada módulo declara sus rutas en su
 // rutas.tsx (CC-11); este archivo no se edita para agregar pantallas.
@@ -81,27 +81,21 @@ function combinarRutas(deModulos: RouteObject[], deRelleno: RouteObject[]): Rout
   return [...deModulos, ...deRelleno.filter((ruta) => !declaradas.has(ruta.path))]
 }
 
-/** Enlace de la barra: icono y etiqueta; en el celular la etiqueta queda solo para lectores. */
-function EnlaceBarra({ a, icono, children }: { a: string; icono: NombreIcono; children: string }) {
-  return (
-    <NavLink to={a} className="barra-enlace">
-      <Icono nombre={icono} />
-      <span className="barra-texto">{children}</span>
-    </NavLink>
-  )
-}
-
 function Marco() {
   const { sesion, cargando } = useSesion()
-  // Guarda para qué usuario se comprobó el rol: al cambiar de cuenta no queda el de la anterior.
+  const { pathname, search, hash } = useLocation()
   const [adminDe, setAdminDe] = useState<string | null>(null)
-  const { pathname, search } = useLocation()
   const [errorPerfil, setErrorPerfil] = useState<string | null>(null)
   const [intento, setIntento] = useState(0)
   const [saliendo, setSaliendo] = useState(false)
   const [errorSalida, setErrorSalida] = useState<string | null>(null)
+  const [menuAbierto, setMenuAbierto] = useState(false)
   const usuario = sesion?.user
-  const esAdmin = usuario !== undefined && adminDe === usuario.id
+
+  useEffect(() => {
+    if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
+    else window.scrollTo(0, 0)
+  }, [pathname, hash])
 
   async function salir() {
     if (saliendo) return
@@ -139,47 +133,79 @@ function Marco() {
   }, [usuario, intento])
 
   return (
-    <>
+    <div className="web-ayllu">
+      <a className="saltar-contenido" href="#contenido">
+        Saltar al contenido
+      </a>
       <header className="barra">
         <div className="barra-contenido">
           <Link to="/" aria-label="Ayllu, inicio">
             <Logotipo />
           </Link>
-          <nav aria-label="Principal" className="barra-nav">
-            <EnlaceBarra a="/catalogo" icono="catalogo">
+          <button
+            className="menu-abrir"
+            aria-expanded={menuAbierto}
+            aria-controls="menu-web"
+            onClick={() => setMenuAbierto(!menuAbierto)}
+          >
+            {menuAbierto ? 'Cerrar' : 'Menú'}
+          </button>
+          <nav
+            id="menu-web"
+            className={menuAbierto ? 'menu-web abierto' : 'menu-web'}
+            aria-label="Principal"
+          >
+            <Link
+              to="/catalogo"
+              aria-current={pathname === '/catalogo' ? 'page' : undefined}
+              onClick={() => setMenuAbierto(false)}
+            >
               Catálogo
-            </EnlaceBarra>
-            <EnlaceBarra a="/pedidos" icono="pedidos">
+            </Link>
+            <Link to="/#caletas" onClick={() => setMenuAbierto(false)}>
+              Las caletas
+            </Link>
+            <Link to="/#como-pedir" onClick={() => setMenuAbierto(false)}>
+              Cómo pedir
+            </Link>
+            <Link to="/pedidos" onClick={() => setMenuAbierto(false)}>
               Mis pedidos
-            </EnlaceBarra>
-            {/* Atajo para el administrador; /admin sigue protegido por AccesoAdmin y RLS. */}
-            {sesion && esAdmin && (
-              <EnlaceBarra a="/admin" icono="admin">
+            </Link>
+            {usuario && adminDe === usuario.id && (
+              <Link to="/admin" onClick={() => setMenuAbierto(false)}>
                 Administración
-              </EnlaceBarra>
-            )}
-            {sesion ? (
-              <Boton
-                variante="secundario"
-                icono="salir"
-                cargando={saliendo}
-                onClick={() => void salir()}
-              >
-                Salir
-              </Boton>
-            ) : (
-              !cargando &&
-              pathname !== '/ingresar' && (
-                <Link
-                  className="barra-enlace"
-                  to={`/ingresar?volver=${encodeURIComponent(pathname + search)}`}
-                >
-                  <Icono nombre="ingresar" />
-                  <span className="barra-texto">Ingresar</span>
-                </Link>
-              )
+              </Link>
             )}
           </nav>
+          {sesion ? (
+            <Boton variante="secundario" cargando={saliendo} onClick={() => void salir()}>
+              Salir
+            </Boton>
+          ) : (
+            !cargando &&
+            pathname !== '/ingresar' && (
+              <Link
+                className="cuenta-web"
+                aria-label="Ingresar"
+                to={`/ingresar?volver=${encodeURIComponent(pathname + search)}`}
+              >
+                <svg
+                  width="32"
+                  height="32"
+                  viewBox="0 0 32 32"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.7"
+                  aria-hidden="true"
+                >
+                  <circle cx="16" cy="16" r="14" />
+                  <circle cx="16" cy="12" r="4" />
+                  <path d="M8 25v-3c0-7 16-7 16 0v3" />
+                </svg>
+                <span>Mi cuenta</span>
+              </Link>
+            )
+          )}
         </div>
       </header>
       {errorSalida && (
@@ -200,8 +226,23 @@ function Marco() {
           </p>
         </div>
       )}
-      <Outlet />
-    </>
+      <div id="contenido" tabIndex={-1}>
+        <Outlet />
+      </div>
+      <footer className="pie-web">
+        <Link to="/" aria-label="Ayllu, inicio">
+          <Logotipo />
+        </Link>
+        <p>Oficio, mar y un origen que viaja contigo.</p>
+        <nav aria-label="Navegación del pie">
+          <Link to="/catalogo">Explorar las piezas</Link>
+          <Link to="/#como-pedir">Cómo pedir</Link>
+          <Link to="/pedidos">Mis pedidos</Link>
+          <Link to="/terminos">Términos y condiciones</Link>
+        </nav>
+        <small>Ayllu · Artesanía de las caletas del norte de Piura</small>
+      </footer>
+    </div>
   )
 }
 
@@ -216,6 +257,7 @@ export function AppWeb() {
             RUTAS_DE_RELLENO,
           ),
           { path: '/ingresar', element: <PantallaIngresoWeb /> },
+          { path: '/terminos', element: <Terminos /> },
           { path: '*', element: <NoEncontrada /> },
         ],
       },

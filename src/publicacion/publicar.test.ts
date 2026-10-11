@@ -1,5 +1,10 @@
-import { describe, it, expect } from 'vitest'
-import { validarPublicacion, type DatosValidacionPublicacion } from './publicar'
+import type { SupabaseClient } from '@supabase/supabase-js'
+import { describe, it, expect, vi } from 'vitest'
+import {
+  ejecutarPublicacion,
+  validarPublicacion,
+  type DatosValidacionPublicacion,
+} from './publicar'
 import type { Ficha, FotoProducto } from '../compartido/dominio/producto'
 
 describe('publicar.ts - validación previa a la publicación', () => {
@@ -133,5 +138,22 @@ describe('publicar.ts - validación previa a la publicación', () => {
       ficha: null,
     })
     expect(sinFicha.valido).toBe(false)
+  })
+})
+
+describe('regresión de denegación de acreditación', () => {
+  it('nunca presenta éxito cuando el servidor rechaza publicar', async () => {
+    const eq = vi.fn().mockResolvedValue({ error: { message: 'acreditación no aprobada' } })
+    const update = vi.fn().mockReturnValue({ eq })
+    const cliente = { from: vi.fn().mockReturnValue({ update }) } as unknown as SupabaseClient
+    const resultado = await ejecutarPublicacion(cliente, {
+      productoId: 'pieza',
+      ficha: {} as Ficha,
+      precioFinal: 20,
+      disponibilidad: 'en_stock',
+      plazoDias: null,
+      fotos: [],
+    })
+    expect(resultado).toEqual({ ok: false, error: 'acreditación no aprobada' })
   })
 })

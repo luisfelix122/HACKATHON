@@ -1,0 +1,320 @@
+/* PRP 013 — La referencia del usuario gobierna la identidad solo web.
+ * Costa artesanal: cabecera cal, emblema dorado, fotografías y Fraunces.
+ * El contenido y las transiciones proceden de los contratos existentes. */
+body:has(.web-ayllu) {
+  min-width: 0;
+  background: #faf8f4;
+}
+.web-ayllu {
+  --casco: #1d3f5e;
+  --casco-hondo: #142e45;
+  --casco-claro: #e6edf3;
+  --cal: #faf8f4;
+  --borda: #a8432c;
+  --brea: #1b1f24;
+  --linea: #e4dfd6;
+  --pacifico: var(--casco);
+  --pacifico-hondo: var(--casco-hondo);
+  --espuma: var(--cal);
+  --sol: #e0b252;
+  --sol-claro: #f6edd9;
+  --noche: var(--casco-hondo);
+  --noche-suave: #555a61;
+  --ola-clara: var(--casco-claro);
+  --arena: #f6edd9;
+  --arena-clara: #faf8f4;
+  --radio-control: 8px;
+  --ancho-maximo: 1280px;
+  --letra-titulo: var(--letra-rotulo);
+  min-height: 100dvh;
+  background: var(--cal);
+  color: var(--casco-hondo);
+}
+.web-ayllu h1,
+.web-ayllu h2,
+.web-ayllu h3 {
+  font-family: var(--letra-titulo);
+  font-weight: 600;
+}
+.web-ayllu h1 {
+  font-size: clamp(2.2rem, 4vw, 3.8rem);
+}
+.web-ayllu h2 {
+  font-size: clamp(1.8rem, 3.2vw, 2.75rem);
+}
+.web-ayllu h3 {
+  font-size: 1.35rem;
+}
+.web-ayllu .barra {
+  position: relative;
+  z-index: 5;
+  color: var(--casco-hondo);
+  background: var(--cal);
+  border-bottom: 3px double var(--casco);
+  box-shadow: 0 3px 0 var(--sol);
+}
+.web-ayllu .barra-contenido {
+  min-height: 94px;
+  max-width: 1440px;
+  padding-inline: 40px;
+}
+.web-ayllu .barra a,
+.web-ayllu .barra a:hover {
+  color: var(--casco-hondo);
+}
+.logotipo {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+.logotipo-emblema {
+  flex-shrink: 0;
+}
+.web-ayllu .logotipo {
+  font: 700 44px/1 var(--letra-titulo);
+  letter-spacing: -0.035em;
+}
+.menu-web {
+  display: flex;
+  gap: clamp(24px, 4vw, 64px);
+  align-items: center;
+}
+.menu-web a {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--letra-titulo);
+  font-size: 18px;
+}
+.menu-web a[aria-current='page'] {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+}
+.cuenta-web {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  white-space: nowrap;
+}
+.menu-abrir {
+  display: none;
+}
+.web-ayllu .boton {
+  border-width: 1px;
+}
+.web-ayllu .boton-destacado {
+  color: var(--casco-hondo);
+}
+.web-ayllu .campo input,
+.web-ayllu .campo select,
+.web-ayllu .campo textarea {
+  border: 1px solid #8a8c8e;
+  background: var(--blanco);
+}
+.web-ayllu .campo input::placeholder,
+.web-ayllu .campo textarea::placeholder {
+  color: var(--noche-suave);
+  opacity: 1;
+}
+.web-ayllu input,
+.web-ayllu textarea {
+  caret-color: var(--casco);
+}
+.web-ayllu .aviso {
+  border: 1px solid var(--linea);
+  padding: 24px;
+}
+.web-ayllu .aviso-error {
+  border-color: var(--error);
+}
+.web-ayllu .pagina {
+  padding-top: 48px;
+  gap: 24px;
+}
+.web-ayllu .pagina-artesano {
+  margin-block: 48px 80px;
+  padding: 32px;
+  border: 1px solid var(--linea);
+  border-radius: 14px;
+  background: var(--blanco);
+}
+.web-ayllu .vitrina-ficha {
+  gap: 16px;
+}
+.web-ayllu .vitrina-ficha .sello {
+  margin-block: 8px;
+}
+.web-ayllu .vitrina-ficha h1 {
+  font-size: clamp(2rem, 3.5vw, 3rem);
+}
+.web-ayllu .vitrina-datos {
+  width: 100%;
+  padding-block: 24px;
+  border-block: 1px solid var(--linea);
+}
+.web-ayllu .vitrina-precio {
+  font-family: var(--letra-texto);
+  font-size: 28px;
+}
+.web-ayllu .vitrina-perfil {
+  padding-block: 24px 48px;
+  border-bottom: 1px solid var(--linea);
+}
+.saltar-contenido {
+  position: fixed;
+  top: 8px;
+  left: 16px;
+  z-index: 20;
+  padding: 12px;
+  background: var(--cal);
+  transform: translateY(-200%);
+}
+.saltar-contenido:focus {
+  transform: translateY(0);
+}
+.pie-web {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+  gap: 24px;
+  padding: 48px max(24px, calc((100vw - 1200px) / 2));
+  border-top: 1px solid var(--linea);
+}
+.pie-web > a {
+  text-decoration: none;
+}
+.pie-web nav {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  display: grid;
+  gap: 12px;
+  justify-self: end;
+}
+.pie-web nav a {
+  min-height: 48px;
+  display: inline-flex;
+  align-items: center;
+}
+.pie-web small {
+  grid-column: 1 / -1;
+  padding-top: 24px;
+  border-top: 1px solid var(--linea);
+  color: var(--noche-suave);
+}
+.web-ayllu :focus-visible {
+  outline-color: var(--casco);
+}
+.web-ayllu .hero-costero :focus-visible,
+.web-ayllu .como-pedir :focus-visible {
+  outline-color: var(--cal);
+}
+.web-ayllu .hero-texto .hero-enlace:hover {
+  color: var(--cal);
+}
+.web-ayllu .barra :focus-visible {
+  outline-color: var(--casco);
+}
+@media (max-width: 767px) {
+  .web-ayllu .barra-contenido {
+    min-height: 72px;
+    padding: 12px 20px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .web-ayllu .logotipo {
+    font-size: 30px;
+    gap: 8px;
+  }
+  .web-ayllu .logotipo-emblema {
+    width: 38px;
+    height: 32px;
+  }
+  .menu-abrir {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 48px;
+    padding: 8px 12px;
+    border: 1px solid var(--casco);
+    border-radius: 8px;
+    background: transparent;
+    margin-left: auto;
+  }
+  .menu-web {
+    display: none;
+    width: 100%;
+    order: 4;
+    border-top: 1px solid var(--linea);
+    padding-top: 12px;
+  }
+  .menu-web.abierto {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 4px;
+  }
+  .cuenta-web {
+    font-size: 16px;
+    gap: 6px;
+  }
+  .cuenta-web svg {
+    width: 24px;
+    height: 24px;
+  }
+  .web-ayllu .pagina {
+    padding-top: 32px;
+  }
+  .web-ayllu .pagina-artesano {
+    width: calc(100% - 32px);
+    padding: 24px;
+  }
+  .pie-web {
+    grid-template-columns: 1fr;
+    padding: 32px 20px;
+  }
+  .pie-web nav {
+    grid-column: 1;
+    grid-row: auto;
+    justify-self: start;
+  }
+  .web-ayllu .vitrina-datos {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .web-ayllu .vitrina-datos dd {
+    margin-bottom: 16px;
+  }
+}
+@media (max-width: 400px) {
+  .cuenta-web {
+    width: 48px;
+    justify-content: center;
+    min-height: 48px;
+  }
+  .cuenta-web span {
+    display: none;
+  }
+}
+
+.web-ayllu .logotipo > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.web-ayllu .menu-web {
+  flex-wrap: wrap;
+}
+
+/* Correcciones de contraste y objetivo táctil observadas en runtime CU14. */
+.web-ayllu .logotipo {
+  color: var(--casco-hondo);
+}
+.web-ayllu .logotipo > span {
+  color: inherit;
+}
+.web-ayllu .barra-contenido > a[aria-label='Ayllu, inicio'] {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}

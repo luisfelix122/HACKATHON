@@ -15,6 +15,8 @@ import * as pedidos from '../pedidos/rutas'
 import * as publicacion from '../publicacion/rutas'
 import * as vitrina from '../vitrina/rutas'
 import { Logotipo } from '../compartido/ui/componentes'
+import { Terminos } from '../compartido/Terminos'
+import './artesano.css'
 import { Icono, type NombreIcono } from '../compartido/ui/Icono'
 
 // APK del artesano. Monta solo las rutas y el menú que los módulos declaran en
@@ -64,10 +66,13 @@ function Marco() {
   const { pathname } = useLocation()
   const conPestanas = MENU.length > 0 && !SIN_PESTANAS.has(pathname)
   return (
-    <>
+    <div className="artesano-ayllu">
       <header className="barra">
         <div className="barra-contenido">
           <Logotipo />
+          <NavLink className="artesano-terminos" to="/terminos">
+            Términos
+          </NavLink>
         </div>
       </header>
       <div className={conPestanas ? 'con-pestanas' : undefined}>
@@ -88,7 +93,7 @@ function Marco() {
           ))}
         </nav>
       )}
-    </>
+    </div>
   )
 }
 
@@ -102,6 +107,7 @@ export function AppArtesano() {
             MODULOS.flatMap((modulo) => modulo.rutasArtesano),
             RUTAS_DE_RELLENO,
           ),
+          { path: '/terminos', element: <Terminos /> },
           { path: '*', element: <Navigate to="/" replace /> },
         ],
       },

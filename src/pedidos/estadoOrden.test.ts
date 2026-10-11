@@ -1,4 +1,4 @@
-import { describe, expect, it, vi, afterEach } from 'vitest'
+import { describe, expect, it, vi, afterEach, beforeEach } from 'vitest'
 import { accionesVisibles, contarEnCurso, avisoCarga, etiquetaEstado } from './estadoOrden'
 import { ESTADOS_ORDEN } from '../compartido/dominio/orden'
 
@@ -24,17 +24,148 @@ describe('acciones de orden', () => {
   })
 })
 
-import { createElement } from 'react'
+import { act, createElement } from 'react'
 import { cleanup, render, screen, fireEvent, waitFor } from '@testing-library/react'
 import type { Orden } from '../compartido/dominio/orden'
 import { AccionesComprador } from './AccionesComprador'
 import { AccionesArtesano } from './AccionesArtesano'
 import { enlaceHttps, errorAccion, ejecutarAccion, leerContextoAcciones } from './acciones'
+import * as acciones from './acciones'
+import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom'
+import { DetalleOrden } from './DetalleOrden'
+const detalle = vi.hoisted(() => ({
+  sesion: { user: { id: 'c' } } as { user: { id: string } } | null,
+  obtener: vi.fn(),
+  mensajes: vi.fn(),
+  enviar: vi.fn(),
+  suscribir: vi.fn(),
+}))
+vi.mock('../compartido/sesion', () => ({
+  useSesion: () => ({ sesion: detalle.sesion, cargando: false }),
+}))
+vi.mock('./consultas', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./consultas')>()),
+  obtenerOrden: detalle.obtener,
+  leerMensajes: detalle.mensajes,
+  enviarMensaje: detalle.enviar,
+}))
+vi.mock('./tiempoReal', () => ({ suscribirOrden: detalle.suscribir }))
 const falso = vi.hoisted(() => ({ rpc: vi.fn() }))
 vi.mock('../compartido/supabase', () => ({ obtenerSupabase: () => falso }))
 afterEach(() => {
   cleanup()
+  vi.restoreAllMocks()
   vi.resetAllMocks()
+})
+
+describe('detalle conserva el borrador al actualizar', () => {
+  beforeEach(() => {
+    detalle.sesion = { user: { id: 'c' } }
+    detalle.obtener.mockResolvedValue(orden)
+    detalle.mensajes.mockResolvedValue([])
+    detalle.suscribir.mockReturnValue(vi.fn())
+    vi.spyOn(acciones, 'leerContextoAcciones').mockResolvedValue({
+      actor: 'comprador',
+      producto: null,
+      enCurso: 0,
+    })
+  })
+  function Navegacion() {
+    const navegar = useNavigate()
+    return createElement('button', { onClick: () => navegar('/pedidos/otra') }, 'Otro pedido')
+  }
+  function mostrar() {
+    return render(
+      createElement(
+        MemoryRouter,
+        { initialEntries: ['/pedidos/o'] },
+        createElement(Navegacion),
+        createElement(
+          Routes,
+          null,
+          createElement(Route, { path: '/pedidos/:id', element: createElement(DetalleOrden) }),
+        ),
+      ),
+    )
+  }
+  it.each(['orden', 'mensajes', 'contexto'])(
+    'conserva hilo, borrador y acciones cuando falla %s; reintenta',
+    async (fallo) => {
+      mostrar()
+      const campo = await screen.findByLabelText('Mensaje')
+      fireEvent.change(campo, { target: { value: 'Borrador sin enviar' } })
+      if (fallo === 'orden') detalle.obtener.mockRejectedValueOnce(new Error('Sin conexión'))
+      if (fallo === 'mensajes') detalle.mensajes.mockRejectedValueOnce(new Error('Sin conexión'))
+      if (fallo === 'contexto')
+        vi.mocked(acciones.leerContextoAcciones).mockRejectedValueOnce(new Error('Sin conexión'))
+      fireEvent.click(screen.getByRole('button', { name: 'Actualizar' }))
+      await screen.findByText(/Sin conexión/)
+      expect(screen.getByLabelText('Mensaje')).toBe(campo)
+      expect(campo).toHaveValue('Borrador sin enviar')
+      expect(screen.getByRole('button', { name: 'Confirmar total' })).toBeEnabled()
+      fireEvent.click(screen.getByRole('button', { name: 'Reintentar' }))
+      await waitFor(() => expect(screen.queryByText(/Sin conexión/)).toBeNull())
+      expect(screen.getByLabelText('Mensaje')).toBe(campo)
+      expect(campo).toHaveValue('Borrador sin enviar')
+    },
+  )
+  it('muestra error inicial sin datos y recupera mediante Reintentar', async () => {
+    detalle.obtener.mockRejectedValueOnce(new Error('Sin conexión'))
+    mostrar()
+    await screen.findByText('Sin conexión')
+    expect(screen.queryByLabelText('Mensaje')).toBeNull()
+    fireEvent.click(screen.getByRole('button', { name: 'Reintentar' }))
+    await screen.findByLabelText('Mensaje')
+  })
+  it('no conserva datos ni borrador de otra ruta si falla su carga', async () => {
+    mostrar()
+    fireEvent.change(await screen.findByLabelText('Mensaje'), {
+      target: { value: 'Privado anterior' },
+    })
+    detalle.obtener.mockRejectedValueOnce(new Error('Otra ruta sin conexión'))
+    fireEvent.click(screen.getByRole('button', { name: 'Otro pedido' }))
+    await screen.findByText('Otra ruta sin conexión')
+    expect(screen.queryByLabelText('Mensaje')).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Confirmar total' })).toBeNull()
+  })
+  it('no muestra datos de la cuenta anterior al cambiar de sesión', async () => {
+    const vista = mostrar()
+    await screen.findByLabelText('Mensaje')
+    detalle.sesion = { user: { id: 'otra-cuenta' } }
+    detalle.obtener.mockRejectedValueOnce(new Error('Cuenta sin conexión'))
+    vista.rerender(
+      createElement(
+        MemoryRouter,
+        { initialEntries: ['/pedidos/o'] },
+        createElement(
+          Routes,
+          null,
+          createElement(Route, { path: '/pedidos/:id', element: createElement(DetalleOrden) }),
+        ),
+      ),
+    )
+    await screen.findByText('Cuenta sin conexión')
+    expect(screen.queryByLabelText('Mensaje')).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Confirmar total' })).toBeNull()
+  })
+  it('ignora una respuesta atrasada del pedido anterior', async () => {
+    let resolver!: (valor: Orden) => void
+    detalle.obtener.mockImplementationOnce(
+      () =>
+        new Promise<Orden>((r) => {
+          resolver = r
+        }),
+    )
+    mostrar()
+    detalle.obtener.mockResolvedValueOnce(null)
+    fireEvent.click(screen.getByRole('button', { name: 'Otro pedido' }))
+    await screen.findByText('No encontramos este pedido o no pertenece a tu cuenta.')
+    await act(async () => {
+      resolver(orden)
+    })
+    expect(screen.queryByLabelText('Mensaje')).toBeNull()
+    expect(screen.queryByRole('button', { name: 'Confirmar total' })).toBeNull()
+  })
 })
 const orden: Orden = {
   id: 'o',

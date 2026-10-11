@@ -1,0 +1,44 @@
+model_list:
+  - model_name: ayllu-texto
+    litellm_params:
+      model: gemini/gemini-3.8-flash
+      api_key: os.environ/IA_KEY_1
+  - model_name: ayllu-texto
+    litellm_params:
+      model: gemini/gemini-3.8-flash
+      api_key: os.environ/IA_KEY_2
+  - model_name: ayllu-audio
+    litellm_params:
+      model: gemini/gemini-3.8-flash
+      api_key: os.environ/IA_KEY_1
+  - model_name: ayllu-audio
+    litellm_params:
+      model: gemini/gemini-3.8-flash
+      api_key: os.environ/IA_KEY_2
+  - model_name: ayllu-imagen
+    litellm_params:
+      model: gemini/gemini-2.5-flash-image
+      api_key: os.environ/IA_KEY_1
+    model_info:
+      mode: image_edit
+  - model_name: ayllu-imagen
+    litellm_params:
+      model: gemini/gemini-2.5-flash-image
+      api_key: os.environ/IA_KEY_2
+    model_info:
+      mode: image_edit
+router_settings:
+  routing_strategy: simple-shuffle
+  num_retries: 2
+  allowed_fails: 0
+  cooldown_time: 30
+  retry_policy:
+    AuthenticationErrorRetries: 2
+    RateLimitErrorRetries: 2
+    BadRequestErrorRetries: 0
+    NotFoundErrorRetries: 0
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  background_health_checks: false
+litellm_settings:
+  set_verbose: false

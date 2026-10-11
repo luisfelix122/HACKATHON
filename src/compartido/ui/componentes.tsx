@@ -236,7 +236,8 @@ export function Logotipo() {
   return (
     <span className="logotipo" role="img" aria-label="Ayllu">
       <span aria-hidden="true">
-        Ayll<span className="logotipo-u">u</span>
+        <img className="logotipo-emblema" src="/ayllu-icono.svg" alt="" width="56" height="44" />
+        <span>Ayllu</span>
       </span>
     </span>
   )

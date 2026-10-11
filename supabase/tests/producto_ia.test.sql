@@ -10,15 +10,15 @@ insert into public.perfil (id, rol, nombre, whatsapp, lugar, rna_numero, acredit
   ('00000000-0000-0000-0000-0000000000c1', 'artesano', 'Elena', '+51933333333', 'Máncora', 'RNA-E1', 'aprobada');
 
 -- Insertar producto base en borrador
-insert into public.producto (id, artesano_id, estado, nombre, precio_final, ficha, revision_ia)
+insert into public.producto (id, artesano_id, estado, nombre, precio_final, ficha, revision_ia, disponibilidad)
 values (
   '20000000-0000-0000-0000-0000000000c1',
   '00000000-0000-0000-0000-0000000000c1',
   'borrador',
   'Collar marino',
   45.00,
-  '{"titulo":"Collar marino","descripcion":"Conchas de mar","materiales":["conchas"],"tecnica":"engarzado","tipo_producto":"bisutería marina","etiquetas":["collar","playa"]}'::jsonb,
-  'sin_revisar'
+  '{"titulo":"Collar marino","descripcion":"Conchas de mar","materiales":["conchas"],"tecnica":"engarzado","tipo_producto":"bisutería marina","historia_pieza":"","etiquetas":["collar","playa"]}'::jsonb,
+  'sin_revisar', 'en_stock'
 );
 
 insert into public.foto_producto (id, producto_id, origen, ruta, publicada, posicion)
@@ -26,7 +26,7 @@ values (
   '30000000-0000-0000-0000-0000000000c1',
   '20000000-0000-0000-0000-0000000000c1',
   'original',
-  'u-c1/p-c1/original.jpg',
+  '00000000-0000-0000-0000-0000000000c1/20000000-0000-0000-0000-0000000000c1/original.jpg',
   true,
   0
 );
@@ -77,15 +77,15 @@ select throws_ok(
 );
 
 -- Producto con revision_ia rechazada no puede publicarse
-insert into public.producto (id, artesano_id, estado, nombre, precio_final, ficha, revision_ia)
+insert into public.producto (id, artesano_id, estado, nombre, precio_final, ficha, revision_ia, disponibilidad)
 values (
   '20000000-0000-0000-0000-0000000000c2',
   '00000000-0000-0000-0000-0000000000c1',
   'en_revision',
   'Vaso plástico',
   10.00,
-  '{"titulo":"Vaso","descripcion":"Vaso comercial","materiales":["plastico"],"tecnica":"industrial","tipo_producto":"utilitario","etiquetas":["vaso"]}'::jsonb,
-  'rechazada'
+  '{"titulo":"Vaso","descripcion":"Vaso comercial","materiales":["plastico"],"tecnica":"industrial","tipo_producto":"utilitario","historia_pieza":"","etiquetas":["vaso"]}'::jsonb,
+  'rechazada', 'en_stock'
 );
 
 insert into public.foto_producto (id, producto_id, origen, ruta, publicada, posicion)
@@ -93,7 +93,7 @@ values (
   '30000000-0000-0000-0000-0000000000c2',
   '20000000-0000-0000-0000-0000000000c2',
   'original',
-  'u-c1/p-c2/original.jpg',
+  '00000000-0000-0000-0000-0000000000c1/20000000-0000-0000-0000-0000000000c2/original.jpg',
   true,
   0
 );

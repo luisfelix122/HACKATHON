@@ -3,6 +3,7 @@ import type { MensajeOrden } from '../compartido/dominio/orden'
 import { Aviso, Boton, Campo } from '../compartido/ui/componentes'
 import { enviarMensaje } from './consultas'
 import { validarMensaje } from './datosEnvio'
+import { MensajeTraducido } from './MensajeTraducido'
 
 export function HiloMensajes({
   ordenId,
@@ -48,7 +49,11 @@ export function HiloMensajes({
         {mensajes.map((mensaje) => (
           <li key={mensaje.id} data-propio={mensaje.autor_id === usuarioId}>
             <strong>{mensaje.autor_id === usuarioId ? 'Tú' : 'La otra parte'}</strong>
-            <p>{mensaje.texto_original}</p>
+            <MensajeTraducido
+              key={`${usuarioId}:${mensaje.id}`}
+              mensaje={mensaje}
+              usuarioId={usuarioId}
+            />
             <time dateTime={mensaje.creado_en}>
               {new Date(mensaje.creado_en).toLocaleString('es-PE', { timeZone: 'America/Lima' })}
             </time>

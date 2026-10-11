@@ -303,7 +303,7 @@ export const RevisarProducto: React.FC = () => {
     if (res.ok) {
       setPublicadoExito(true)
       setTimeout(() => {
-        navigate('/mis-productos')
+        navigate('/')
       }, 1500)
     } else {
       setErroresPublicacion([res.error || 'Error al publicar el producto'])
@@ -360,6 +360,9 @@ export const RevisarProducto: React.FC = () => {
       )}
 
       <header className="revisar-cabecera">
+        <button type="button" onClick={() => navigate('/')} className="boton-volver-atras">
+          Volver a Mis productos
+        </button>
         <h1 className="revisar-titulo">Revisar y publicar</h1>
         <p className="revisar-bajada">
           Optimiza la ficha comercial y las fotos con IA antes de poner tu pieza en la vitrina.
@@ -407,14 +410,15 @@ export const RevisarProducto: React.FC = () => {
               producto.ia_error ||
               'Esta pieza parece industrial. Si la hiciste tú, toma otra foto que muestre el trabajo a mano.'}
           </p>
+          <p>La pieza anterior se conserva. La nueva foto se guardará en otro borrador.</p>
           <div className="acciones-rechazo">
             <button
               type="button"
-              onClick={() => navigate(`/borrador/${producto.id}`)}
+              onClick={() => navigate('/nuevo')}
               className="boton-orden"
               style={{ width: 'auto', padding: '0.5rem 1rem' }}
             >
-              Tomar otra foto
+              Crear borrador con otra foto
             </button>
             <button
               type="button"

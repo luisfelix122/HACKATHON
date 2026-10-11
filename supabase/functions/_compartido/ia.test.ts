@@ -58,7 +58,7 @@ describe('_compartido/ia.ts - Cliente del proxy LiteLLM', () => {
         model?: string
         messages?: Array<{
           role: string
-          content: Array<{ type: string; file?: { url: string } }>
+          content: Array<{ type: string; file?: { file_data: string } }>
         }>
       }
       let peticionBody: PeticionChat | null = null
@@ -91,7 +91,31 @@ describe('_compartido/ia.ts - Cliente del proxy LiteLLM', () => {
       const userMessage = peticionBody?.messages?.find((m) => m.role === 'user')
       const filePart = userMessage?.content.find((p) => p.type === 'file')
       expect(filePart).toBeDefined()
-      expect(filePart?.file?.url).toBe('data:audio/webm;base64,base64audio')
+      expect(filePart?.file?.file_data).toBe('data:audio/webm;base64,base64audio')
+      expect(userMessage?.content).toContainEqual({
+        type: 'image_url',
+        image_url: { url: 'data:image/jpeg;base64,base64imagen' },
+      })
+    })
+
+    it('conserva el data URI de audio existente sin duplicarlo', async () => {
+      const fetch = vi.fn().mockResolvedValue({
+        ok: true,
+        json: async () => ({ choices: [{ message: { content: 'ok' } }] }),
+      })
+      globalThis.fetch = fetch
+      await llamarChatIa({
+        modelo: 'ayllu-audio',
+        systemPrompt: 'Sistema',
+        userPrompt: 'Audio',
+        audioBase64: 'data:audio/mp3;base64,YWJj',
+        config: { baseUrl: 'http://local.invalid', apiKey: 'fake' },
+      })
+      const body = JSON.parse(fetch.mock.calls[0]![1].body)
+      expect(body.messages[1].content).toContainEqual({
+        type: 'file',
+        file: { file_data: 'data:audio/mp3;base64,YWJj' },
+      })
     })
 
     it('lanza ErrorIaNoDisponible con código ia_no_disponible si falta IA_BASE_URL', async () => {

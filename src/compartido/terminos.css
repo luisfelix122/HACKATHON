@@ -1,0 +1,30 @@
+.terminos {
+  max-width: 72ch;
+  padding-bottom: calc(3rem + env(safe-area-inset-bottom));
+}
+.terminos section {
+  margin-top: 2rem;
+}
+.terminos h2 {
+  margin-bottom: 0.75rem;
+}
+.terminos-confirmacion {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  margin-block: 1rem;
+  min-height: 48px;
+  cursor: pointer;
+}
+.terminos-confirmacion input {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  accent-color: var(--pacifico);
+}
+
+.terminos > a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}

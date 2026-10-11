@@ -34,7 +34,7 @@ function obtenerVariableEntorno(nombre: string): string | undefined {
 export type ContenidoMensaje =
   | { type: 'text'; text: string }
   | { type: 'image_url'; image_url: { url: string } }
-  | { type: 'file'; file: { url: string } }
+  | { type: 'file'; file: { file_data: string } }
 
 export interface MensajeChat {
   role: string
@@ -88,7 +88,7 @@ export async function llamarChatIa({
       : `data:${audioMimeType};base64,${audioBase64}`
     userContent.push({
       type: 'file',
-      file: { url: audUrl },
+      file: { file_data: audUrl },
     })
   }
 

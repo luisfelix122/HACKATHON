@@ -1,3 +1,6 @@
+/// <reference types="node" />
+import { readFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { fireEvent, render, screen } from '@testing-library/react'
 import { act } from 'react'
 import { MemoryRouter } from 'react-router-dom'
@@ -52,11 +55,15 @@ vi.mock('../vitrina/rutas', async () => {
     menuArtesano: [],
   }
 })
-vi.mock('../borradores/rutas', async () => {
+vi.mock('../borradores/rutas', async (original) => {
+  const reales = await original<typeof import('../borradores/rutas')>()
   const { createElement } = await import('react')
   return {
     rutasWeb: [],
-    rutasArtesano: [{ path: '/nuevo', element: createElement('h1', null, 'Nuevo producto') }],
+    rutasArtesano: [
+      ...reales.rutasArtesano.filter((r) => r.path === '/'),
+      { path: '/nuevo', element: createElement('h1', null, 'Nuevo producto') },
+    ],
     menuArtesano: [{ ruta: '/nuevo', etiqueta: 'Nuevo' }],
   }
 })
@@ -297,5 +304,57 @@ describe('cliente Supabase', () => {
         auth: expect.objectContaining({ persistSession: true, storageKey: CLAVE_SESION }),
       }),
     )
+  })
+})
+
+describe('regresiones de estilos costeros comprobadas en runtime', () => {
+  const webCss = readFileSync(`${process.cwd()}/src/app/web.css`, 'utf8')
+  const artesanoCss = readFileSync(`${process.cwd()}/src/app/artesano.css`, 'utf8')
+  const terminosCss = readFileSync(`${process.cwd()}/src/compartido/terminos.css`, 'utf8')
+  it('la marca web declara color oscuro sobre la superficie cal', () => {
+    expect(webCss).toMatch(/\.web-ayllu \.logotipo\s*\{[^}]*color:\s*var\(--casco-hondo\)/s)
+  })
+  it('el enlace de términos APK vence la regla compartida de enlaces de barra', () => {
+    expect(artesanoCss).toMatch(
+      /\.artesano-ayllu \.barra a\.artesano-terminos:not\(\.boton\)\s*\{[^}]*color:\s*var\(--casco-hondo\)/s,
+    )
+  })
+  it('volver desde términos y marca web ofrecen al menos44px de alto', () => {
+    expect(terminosCss).toMatch(/\.terminos > a\s*\{[^}]*min-height:\s*44px/s)
+    expect(webCss).toMatch(
+      /\.web-ayllu \.barra-contenido > a\[aria-label=['"]Ayllu, inicio['"]\]\s*\{[^}]*min-height:\s*44px/s,
+    )
+  })
+})
+
+describe('configuración de empaquetado público', () => {
+  it('usa insets nativos sin la inyección CSS temprana de SystemBars', () => {
+    const config = readFileSync(`${process.cwd()}/capacitor.config.ts`, 'utf8')
+    expect(config).toMatch(/SystemBars:\s*\{\s*insetsHandling:\s*'native'/)
+  })
+
+  it('valida claves públicas en Node sin cargar Vite en el grafo del navegador', () => {
+    const script = `
+      import assert from 'node:assert/strict';
+      import { validarEntornoPublico } from './vite.config.ts';
+      const publico = { VITE_SUPABASE_URL: 'https://example.supabase.co', VITE_SUPABASE_PUBLISHABLE_KEY: 'sb_publishable_prueba' };
+      assert.throws(() => validarEntornoPublico({}), /VITE_SUPABASE/);
+      for (const url of ['no-url', 'file:///etc/config', 'https://usuario:clave@example.com']) {
+        assert.throws(() => validarEntornoPublico({ ...publico, VITE_SUPABASE_URL: url }), /VITE_SUPABASE_URL/);
+      }
+      const jwt = role => 'e30.' + Buffer.from(JSON.stringify({ role })).toString('base64url') + '.firma';
+      for (const key of ['sb_secret_prueba', 'malformada', jwt('service_role')]) {
+        assert.throws(() => validarEntornoPublico({ ...publico, VITE_SUPABASE_PUBLISHABLE_KEY: key }), /VITE_SUPABASE_PUBLISHABLE_KEY/);
+      }
+      assert.doesNotThrow(() => validarEntornoPublico({ ...publico, VITE_SUPABASE_PUBLISHABLE_KEY: jwt('anon') }));
+      assert.doesNotThrow(() => validarEntornoPublico(publico));
+    `
+    expect(() =>
+      execFileSync(process.execPath, ['--input-type=module', '--eval', script], {
+        cwd: process.cwd(),
+        stdio: 'pipe',
+        timeout: 15000,
+      }),
+    ).not.toThrow()
   })
 })

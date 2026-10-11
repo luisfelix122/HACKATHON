@@ -1,7 +1,11 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { BorradorLocal } from './db'
-import { sincronizarBorrador, sincronizarTodosLosBorradores } from './sincronizar'
+import {
+  sincronizarBorrador,
+  sincronizarTodosLosBorradores,
+  listarProductosPersistidos,
+} from './sincronizar'
 
 // Mock de la base de datos Dexie local con nombre de tabla de dominio borrador_local
 const mockBorradores = new Map<string, BorradorLocal>()
@@ -90,11 +94,37 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
       error: errorFotoProducto,
     })
 
+    const downloadFotoMock = vi
+      .fn()
+      .mockResolvedValue({ data: borradorEjemplo.foto_blob, error: null })
+    const confirmarProductoMock = vi.fn().mockResolvedValue({
+      data: {
+        ...borradorEjemplo,
+        estado: 'borrador',
+        audio_ruta: 'art-uuid-1/prod-uuid-1/descripcion.webm',
+      },
+      error: null,
+    })
+    const confirmarFotoMock = vi.fn().mockResolvedValue({
+      data: {
+        id: borradorEjemplo.foto_id,
+        producto_id: borradorEjemplo.id,
+        origen: 'original',
+        ruta: 'art-uuid-1/prod-uuid-1/original.jpg',
+        variante: null,
+        publicada: true,
+        posicion: 0,
+      },
+      error: null,
+    })
+    const consulta = (single: typeof confirmarProductoMock) => ({
+      select: () => ({ eq: () => ({ single }) }),
+    })
     const supabase = {
       storage: {
         from: vi.fn((bucket: string) => {
           if (bucket === 'fotos') {
-            return { upload: uploadFotoMock }
+            return { upload: uploadFotoMock, download: downloadFotoMock }
           }
           if (bucket === 'audios') {
             return { upload: uploadAudioMock }
@@ -104,10 +134,10 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
       },
       from: vi.fn((tabla: string) => {
         if (tabla === 'producto') {
-          return { upsert: upsertProductoMock }
+          return { upsert: upsertProductoMock, ...consulta(confirmarProductoMock) }
         }
         if (tabla === 'foto_producto') {
-          return { upsert: upsertFotoProductoMock }
+          return { upsert: upsertFotoProductoMock, ...consulta(confirmarFotoMock) }
         }
         return { upsert: vi.fn() }
       }),
@@ -115,12 +145,71 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
 
     return {
       supabase,
+      downloadFotoMock,
+      confirmarFotoMock,
+      confirmarProductoMock,
       uploadFotoMock,
       uploadAudioMock,
       upsertProductoMock,
       upsertFotoProductoMock,
     }
   }
+
+  it('confirma el precio redondeado a los centavos del servidor', async () => {
+    borradorEjemplo.precio_final = 10.005
+    const e = crearMockSupabase()
+    e.confirmarProductoMock.mockResolvedValue({
+      data: {
+        ...borradorEjemplo,
+        precio_final: 10.01,
+        estado: 'borrador',
+        audio_ruta: 'art-uuid-1/prod-uuid-1/descripcion.webm',
+      },
+      error: null,
+    })
+    expect(
+      (await sincronizarBorrador(borradorEjemplo, e.supabase as unknown as SupabaseClient)).exito,
+    ).toBe(true)
+    expect(e.upsertProductoMock.mock.calls[0]?.[0].precio_final).toBe(10.01)
+  })
+
+  it('reutiliza la original idéntica tras una subida parcial, sin sobrescribirla', async () => {
+    const e = crearMockSupabase({ errorProducto: new Error('fallo temporal') })
+    const cliente = e.supabase as unknown as SupabaseClient
+    await sincronizarBorrador(borradorEjemplo, cliente)
+    e.uploadFotoMock.mockResolvedValue({
+      data: null,
+      error: { statusCode: '409', message: 'Duplicate' },
+    })
+    e.upsertProductoMock.mockResolvedValue({ data: [{ id: borradorEjemplo.id }], error: null })
+    const resultado = await sincronizarBorrador(borradorEjemplo, cliente)
+    expect(resultado.exito).toBe(true)
+    expect(e.uploadFotoMock.mock.calls.every((c) => c[2].upsert === false)).toBe(true)
+  })
+  it('no confirma una original con bytes diferentes', async () => {
+    const e = crearMockSupabase()
+    e.uploadFotoMock.mockResolvedValue({
+      data: null,
+      error: { statusCode: '409', message: 'Duplicate' },
+    })
+    e.downloadFotoMock.mockResolvedValue({ data: new Blob(['otra foto']), error: null })
+    expect(
+      (await sincronizarBorrador(borradorEjemplo, e.supabase as unknown as SupabaseClient)).exito,
+    ).toBe(false)
+    expect(mockBorradores.has(borradorEjemplo.id)).toBe(true)
+  })
+  it('conserva el borrador si el servidor no confirma ambas filas', async () => {
+    const e = crearMockSupabase()
+    e.confirmarFotoMock.mockResolvedValue({ data: null, error: new Error('sin confirmación') })
+    expect(
+      (
+        await sincronizarBorrador(borradorEjemplo, e.supabase as unknown as SupabaseClient, {
+          borrarTrasConfirmar: true,
+        })
+      ).exito,
+    ).toBe(false)
+    expect(mockBorradores.has(borradorEjemplo.id)).toBe(true)
+  })
 
   it('caso feliz: sincroniza foto, audio, producto y foto_producto sin sobreescribir campos de IA', async () => {
     const {
@@ -140,7 +229,7 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
     expect(uploadFotoMock).toHaveBeenCalledWith(
       'art-uuid-1/prod-uuid-1/original.jpg',
       borradorEjemplo.foto_blob,
-      expect.objectContaining({ upsert: true, contentType: 'image/jpeg' }),
+      expect.objectContaining({ upsert: false, contentType: 'image/jpeg' }),
     )
     expect(uploadAudioMock).toHaveBeenCalledWith(
       'art-uuid-1/prod-uuid-1/descripcion.webm',
@@ -164,11 +253,18 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
         publicada: true,
         posicion: 0,
       }),
+      expect.objectContaining({ ignoreDuplicates: true }),
     )
 
     const borradorActualizado = mockBorradores.get('prod-uuid-1')
-    expect(borradorActualizado?.estado_sincronizacion).toBe('sincronizado')
-    expect(borradorActualizado?.error_sincronizacion).toBeNull()
+    expect(borradorActualizado).toBeUndefined()
+    expect(await listarProductosPersistidos(borradorEjemplo.artesano_id, false)).toContainEqual({
+      id: borradorEjemplo.id,
+      artesano_id: borradorEjemplo.artesano_id,
+      nombre: borradorEjemplo.nombre,
+      estado: 'borrador',
+      precio_final: 100,
+    })
   })
 
   it('si la subida de foto falla, detiene el proceso y marca error sin subir producto', async () => {
@@ -188,6 +284,21 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
     const borradorActualizado = mockBorradores.get('prod-uuid-1')
     expect(borradorActualizado?.estado_sincronizacion).toBe('error')
     expect(borradorActualizado?.error_sincronizacion).toBeTruthy()
+  })
+
+  it('conserva los blobs si no puede guardar metadatos offline tras confirmar el servidor', async () => {
+    const e = crearMockSupabase()
+    const almacenamiento = vi.spyOn(Storage.prototype, 'setItem').mockImplementation(() => {
+      throw new Error('Sin espacio')
+    })
+    try {
+      expect(
+        (await sincronizarBorrador(borradorEjemplo, e.supabase as unknown as SupabaseClient)).exito,
+      ).toBe(false)
+      expect(mockBorradores.get(borradorEjemplo.id)?.foto_blob).toBe(borradorEjemplo.foto_blob)
+    } finally {
+      almacenamiento.mockRestore()
+    }
   })
 
   it('si el upsert del producto falla, marca error y conserva borrador pendiente de reintento', async () => {
@@ -259,5 +370,29 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
     expect(resultados).toHaveLength(1)
     expect(resultados[0]?.id).toBe('prod-uuid-1')
     expect(resultados[0]?.exito).toBe(true)
+  })
+})
+
+describe('productos persistidos tras retirar blobs locales', () => {
+  beforeEach(() => localStorage.clear())
+  it('lista y conserva solo metadatos de la cuenta, disponibles sin red', async () => {
+    const filas = [
+      { id: 'p', artesano_id: 'a', nombre: 'Tejido', estado: 'borrador', precio_final: 40 },
+      { id: 'ajeno', artesano_id: 'b', nombre: 'Privado', estado: 'borrador', precio_final: 50 },
+    ]
+    const order = vi.fn().mockResolvedValue({ data: filas, error: null })
+    const eq = vi.fn().mockReturnValue({ order })
+    const from = vi.fn().mockReturnValue({ select: () => ({ eq }) })
+    const cliente = { from } as unknown as SupabaseClient
+    expect(await listarProductosPersistidos('a', true, cliente)).toEqual([filas[0]])
+    expect(eq).toHaveBeenCalledWith('artesano_id', 'a')
+    expect(await listarProductosPersistidos('a', false, cliente)).toEqual([filas[0]])
+    expect(await listarProductosPersistidos('b', false, cliente)).toEqual([])
+    expect(from).toHaveBeenCalledOnce()
+  })
+  it('caché inválida no muestra productos privados ni falla offline', async () => {
+    localStorage.setItem('ayllu.productos.a', '{invalid')
+    expect(await listarProductosPersistidos('a', false)).toEqual([])
+    expect(await listarProductosPersistidos(undefined, false)).toEqual([])
   })
 })

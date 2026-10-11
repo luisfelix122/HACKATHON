@@ -1,0 +1,107 @@
+.artesano-ayllu {
+  --letra-titulo: var(--letra-rotulo);
+  --casco: #1d3f5e;
+  --casco-hondo: #142e45;
+  --casco-claro: #e6edf3;
+  --cal: #faf8f4;
+  --borda: #a8432c;
+  --brea: #1b1f24;
+  --linea: #e4dfd6;
+  --pacifico: var(--casco);
+  --pacifico-hondo: var(--casco-hondo);
+  --espuma: var(--cal);
+  --sol: #e0b252;
+  --sol-claro: #f6edd9;
+  --noche: var(--casco-hondo);
+  --noche-suave: #555a61;
+  --ola-clara: var(--casco-claro);
+  --arena: #f6edd9;
+  --arena-clara: #faf8f4;
+  --radio-control: 8px;
+  min-height: 100dvh;
+  background: var(--cal);
+  color: var(--casco-hondo);
+  font-size: 18px;
+}
+.artesano-ayllu .barra {
+  background: var(--cal);
+  color: var(--casco-hondo);
+  border-bottom: 3px double var(--casco);
+  box-shadow: 0 3px 0 var(--sol);
+  padding-top: env(safe-area-inset-top);
+}
+.artesano-ayllu .barra-contenido {
+  justify-content: space-between;
+  gap: 1rem;
+}
+.artesano-ayllu .logotipo {
+  color: var(--casco-hondo);
+  font-size: 2rem;
+}
+.logotipo > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.artesano-ayllu .logotipo-emblema {
+  object-fit: contain;
+}
+.artesano-ayllu h1,
+.artesano-ayllu h2,
+.artesano-ayllu h3 {
+  font-family: var(--letra-titulo);
+  font-weight: 600;
+}
+.artesano-ayllu .boton,
+.artesano-ayllu input,
+.artesano-ayllu select,
+.artesano-ayllu textarea {
+  border-radius: 8px;
+  box-shadow: none;
+}
+.artesano-ayllu .casilla {
+  background: white;
+  border: 1px solid var(--linea);
+  box-shadow: none;
+}
+.artesano-ayllu .pestanas {
+  background: var(--cal);
+  color: var(--casco-hondo);
+  border-top: 1px solid var(--linea);
+  padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
+}
+.artesano-ayllu .pestana {
+  color: var(--casco-hondo);
+  min-height: 56px;
+}
+.artesano-ayllu .pestana.active {
+  background: var(--casco-claro);
+}
+.artesano-ayllu .artesano-terminos {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  color: var(--casco-hondo);
+}
+.artesano-ayllu a:focus-visible,
+.artesano-ayllu button:focus-visible {
+  outline: 3px solid var(--casco);
+  outline-offset: 3px;
+}
+.artesano-ayllu ::selection {
+  background: var(--sol-claro);
+  color: var(--casco-hondo);
+}
+@media (max-width: 360px) {
+  .artesano-ayllu .logotipo {
+    font-size: 1.5rem;
+  }
+  .artesano-ayllu .logotipo-emblema {
+    width: 44px;
+  }
+}
+
+/* Alcance APK: prevalece sobre .barra a:not(.boton) sin tocar estilos compartidos. */
+.artesano-ayllu .barra a.artesano-terminos:not(.boton) {
+  color: var(--casco-hondo);
+}

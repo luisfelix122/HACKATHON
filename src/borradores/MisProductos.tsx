@@ -1,21 +1,33 @@
+import { liveQuery } from 'dexie'
 import { useCallback, useEffect, useMemo, useState, useTransition } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Aviso, Boton } from '../compartido/ui/componentes'
-import { useSesion } from '../compartido/sesion'
+import { useSesionApk } from '../acceso/usePerfil'
 import { escucharRed, hayConexion } from './audio'
-import { listarBorradores, solicitarPersistenciaStorage, type BorradorLocal } from './db'
-import { sincronizarBorrador, sincronizarTodosLosBorradores } from './sincronizar'
+import { db, listarBorradores, solicitarPersistenciaStorage, type BorradorLocal } from './db'
+import {
+  sincronizarBorrador,
+  sincronizarTodosLosBorradores,
+  listarProductosPersistidos,
+  type ProductoPersistido,
+} from './sincronizar'
 import './borradores.css'
 
 export function MisProductos() {
   const navigate = useNavigate()
-  const { sesion } = useSesion()
+  const { sesion } = useSesionApk()
   const artesanoId = sesion?.user?.id
 
   const [borradores, setBorradores] = useState<BorradorLocal[]>([])
   const [conectado, setConectado] = useState<boolean>(true)
   const [sincronizando, setSincronizando] = useState<boolean>(false)
   const [mensajeEstado, setMensajeEstado] = useState<string | null>(null)
+  const [remotos, setRemotos] = useState<{
+    cuenta: string
+    productos: ProductoPersistido[]
+  } | null>(null)
+  const [errorRemotos, setErrorRemotos] = useState<string | null>(null)
+  const [intentoRemotos, setIntentoRemotos] = useState(0)
   const [, startTransition] = useTransition()
 
   // Solicitar persistencia y cargar borradores
@@ -24,6 +36,41 @@ export function MisProductos() {
     startTransition(() => {
       setBorradores(items)
     })
+  }, [artesanoId])
+
+  useEffect(() => {
+    if (!artesanoId) return
+    let vigente = true
+    void listarProductosPersistidos(artesanoId, conectado)
+      .then((productos) => {
+        if (vigente) {
+          setRemotos({ cuenta: artesanoId, productos })
+          setErrorRemotos(null)
+        }
+      })
+      .catch(async () => {
+        const productos = await listarProductosPersistidos(artesanoId, false)
+        if (vigente) {
+          setRemotos({ cuenta: artesanoId, productos })
+          setErrorRemotos(
+            'No pudimos actualizar tus productos. Se muestran los últimos datos guardados.',
+          )
+        }
+      })
+    return () => {
+      vigente = false
+    }
+  }, [artesanoId, conectado, borradores.length, intentoRemotos])
+
+  useEffect(() => {
+    if (!artesanoId) return
+    const escucha = liveQuery(() =>
+      db.borrador_local.where('artesano_id').equals(artesanoId).toArray(),
+    ).subscribe({
+      next: setBorradores,
+      error: () => setMensajeEstado('No pudimos leer tus borradores. Reintenta.'),
+    })
+    return () => escucha.unsubscribe()
   }, [artesanoId])
 
   const ejecutarSincronizacionLote = useCallback(async () => {
@@ -84,7 +131,12 @@ export function MisProductos() {
     }
   }
 
-  const tienePendientes = borradores.some(
+  const propios = borradores.filter((b) => b.artesano_id === artesanoId)
+  const productos =
+    remotos && remotos.cuenta === artesanoId
+      ? remotos.productos.filter((p) => !propios.some((b) => b.id === p.id))
+      : []
+  const tienePendientes = propios.some(
     (b) => b.estado_sincronizacion === 'pendiente' || b.estado_sincronizacion === 'error',
   )
 
@@ -95,6 +147,14 @@ export function MisProductos() {
       )}
 
       {mensajeEstado && <Aviso tono="info">{mensajeEstado}</Aviso>}
+      {errorRemotos && (
+        <Aviso tono="error">
+          {errorRemotos}
+          {conectado && (
+            <Boton onClick={() => setIntentoRemotos((i) => i + 1)}>Reintentar productos</Boton>
+          )}
+        </Aviso>
+      )}
 
       <header className="cabecera-mis-productos">
         <div>
@@ -121,7 +181,7 @@ export function MisProductos() {
         </div>
       </header>
 
-      {borradores.length === 0 ? (
+      {propios.length === 0 && productos.length === 0 ? (
         <div className="panel vacio-contenedor">
           <p className="vacio">Aún no tienes productos. Toca Nuevo.</p>
           <div className="vacio-accion">
@@ -132,7 +192,7 @@ export function MisProductos() {
         </div>
       ) : (
         <div className="rejilla-productos">
-          {borradores.map((b) => (
+          {propios.map((b) => (
             <TarjetaBorrador
               key={b.id}
               borrador={b}
@@ -140,6 +200,16 @@ export function MisProductos() {
               sincronizando={sincronizando}
               alReintentar={() => reintentarBorrador(b)}
             />
+          ))}
+          {productos.map((p) => (
+            <article className="tarjeta-producto panel" key={p.id}>
+              <div className="tarjeta-info">
+                <h3>{p.nombre}</h3>
+                <p>{p.estado.replaceAll('_', ' ')}</p>
+                {p.precio_final !== null && <p>S/ {p.precio_final.toFixed(2)}</p>}
+                {conectado && <Link to={`/revisar/${p.id}`}>Revisar y publicar</Link>}
+              </div>
+            </article>
           ))}
         </div>
       )}
@@ -210,9 +280,17 @@ function TarjetaBorrador({
         )}
 
         <div className="tarjeta-acciones">
-          <Link to={`/borrador/${borrador.id}`} className="enlace-editar">
-            Editar borrador
-          </Link>
+          {borrador.estado_sincronizacion === 'sincronizado' ? (
+            <Link to={`/revisar/${borrador.id}`} className="enlace-editar">
+              Revisar y publicar
+            </Link>
+          ) : (
+            !borrador.sincronizacion_iniciada && (
+              <Link to={`/borrador/${borrador.id}`} className="enlace-editar">
+                Editar borrador
+              </Link>
+            )
+          )}
 
           {borrador.estado_sincronizacion === 'error' && conectado && (
             <Boton variante="secundario" cargando={sincronizando} onClick={alReintentar}>

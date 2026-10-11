@@ -1,0 +1,32 @@
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:v1.101.5
+    command: ['--config', '/app/config.yaml', '--host', '0.0.0.0', '--port', '4000']
+    env_file: .env
+    environment:
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:?Configura la clave maestra en .env}
+      IA_KEY_1: ${IA_KEY_1:?Configura la primera llave de Gemini en .env}
+      IA_KEY_2: ${IA_KEY_2:?Configura la segunda llave de Gemini en .env}
+      LITELLM_LOG: WARNING
+    ports:
+      - '127.0.0.1:4000:4000'
+    volumes:
+      - ./config.yaml:/app/config.yaml:ro
+    restart: unless-stopped
+    healthcheck:
+      test:
+        [
+          'CMD',
+          'python',
+          '-c',
+          "import urllib.request; urllib.request.urlopen('http://127.0.0.1:4000/health/liveliness', timeout=5)",
+        ]
+      interval: 30s
+      timeout: 6s
+      retries: 3
+      start_period: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: '10m'
+        max-file: '3'

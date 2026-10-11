@@ -1,6 +1,65 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
 import { obtenerSupabase } from '../compartido/supabase'
 import { db, type BorradorLocal } from './db'
+import { redondearCentavos } from './costeo'
+import { ESTADOS_PRODUCTO, type EstadoProducto } from '../compartido/dominio/producto'
+
+export type ProductoPersistido = {
+  id: string
+  artesano_id: string
+  nombre: string
+  estado: EstadoProducto
+  precio_final: number | null
+}
+export async function listarProductosPersistidos(
+  artesanoId: string | undefined,
+  conectado: boolean,
+  cliente?: SupabaseClient,
+): Promise<ProductoPersistido[]> {
+  if (!artesanoId) return []
+  const clave = `ayllu.productos.${artesanoId}`
+  function validar(datos: unknown): ProductoPersistido[] {
+    if (!Array.isArray(datos)) return []
+    return datos
+      .filter(
+        (p): p is ProductoPersistido =>
+          p &&
+          p.artesano_id === artesanoId &&
+          typeof p.id === 'string' &&
+          typeof p.nombre === 'string' &&
+          ESTADOS_PRODUCTO.includes(p.estado) &&
+          (p.precio_final === null ||
+            (typeof p.precio_final === 'number' && Number.isFinite(p.precio_final))),
+      )
+      .map((p) => ({
+        id: p.id,
+        artesano_id: p.artesano_id,
+        nombre: p.nombre,
+        estado: p.estado,
+        precio_final: p.precio_final,
+      }))
+  }
+  if (!conectado) {
+    try {
+      return validar(JSON.parse(localStorage.getItem(clave) ?? '[]'))
+    } catch {
+      return []
+    }
+  }
+  const { data, error } = await (cliente ?? obtenerSupabase())
+    .from('producto')
+    .select('id,artesano_id,nombre,estado,precio_final')
+    .eq('artesano_id', artesanoId)
+    .order('creado_en', { ascending: false })
+  if (error) throw new Error('No pudimos actualizar tus productos. Reintenta con señal.')
+  const productos = validar(data)
+  try {
+    localStorage.setItem(clave, JSON.stringify(productos))
+  } catch {
+    /* Sin espacio: la lectura remota sigue disponible. */
+  }
+  return productos
+}
 
 export interface ResultadoSincronizacion {
   exito: boolean
@@ -10,7 +69,7 @@ export interface ResultadoSincronizacion {
 
 export function obtenerExtensionAudio(mimeType?: string | null): string {
   if (!mimeType) return 'webm'
-  if (mimeType.includes('mp4')) return 'mp4'
+  if (mimeType.includes('mp4')) return 'm4a'
   if (mimeType.includes('ogg')) return 'ogg'
   if (mimeType.includes('aac')) return 'aac'
   if (mimeType.includes('wav')) return 'wav'
@@ -25,7 +84,7 @@ export function obtenerExtensionAudio(mimeType?: string | null): string {
  * 4. Hace upsert en la tabla 'foto_producto' como fila original (publicada = true).
  * 5. Si todo tiene éxito, marca el borrador local como 'sincronizado' (o lo borra si se especifica).
  */
-export async function sincronizarBorrador(
+async function sincronizarUna(
   borrador: BorradorLocal,
   cliente: SupabaseClient = obtenerSupabase(),
   opciones: { borrarTrasConfirmar?: boolean } = {},
@@ -34,22 +93,43 @@ export async function sincronizarBorrador(
   const extensionAudio = obtenerExtensionAudio(borrador.audio_mime)
   const rutaAudio = `${borrador.artesano_id}/${borrador.id}/descripcion.${extensionAudio}`
 
+  await db.borrador_local.put({ ...borrador, sincronizacion_iniciada: true })
+
   // 1. Subir foto original
   try {
     const { error: errorFoto } = await cliente.storage
       .from('fotos')
       .upload(rutaFoto, borrador.foto_blob, {
-        upsert: true,
+        upsert: false,
         contentType: 'image/jpeg',
       })
 
     if (errorFoto) {
-      throw new Error(`Error en storage de fotos: ${errorFoto.message}`)
+      const detalle = errorFoto as unknown as {
+        status?: number
+        statusCode?: string
+        error?: string
+        code?: string
+      }
+      const duplicado =
+        detalle.status === 409 ||
+        detalle.statusCode === '409' ||
+        ['Duplicate', 'ResourceAlreadyExists', 'KeyAlreadyExists'].includes(
+          detalle.error ?? detalle.code ?? detalle.statusCode ?? '',
+        )
+      if (!duplicado) throw new Error(`Error en storage de fotos: ${errorFoto.message}`)
+      const existente = await cliente.storage.from('fotos').download(rutaFoto)
+      if (existente.error || !existente.data)
+        throw new Error('No pudimos confirmar la foto original.')
+      const [a, b] = await Promise.all([leerBytes(borrador.foto_blob), leerBytes(existente.data)])
+      if (a.length !== b.length || !a.every((v, i) => v === b[i]))
+        throw new Error('La foto original del servidor es diferente. Conservamos el borrador.')
     }
   } catch (error) {
     const mensaje = error instanceof Error ? error.message : 'Error desconocido al subir foto'
     await db.borrador_local.put({
       ...borrador,
+      sincronizacion_iniciada: true,
       estado_sincronizacion: 'error',
       error_sincronizacion: mensaje,
       actualizado_en: new Date().toISOString(),
@@ -77,6 +157,7 @@ export async function sincronizarBorrador(
       const mensaje = error instanceof Error ? error.message : 'Error desconocido al subir audio'
       await db.borrador_local.put({
         ...borrador,
+        sincronizacion_iniciada: true,
         estado_sincronizacion: 'error',
         error_sincronizacion: mensaje,
         actualizado_en: new Date().toISOString(),
@@ -87,18 +168,21 @@ export async function sincronizarBorrador(
 
   // 3. Upsert a tabla 'producto' (sin revision_ia ni ia_intentos, contratos.md §Permisos)
   try {
-    const { error: errorProd } = await cliente.from('producto').upsert({
-      id: borrador.id,
-      artesano_id: borrador.artesano_id,
-      estado: 'borrador',
-      nombre: borrador.nombre,
-      descripcion_texto: borrador.descripcion_texto || null,
-      audio_ruta: rutaAudioFinal,
-      costeo: borrador.costeo || null,
-      precio_final: borrador.precio_final,
-      disponibilidad: borrador.disponibilidad,
-      plazo_dias: borrador.disponibilidad === 'a_pedido' ? borrador.plazo_dias : null,
-    })
+    const { error: errorProd } = await cliente.from('producto').upsert(
+      {
+        id: borrador.id,
+        artesano_id: borrador.artesano_id,
+        estado: 'borrador',
+        nombre: borrador.nombre,
+        descripcion_texto: borrador.descripcion_texto || null,
+        audio_ruta: rutaAudioFinal,
+        costeo: borrador.costeo || null,
+        precio_final: redondearCentavos(borrador.precio_final),
+        disponibilidad: borrador.disponibilidad,
+        plazo_dias: borrador.disponibilidad === 'a_pedido' ? borrador.plazo_dias : null,
+      },
+      { onConflict: 'id', ignoreDuplicates: true },
+    )
 
     if (errorProd) {
       throw new Error(`Error al guardar producto: ${errorProd.message}`)
@@ -107,6 +191,7 @@ export async function sincronizarBorrador(
     const mensaje = error instanceof Error ? error.message : 'Error al registrar producto'
     await db.borrador_local.put({
       ...borrador,
+      sincronizacion_iniciada: true,
       estado_sincronizacion: 'error',
       error_sincronizacion: mensaje,
       actualizado_en: new Date().toISOString(),
@@ -116,15 +201,18 @@ export async function sincronizarBorrador(
 
   // 4. Upsert a tabla 'foto_producto'
   try {
-    const { error: errorFotoProd } = await cliente.from('foto_producto').upsert({
-      id: borrador.foto_id,
-      producto_id: borrador.id,
-      origen: 'original',
-      variante: null,
-      ruta: rutaFoto,
-      publicada: true,
-      posicion: 0,
-    })
+    const { error: errorFotoProd } = await cliente.from('foto_producto').upsert(
+      {
+        id: borrador.foto_id,
+        producto_id: borrador.id,
+        origen: 'original',
+        variante: null,
+        ruta: rutaFoto,
+        publicada: true,
+        posicion: 0,
+      },
+      { onConflict: 'id', ignoreDuplicates: true },
+    )
 
     if (errorFotoProd) {
       throw new Error(`Error al registrar foto original: ${errorFotoProd.message}`)
@@ -133,6 +221,7 @@ export async function sincronizarBorrador(
     const mensaje = error instanceof Error ? error.message : 'Error al registrar foto'
     await db.borrador_local.put({
       ...borrador,
+      sincronizacion_iniciada: true,
       estado_sincronizacion: 'error',
       error_sincronizacion: mensaje,
       actualizado_en: new Date().toISOString(),
@@ -140,12 +229,77 @@ export async function sincronizarBorrador(
     return { exito: false, id: borrador.id, error: mensaje }
   }
 
+  // El upsert ignorado puede corresponder a un producto que ya avanzó con IA.
+  // Confirmar contenido evita marcar recibido un borrador diferente.
+  try {
+    const p = await cliente
+      .from('producto')
+      .select(
+        'id,artesano_id,estado,nombre,descripcion_texto,audio_ruta,costeo,precio_final,disponibilidad,plazo_dias',
+      )
+      .eq('id', borrador.id)
+      .single()
+    const f = await cliente
+      .from('foto_producto')
+      .select('id,producto_id,origen,ruta')
+      .eq('id', borrador.foto_id)
+      .single()
+    if (p.error || f.error || !p.data || !f.data)
+      throw new Error('No pudimos confirmar el producto y su foto.')
+    const esperados = {
+      id: borrador.id,
+      artesano_id: borrador.artesano_id,
+      nombre: borrador.nombre,
+      descripcion_texto: borrador.descripcion_texto || null,
+      audio_ruta: rutaAudioFinal,
+      precio_final: redondearCentavos(borrador.precio_final),
+      disponibilidad: borrador.disponibilidad,
+      plazo_dias: borrador.disponibilidad === 'a_pedido' ? borrador.plazo_dias : null,
+    }
+    const datos = p.data as Record<string, unknown>
+    if (
+      !Object.entries(esperados).every(([k, v]) => datos[k] === v) ||
+      !Object.entries(borrador.costeo ?? {}).every(([k, v]) => p.data.costeo?.[k] === v) ||
+      f.data.id !== borrador.foto_id ||
+      f.data.producto_id !== borrador.id ||
+      f.data.origen !== 'original' ||
+      f.data.ruta !== rutaFoto
+    )
+      throw new Error('El servidor tiene datos diferentes. Conservamos tu borrador.')
+    // Retener solo metadatos permite encontrar el producto sin conexión tras borrar los blobs.
+    if (!ESTADOS_PRODUCTO.includes(p.data.estado))
+      throw new Error('No pudimos confirmar el estado del producto.')
+    const anteriores = await listarProductosPersistidos(borrador.artesano_id, false)
+    localStorage.setItem(
+      `ayllu.productos.${borrador.artesano_id}`,
+      JSON.stringify([
+        ...anteriores.filter((item) => item.id !== borrador.id),
+        {
+          id: borrador.id,
+          artesano_id: borrador.artesano_id,
+          nombre: p.data.nombre,
+          estado: p.data.estado,
+          precio_final: p.data.precio_final,
+        },
+      ]),
+    )
+  } catch (error) {
+    const mensaje = error instanceof Error ? error.message : 'Sin confirmación del servidor'
+    await db.borrador_local.put({
+      ...borrador,
+      sincronizacion_iniciada: true,
+      estado_sincronizacion: 'error',
+      error_sincronizacion: mensaje,
+    })
+    return { exito: false, id: borrador.id, error: mensaje }
+  }
   // 5. Confirmación en base local
-  if (opciones.borrarTrasConfirmar) {
+  if (opciones.borrarTrasConfirmar !== false) {
     await db.borrador_local.delete(borrador.id)
   } else {
     await db.borrador_local.put({
       ...borrador,
+      sincronizacion_iniciada: true,
       audio_ruta: rutaAudioFinal,
       estado_sincronizacion: 'sincronizado',
       error_sincronizacion: null,
@@ -154,6 +308,20 @@ export async function sincronizarBorrador(
   }
 
   return { exito: true, id: borrador.id }
+}
+
+const enCurso = new Map<string, Promise<ResultadoSincronizacion>>()
+export function sincronizarBorrador(
+  borrador: BorradorLocal,
+  cliente: SupabaseClient = obtenerSupabase(),
+  opciones: { borrarTrasConfirmar?: boolean } = {},
+): Promise<ResultadoSincronizacion> {
+  const clave = `${borrador.artesano_id}/${borrador.id}`
+  const anterior = enCurso.get(clave)
+  if (anterior) return anterior
+  const tarea = sincronizarUna(borrador, cliente, opciones).finally(() => enCurso.delete(clave))
+  enCurso.set(clave, tarea)
+  return tarea
 }
 
 /**
@@ -178,4 +346,14 @@ export async function sincronizarTodosLosBorradores(
   }
 
   return resultados
+}
+
+async function leerBytes(blob: Blob): Promise<Uint8Array> {
+  if (blob.arrayBuffer) return new Uint8Array(await blob.arrayBuffer())
+  return new Promise((resolve, reject) => {
+    const lector = new FileReader()
+    lector.onload = () => resolve(new Uint8Array(lector.result as ArrayBuffer))
+    lector.onerror = () => reject(new Error('No pudimos leer la foto original.'))
+    lector.readAsArrayBuffer(blob)
+  })
 }

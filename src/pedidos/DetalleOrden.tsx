@@ -24,7 +24,7 @@ export function DetalleOrden() {
     mensajes: MensajeOrden[]
     contexto: ContextoAcciones | null
   } | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState<{ clave: string; mensaje: string } | null>(null)
   const [sinTiempoReal, setSinTiempoReal] = useState(false)
   const [intento, setIntento] = useState(0)
   const clave = `${usuario}:${id}`
@@ -44,7 +44,10 @@ export function DetalleOrden() {
         }
       } catch (causa) {
         if (vigente && numero === peticion)
-          setError(causa instanceof Error ? causa.message : 'No pudimos leer el pedido.')
+          setError({
+            clave,
+            mensaje: causa instanceof Error ? causa.message : 'No pudimos leer el pedido.',
+          })
       }
     }
     void cargar()
@@ -68,6 +71,7 @@ export function DetalleOrden() {
     }
   }, [id, usuario, clave, intento])
   const actual = resultado?.clave === clave ? resultado : null
+  const errorActual = error?.clave === clave ? error.mensaje : null
   return (
     <main className="pagina pagina-artesano pedidos">
       <Link className="pedido-volver" to="/pedidos">
@@ -79,9 +83,9 @@ export function DetalleOrden() {
         <Aviso>Cargando…</Aviso>
       ) : !sesion ? (
         <Aviso>Ingresa para ver este pedido.</Aviso>
-      ) : error ? (
+      ) : errorActual && !actual?.orden ? (
         <Aviso tono="error">
-          {error}
+          {errorActual}
           <Boton icono="adelante" onClick={() => setIntento((valor) => valor + 1)}>
             Reintentar
           </Boton>
@@ -92,6 +96,13 @@ export function DetalleOrden() {
         <Aviso>No encontramos este pedido o no pertenece a tu cuenta.</Aviso>
       ) : (
         <>
+          {errorActual && (
+            <Aviso tono="error">
+              No pudimos actualizar el pedido. Se muestran los últimos datos disponibles.{' '}
+              {errorActual}
+              <Boton onClick={() => setIntento((valor) => valor + 1)}>Reintentar</Boton>
+            </Aviso>
+          )}
           <div className="pedido-acciones">
             <Boton
               variante="secundario"

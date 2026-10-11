@@ -16,6 +16,24 @@
   padding-bottom: var(--e3);
 }
 
+.boton-volver-atras {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  background: none;
+  border: none;
+  color: var(--pacifico);
+  font-weight: 600;
+  font-size: var(--tam-chico);
+  cursor: pointer;
+  padding: 0 0 var(--e2) 0;
+  text-decoration: none;
+}
+
+.boton-volver-atras:hover {
+  text-decoration: underline;
+}
+
 .revisar-titulo {
   font-family: var(--letra-rotulo);
   font-size: var(--tam-h1);

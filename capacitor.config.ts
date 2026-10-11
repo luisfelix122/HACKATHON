@@ -6,6 +6,7 @@ const config: CapacitorConfig = {
   appId: 'pe.ayllu.artesano',
   appName: 'Ayllu',
   webDir: 'dist-artesano',
+  plugins: { SystemBars: { insetsHandling: 'native' } },
 }
 
 export default config
