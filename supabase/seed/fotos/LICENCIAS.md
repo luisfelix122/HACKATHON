@@ -1,6 +1,6 @@
 # Fotos por producto — PRP 007
 
-Selección revisada contra los 21 productos publicados existentes. Se retiraron las referencias por familia que mostraban otro objeto. Hay cinco archivos seleccionados y 14 destinos pendientes (12 publicados, uno retirado y uno borrador). Ningún archivo pendiente debe sustituirse por una imagen de otra pieza. Los productos 05, 17, 19 y 20 se eliminaron de la semilla (CC-16) por no hallarse foto reutilizable.
+Selección revisada contra los 17 productos publicados existentes (CC-16). Hay doce archivos seleccionados del mismo tipo de objeto, con diferencias declaradas: no se usa la imagen de otra pieza. La embarcación a escala es una coincidencia visual parcial: no acredita una chalana de Cabo Blanco. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
 
 Estas cinco imágenes son referencias de demo del mismo tipo de objeto, no fotos originales de los artesanos ficticios. Las diferencias y los materiales no verificables se declaran a continuación. La embarcación a escala es una coincidencia visual parcial: no acredita una chalana de Cabo Blanco. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
 
@@ -10,99 +10,97 @@ Los créditos se guardan en `ficha.descripcion` al aplicar la semilla sobre una 
 
 | Producto | Foto y autor | Fuente / licencia | Correspondencia y límites |
 | --- | --- | --- | --- |
+| 01: Top de bikini Atardecer | `10000000-0000-0000-0000-000000000001.jpg` — Lucced | [Frente top tejido a crochet](https://commons.wikimedia.org/wiki/File:Frente_top_tejido_a_crochet.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | Top naranja tejido a crochet, coincidencia alta. Algodón pima no acreditado por la foto. |
 | 03: Sombrero flexible de crochet | `10000000-0000-0000-0000-000000000003.jpg` — dani0010 | [Natural crocheted sun hat](https://www.flickr.com/photos/21609187@N00/3451315456) · [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | Sombrero de crochet con ala. Algodón pima/grueso no acreditado por la foto. |
+| 04: Bolso Red de Pescador | `10000000-0000-0000-0000-000000000004.jpg` — Alin Luna | [Close-up shot of knitted handbag](https://www.pexels.com/photo/close-up-shot-of-knitted-handbag-6119785/) · [licencia Pexels](https://www.pexels.com/license/) (libre uso, sin atribución obligatoria) | Bolsos artesanales de macramé en fibra natural. Trama tipo red y algodón no acreditados. |
+| 06: Tapiz Olas | `10000000-0000-0000-0000-000000000006.jpg` — rocknwool | [A white macrame hanging on a wall](https://unsplash.com/photos/a-white-macrame-hanging-on-a-wall-FBhzkKxiqRs) · [licencia Unsplash](https://unsplash.com/license) (libre uso, sin atribución obligatoria) | Tapiz blanco de macramé colgado en pared. La foto muestra una etiqueta de marca del autor; patrón de olas y rama no verificados. |
 | 07: Sombrero chalán de paja toquilla fina | `10000000-0000-0000-0000-000000000007.jpg` — Hex | [Panama hat.jpg](https://commons.wikimedia.org/wiki/File:Panama_hat.jpg) · [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) | Sombrero de paja toquilla; referencia ecuatoriana, no evidencia de origen piurano. |
 | 10: Chalana de Cabo Blanco a escala | `10000000-0000-0000-0000-000000000010.jpg` — roger4336 | [São Paulo - Jangada Fishing Boat Model](https://www.flickr.com/photos/24736216@N07/10445430445) · [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | Modelo de embarcación pesquera con vela (jangada brasileña), no una chalana de Cabo Blanco. Coincidencia visual parcial; no acredita madera balsa. |
 | 12: Balsa miniatura atada a mano | `10000000-0000-0000-0000-000000000012.jpg` — Autor desconocido | [Bolivia, Mosetenes raft, model in the Vatican Museums.jpg](https://commons.wikimedia.org/wiki/File:Bolivia,_Mosetenes_raft,_model_in_the_Vatican_Museums.jpg) · [Public domain](https://commons.wikimedia.org/wiki/File:Bolivia,_Mosetenes_raft,_model_in_the_Vatican_Museums.jpg) | Miniatura de balsa con piezas atadas. No acredita la especie de madera ni la procedencia. |
 | 13: Aretes de perla cultivada en plata | `10000000-0000-0000-0000-000000000013.jpg` — NATALIA PHOTOS | [Beautiful Handmade Sterling Silver Pearl Earrings](https://www.flickr.com/photos/71099398@N00/2208368349) · [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | Aretes artesanales de perla y plata. La pureza 950 y la procedencia de las perlas no están acreditadas por la imagen. |
+| 08: Cartera de mano de paja toquilla | `10000000-0000-0000-0000-000000000008.jpg` — Ebiojo | [Straw bag](https://commons.wikimedia.org/wiki/File:Straw_bag.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | Bolso redondo tejido de paja/fibra natural con correa. El asa es de fibra trenzada, no de cuero; toquilla no acreditada. |
+| 09: Abanico Frescor | `10000000-0000-0000-0000-000000000009.jpg` — James Moore200 | [Picture of a woven hand-fan](https://commons.wikimedia.org/wiki/File:Picture_of_a_woven_hand-fan.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | Abanicos redondos tejidos en contexto de mercado. Colores, material paja y tintes naturales no acreditados. |
+| 14: Collar Gota de Mar | `10000000-0000-0000-0000-000000000014.jpg` — Cooper Hewitt, Smithsonian Design Museum | [Pendant (England), 1909](https://commons.wikimedia.org/wiki/File:Pendant_(England),_1909_(CH_68245593).jpg) · dominio público | Colgante de plata con perla barroca en cadena fina. Joya histórica de 1909 con esmalte; foto de museo. |
+| 21: Tarjetero Marino | `10000000-0000-0000-0000-000000000021.jpg` — 掬茶 | [Eel skin card case](https://commons.wikimedia.org/wiki/File:Eel_skin_card_case.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | Tarjetero de piel de pez con brillo típico del cuero de pescado. Especie (pez bruja, no perico) y color no acreditados. |
 
-Se verificaron los metadatos de Wikimedia y, para las tres fuentes de Flickr, el enlace Creative Commons en la página original. No se eliminan marcas de autor ni se alteran colores, formas o texturas. Solo se normaliza orientación y se reduce/comprime a JPEG. Las fotos CC BY-SA conservan esa licencia, independiente de la licencia del código.
+Se verificaron los metadatos de Wikimedia y, para las fuentes de Flickr, Pexels y Unsplash, la licencia en la página original. No se eliminan marcas de autor ni se alteran colores, formas o texturas. Solo se normaliza tamaño (máximo 1000 px) y se reduce/comprime a JPEG. Las fotos CC BY-SA conservan esa licencia, independiente de la licencia del código. Se descartó por incongruente un supuesto llavero de pez (CC0, Fish_keychain.jpg de Ranjima np): la imagen muestra un adorno colgante de templo, no un llavero de madera.
 
 ## Archivos y rutas de carga
 
 | Archivo local | Bytes | Ruta en el bucket público `fotos` |
 | --- | ---: | --- |
+| `10000000-0000-0000-0000-000000000001.jpg` | 64297 | `00000000-0000-0000-0000-000000000001/10000000-0000-0000-0000-000000000001/original.jpg` |
 | `10000000-0000-0000-0000-000000000003.jpg` | 62097 | `00000000-0000-0000-0000-000000000001/10000000-0000-0000-0000-000000000003/original.jpg` |
+| `10000000-0000-0000-0000-000000000004.jpg` | 274446 | `00000000-0000-0000-0000-000000000002/10000000-0000-0000-0000-000000000004/original.jpg` |
+| `10000000-0000-0000-0000-000000000006.jpg` | 119458 | `00000000-0000-0000-0000-000000000002/10000000-0000-0000-0000-000000000006/original.jpg` |
 | `10000000-0000-0000-0000-000000000007.jpg` | 199105 | `00000000-0000-0000-0000-000000000003/10000000-0000-0000-0000-000000000007/original.jpg` |
+| `10000000-0000-0000-0000-000000000008.jpg` | 105031 | `00000000-0000-0000-0000-000000000003/10000000-0000-0000-0000-000000000008/original.jpg` |
+| `10000000-0000-0000-0000-000000000009.jpg` | 133261 | `00000000-0000-0000-0000-000000000003/10000000-0000-0000-0000-000000000009/original.jpg` |
 | `10000000-0000-0000-0000-000000000010.jpg` | 103648 | `00000000-0000-0000-0000-000000000004/10000000-0000-0000-0000-000000000010/original.jpg` |
 | `10000000-0000-0000-0000-000000000012.jpg` | 82072 | `00000000-0000-0000-0000-000000000004/10000000-0000-0000-0000-000000000012/original.jpg` |
 | `10000000-0000-0000-0000-000000000013.jpg` | 37809 | `00000000-0000-0000-0000-000000000005/10000000-0000-0000-0000-000000000013/original.jpg` |
+| `10000000-0000-0000-0000-000000000014.jpg` | 73033 | `00000000-0000-0000-0000-000000000005/10000000-0000-0000-0000-000000000014/original.jpg` |
+| `10000000-0000-0000-0000-000000000021.jpg` | 99691 | `00000000-0000-0000-0000-000000000007/10000000-0000-0000-0000-000000000021/original.jpg` |
+
+El archivo del producto 10 existe en el repo pero está excluido de la carga hasta aprobación específica de su coincidencia parcial, así que su ruta aún no tiene objeto en Storage.
 
 Todos los JPEG tienen como máximo 1000 px en su lado mayor y menos de 300 KB (300 000 bytes).
 
 ## Fotos pendientes
 
-### Candidatos de referencia para los 12 productos publicados pendientes
+### Candidatos de referencia para los productos publicados aún sin foto
 
-La búsqueda incluye ahora una fuente específica para **cada uno de los 12 productos**.
-Son referencias para elegir imágenes: no están aprobadas para cargar ni se incorporan
-como originales. No se ha confirmado una licencia de reutilización de estas fotografías
-comerciales. La coincidencia se apoya en las descripciones de las fuentes; los materiales
-no se dan por probados solo por el aspecto de la foto.
+Para 02, 15, 16 y 18 solo hay referencias aproximadas (diseño o contexto distinto);
+para 11 no se halló foto reutilizable. Ninguna está aprobada para cargar.
 
 | Producto | Candidato de referencia | Coincidencia / diferencia por revisar |
 | --- | --- | --- |
-| 01: Top de bikini Atardecer | [Bikini naranja de crochet con flores](https://www.crochetkingdom.com/orange-crochet-bikini-with-flower-motifs/) | Naranja, crochet y algodón; motivos florales. No acredita algodón pima. Que el patrón sea gratuito no implica permiso para reutilizar su foto. |
-| 02: Falda larga calada | [Crochet Beach Maxi Skirt blanca — AmiEmi](https://amiemi.com/es/products/crochet-beach-maxi-skirt) | Falda larga blanca de playa; confirmar técnica y composición de algodón. |
-| 04: Bolso Red de Pescador | [Trenza Macrame Net Bag — Tin Marin](https://tinmarinbrand.com/products/trenza-macrame-net-bag) | Bolso de red de macramé y algodón; referencia fabricada en México. |
-| 06: Tapiz Olas | [Macrame Wave Wall Hanging — OlivetCo](https://www.etsy.com/listing/695646606/macrame-wave-wall-hanging) | Patrón de ola, algodón y rama recogida en playa; revisar escala y encuadre. |
-| 08: Cartera de mano de toquilla | [Cartera cilíndrica — Asociación Virgen del Pilar](https://pajatoquilla.ruraqmaki.pe/producto/cartera-colindro-color-marron-oscuro) | Toquilla tejida y asas de cuero, Catacaos; diseño cilíndrico marrón. |
-| 09: Abanico Frescor | [Woven Straw Hand Fan — Sensi Studio](https://www.farfetch.com/ph/shopping/women/sensi-studio-woven-straw-hand-fan-item-30255167.aspx) | Abanico redondo de toquilla; incorpora cuero y marca en el mango. |
-| 11: Llavero Pez Espada | [Wooden Fish Keychain — PongiWorks](https://www.etsy.com/listing/242207688/wooden-fish-keychain-walnut-wood-animal) | Candidato aproximado: pez de madera y aro metálico; es nogal y no se acredita pez espada. No asignar como coincidencia exacta. |
-| 14: Collar Gota de Mar | [Collar Perla irregular — La Femme Unchained](https://www.lafemmeunchained.com/collections/collares/products/collar-perla-irregular) | Perla natural irregular y plata 925; lleva marco ennegrecido adicional. |
-| 15: Pulsera Tres Perlas | [Triple Scoop Macramé — Klara Haloho](https://www.klarahaloho.com/products/triple-scoop-macrame-freshwater-pearl-bracelet) | Tres perlas de agua dulce en macramé; usa cuero, no hilo encerado. Candidato aproximado. |
-| 16: Collar Oro Rojo | [Red & Swirls — colgante de Spondylus rojo](https://www.etsy.com/listing/1017166576/red-swirls-rare-red-spiny-oyster-red) | Colgante central rojo; montura de plata, no alpaca. Candidato aproximado. |
-| 18: Pulsera de chispas moradas | [Pulsera Spondylus Morado — Viancca](https://viancca.com.pe/producto/pulsera-spondylus-morado/) | Coincide material y color; candidata aproximada de incrustación, no fragmentos ensartados en nylon. |
-| 21: Tarjetero Marino | [Billetera tarjetero de cuero de pescado — QAYA / HAF Perú](https://hafperu.org/en-pe/products/billetera-tarjetero-by-qaya) | Tarjetero artesanal peruano de cuero de pescado; combina cuero ovino y bovino. Especie de pescado sin confirmar. |
+| 02: Falda larga calada | [Vestido playero de crochet — Velroy Fernandes / Pexels](https://www.pexels.com/photo/woman-in-a-crochet-beach-dress-and-sun-hat-kicking-sea-wave-18539313/) · licencia Pexels de libre uso | Es vestido, no falda separada; color y composición sin confirmar. Requiere aprobación. |
+| 11: Llavero Pez Espada | Sin candidata: la única referencia libre hallada (Fish_keychain.jpg, CC0) muestra un adorno colgante de templo, no un llavero de madera. Descartada por incongruente. | Pendiente de foto propia. |
+| 15: Pulsera Tres Perlas | [Pearl crochet bracelet — Durova / Commons](https://commons.wikimedia.org/wiki/File:Pearl_crochet_bracelet_flat.jpg) · [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) | Pulsera de hilo tejido con perlas de agua dulce, pero es crochet con muchas perlas pequeñas, no macramé de tres perlas. Requiere aprobación. |
+| 16: Collar Oro Rojo | [Collar chimú con Spondylus — Daderot / Commons](https://commons.wikimedia.org/wiki/File:Necklace,_probably_Chan_Chan,_spondylus_and_mussel_shells_with_stone_beads_and_mother-of-pearl_tabs_-_Chimu_objects_in_the_American_Museum_of_Natural_History_-_DSC06135.JPG) · CC0 | Pieza arqueológica de múltiples cuentas con Spondylus, no colgante rojo único moderno. Requiere aprobación. |
+| 18: Pulsera de chispas moradas | [Brazaletes de Spondylus — Vajsov / Commons](https://commons.wikimedia.org/wiki/File:Spondilusovi_grivni_grob_644_maz_H_III.tif) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | Brazaletes macizos blancos arqueológicos, no fragmentos morados ensartados. Requiere aprobación. |
 
-Alternativas con licencia de uso comprobada, pero diseño diferente:
+Alternativas con licencia de uso comprobada que no se usaron, por diseño diferente:
 [collar de una perla redonda CC0 — Sound Media](https://www.publicdomainpictures.net/en/view-image.php?image=366252&picture=silver-necklace-with-pearl-pendant),
 [tapiz geométrico — rocknwool / Unsplash](https://unsplash.com/photos/yas-CnrBwTw),
 [tapices en conjunto — Pexels](https://www.pexels.com/photo/macrame-wall-hanging-8503255/) y
 [bolsos de trama cerrada — Pexels](https://www.pexels.com/it-it/foto/borse-in-macrame-fatte-a-mano-appese-in-un-mercato-33194363/).
 
 Estas referencias no significan que el autor avale Ayllu ni que las piezas pertenezcan
-a los vendedores ficticios. Para publicar una fotografía comercial hace falta permiso
-aplicable a esa imagen. No se generaron imágenes con IA.
+a los vendedores ficticios. No se generaron imágenes con IA.
 
 | Producto | Estado |
 | --- | --- |
-| 01: Top de bikini Atardecer tejido a crochet | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 02: Falda larga calada para la playa | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 04: Bolso de macramé Red de Pescador | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 06: Tapiz de macramé Olas | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 08: Cartera de mano de paja toquilla | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 09: Abanico de paja toquilla Frescor | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 11: Llavero tallado Pez Espada | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 14: Collar Gota de Mar con perla | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 15: Pulsera de macramé Tres Perlas | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 16: Collar Oro Rojo de Spondylus | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 18: Pulsera de chispas de Spondylus morado | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 21: Tarjetero Marino de cuero de pescado | Candidato enlazado arriba; permiso de foto y diferencias pendientes de resolver. |
-| 22: Top edición especial (retirado) | Fuera de los 12 publicados pendientes; requiere foto correspondiente. |
-| 23: Billetera en creación (borrador) | Fuera de los 12 publicados pendientes; requiere foto correspondiente. |
+| 01, 03, 04, 06–09, 12–14, 21 (11 publicados) | Foto de referencia cargada en Storage con atribución en ficha. |
+| 02: Falda larga calada para la playa | Referencia aproximada (vestido, no falda); requiere aprobación. Sin foto en Storage. |
+| 10: Chalana a escala | Referencia parcial (jangada brasileña); requiere aprobación específica. Sin foto en Storage. |
+| 11: Llavero tallado Pez Espada | Sin foto reutilizable; candidata descartada por incongruente. Sin foto en Storage. |
+| 15: Pulsera de macramé Tres Perlas | Referencia aproximada (crochet de muchas perlas); requiere aprobación. Sin foto en Storage. |
+| 16: Collar Oro Rojo de Spondylus | Referencia aproximada (pieza arqueológica); requiere aprobación. Sin foto en Storage. |
+| 18: Pulsera de chispas de Spondylus morado | Referencia aproximada (brazaletes blancos); requiere aprobación. Sin foto en Storage. |
+| 22: Top edición especial (retirado) | Fuera de los publicados; requiere foto correspondiente. |
+| 23: Billetera en creación (borrador) | Fuera de los publicados; requiere foto correspondiente. |
 
-Para cerrar estos pendientes se necesitan fotos propias de las piezas o permiso del autor de una imagen realmente coincidente. Las fotos comerciales encontradas sin licencia de reutilización no se incluyen. No se generaron imágenes con IA.
+Para cerrar estos pendientes se necesitan fotos propias de las piezas o la aprobación de las referencias aproximadas. No se generaron imágenes con IA.
 
 ## Carga y validación
 
 1. Confirmar autorización y permisos de escritura sobre el servidor de demo. No resetear la BD compartida ni recrear vendedores/productos.
-2. Cargar únicamente los JPEG 03, 07 y 13 después de añadir su atribución, tras comprobar que el objeto no existe. El 12 ya está cargado: verificar y omitir. No sobrescribir originales existentes. El 10 queda excluido hasta recibir aprobación específica de su coincidencia visual parcial.
+2. Cargar únicamente JPEG con atribución ya aplicada en la ficha, tras comprobar que el objeto no existe. Verificar los existentes y omitirlos. No sobrescribir originales. El 10 queda excluido hasta aprobación específica; 02/15/16/18 hasta su aprobación; 11 sin candidata.
 3. Revisar créditos de las fichas existentes antes de publicar: la semilla no sobrescribe registros previos.
 4. Comprobar vitrina a 360 y 1440 px y `/admin` con una cuenta real. Los usuarios de Auth de la semilla no sirven para iniciar sesión.
 5. Los teléfonos ficticios se conservan por indicación de Johann para esta etapa. No usarlos para contactar a personas; el reemplazo por el número consentido del equipo queda para antes de la demo.
 
 La semilla conserva 10 perfiles, 19 productos (17 publicados), 19 registros SQL de fotos, dos órdenes y dos mensajes al aplicarse dos veces. Los registros SQL pendientes no implican que sus archivos existan en Storage.
 
-## Estado comprobado el 11 de octubre de 2026 (cierre parcial)
+## Estado comprobado el 11 de octubre de 2026 (segunda carga)
 
-- Carga administrativa mediante el importador restringido `ayllu-import` (SSH por clave, alcance 03/07/12/13, `upsert=false`, sin cambios de RLS ni políticas).
-- Fotos 03, 07 y 13 recibidas y cargadas tras aplicar su atribución en `producto.ficha.descripcion` (solo ese campo, resto de la ficha intacto) y activar la política. Resultado `uploaded`, HTTP 200 en POST y GET público.
-- Foto 12 ya existente: verificada y conservada (`verified_existing_skipped`), sin sobrescritura.
-- GET público final: 03 → HTTP 200 `image/jpeg` 62 097 bytes; 07 → HTTP 200 `image/jpeg` 199 105 bytes; 12 → HTTP 200 `image/jpeg` 82 072 bytes; 13 → HTTP 200 `image/jpeg` 37 809 bytes. Cada archivo coincide en SHA256 y medidas con el JPEG revisado del commit.
-- Producto 10 excluido a propósito por coincidencia parcial (jangada brasileña, no chalana); su objeto sigue ausente y no se cargó.
-- `supabase/seed.sql` ya contiene los créditos de 03/07/12/13 y el texto "Foto correspondiente pendiente" en los 12 publicados sin foto utilizable; coincide con las fichas del servidor tras el parche.
-- CC-16 (2026-10-11): se eliminaron de la semilla los productos 05, 17, 19 y 20 por no hallarse foto reutilizable; la orden enviada pasó de la 19 a la 21 (mismo artesano y material), con total S/105.00. La semilla queda en 19 productos (17 publicados).
+- Carga administrativa mediante el importador restringido `ayllu-import` (SSH por clave, alcance ampliado a 01/03/04/06–09/12–14/21, `upsert=false`, sin cambios de RLS; el 10 y otros IDs siguen rechazados).
+- Segunda carga (11-oct, mañana): 01, 04, 06, 08, 09, 14 y 21 recibidos y subidos tras aplicar su atribución en `producto.ficha.descripcion` y activar la política. Todo `uploaded`, POST 200 y GET público 200 con SHA256 coincidente:
+  01 → 64 297 B; 04 → 274 446 B; 06 → 119 458 B; 08 → 105 031 B; 09 → 133 261 B; 14 → 73 033 B; 21 → 99 691 B.
+- Primera carga: 03, 07, 13 subidos; 12 verificado existente. Totales en Storage: 11 fotos publicadas de 17 productos publicados.
+- Sin foto en Storage: 02 y 15/16/18 (referencias aproximadas, requieren aprobación), 10 (parcial, requiere aprobación específica) y 11 (sin candidata reutilizable; se descartó una CC0 por incongruente). Los productos 05/17/19/20 salieron de la semilla (CC-16).
+- `supabase/seed.sql` contiene los créditos de las 11 fotos y coincide con las fichas del servidor.
 - Vitrina https://ayllu.likadev.com responde HTTP 200. La comprobación visual a 360 y 1440 px y del panel `/admin` con cuenta real queda para el usuario con navegador.
 - `make verify` y `make build` se reejecutan antes del merge (ver salida del PR).
-- Pendiente fuera de este cierre: fotos propias o con permiso documentado para los 12 productos publicados restantes (01, 02, 04, 06, 08, 09, 11, 14–16, 18, 21), decisión específica sobre el 10, y fotos de 22 (retirado) y 23 (borrador). Los candidatos comerciales enlazados arriba no tienen licencia de reutilización confirmada y no se cargan.
