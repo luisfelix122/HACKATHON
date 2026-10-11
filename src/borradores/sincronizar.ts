@@ -10,7 +10,25 @@ export type ProductoPersistido = {
   nombre: string
   estado: EstadoProducto
   precio_final: number | null
+  /** Ruta en el bucket `fotos` para la miniatura de «Mis productos». */
+  foto_ruta?: string
 }
+
+type FotoListada = { ruta?: unknown; origen?: unknown; publicada?: unknown; posicion?: unknown }
+
+/** La primera foto publicada; si no hay, la original. */
+function elegirMiniatura(p: { foto_ruta?: unknown; foto_producto?: unknown }): string | undefined {
+  if (typeof p.foto_ruta === 'string') return p.foto_ruta
+  if (!Array.isArray(p.foto_producto)) return undefined
+  const fotos = (p.foto_producto as FotoListada[]).filter(
+    (f): f is FotoListada & { ruta: string } => typeof f?.ruta === 'string',
+  )
+  const publicada = fotos
+    .filter((f) => f.publicada === true)
+    .sort((a, b) => Number(a.posicion ?? 0) - Number(b.posicion ?? 0))[0]
+  return (publicada ?? fotos.find((f) => f.origen === 'original'))?.ruta
+}
+
 export async function listarProductosPersistidos(
   artesanoId: string | undefined,
   conectado: boolean,
@@ -37,6 +55,7 @@ export async function listarProductosPersistidos(
         nombre: p.nombre,
         estado: p.estado,
         precio_final: p.precio_final,
+        foto_ruta: elegirMiniatura(p),
       }))
   }
   if (!conectado) {
@@ -48,7 +67,9 @@ export async function listarProductosPersistidos(
   }
   const { data, error } = await (cliente ?? obtenerSupabase())
     .from('producto')
-    .select('id,artesano_id,nombre,estado,precio_final')
+    .select(
+      'id,artesano_id,nombre,estado,precio_final,foto_producto(ruta,origen,publicada,posicion)',
+    )
     .eq('artesano_id', artesanoId)
     .order('creado_en', { ascending: false })
   if (error) throw new Error('No pudimos actualizar tus productos. Reintenta con señal.')

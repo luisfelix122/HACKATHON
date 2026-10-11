@@ -390,6 +390,40 @@ describe('productos persistidos tras retirar blobs locales', () => {
     expect(await listarProductosPersistidos('b', false, cliente)).toEqual([])
     expect(from).toHaveBeenCalledOnce()
   })
+  it('incluye la foto publicada de menor posición, o la original, para la miniatura', async () => {
+    const filas = [
+      {
+        id: 'p',
+        artesano_id: 'a',
+        nombre: 'Tejido',
+        estado: 'publicado',
+        precio_final: 40,
+        foto_producto: [
+          { ruta: 'a/p/original.jpg', origen: 'original', publicada: false, posicion: 0 },
+          { ruta: 'a/p/ia-estudio.png', origen: 'ia', publicada: true, posicion: 1 },
+        ],
+      },
+      {
+        id: 'q',
+        artesano_id: 'a',
+        nombre: 'Cesta',
+        estado: 'borrador',
+        precio_final: null,
+        foto_producto: [
+          { ruta: 'a/q/original.jpg', origen: 'original', publicada: false, posicion: 0 },
+        ],
+      },
+    ]
+    const order = vi.fn().mockResolvedValue({ data: filas, error: null })
+    const cliente = {
+      from: () => ({ select: () => ({ eq: () => ({ order }) }) }),
+    } as unknown as SupabaseClient
+    const productos = await listarProductosPersistidos('a', true, cliente)
+    expect(productos.map((p) => p.foto_ruta)).toEqual(['a/p/ia-estudio.png', 'a/q/original.jpg'])
+    expect((await listarProductosPersistidos('a', false, cliente)).map((p) => p.foto_ruta)).toEqual(
+      ['a/p/ia-estudio.png', 'a/q/original.jpg'],
+    )
+  })
   it('caché inválida no muestra productos privados ni falla offline', async () => {
     localStorage.setItem('ayllu.productos.a', '{invalid')
     expect(await listarProductosPersistidos('a', false)).toEqual([])

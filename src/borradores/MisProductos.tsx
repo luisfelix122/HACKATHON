@@ -1,6 +1,7 @@
 import { Esqueleto } from '../compartido/ui/Esqueleto'
 import { liveQuery } from 'dexie'
-import { useCallback, useEffect, useMemo, useState, useTransition } from 'react'
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react'
+import { obtenerSupabase } from '../compartido/supabase'
 import { Link, useNavigate } from 'react-router-dom'
 import { Aviso, Boton } from '../compartido/ui/componentes'
 import { Icono } from '../compartido/ui/Icono'
@@ -223,7 +224,7 @@ export function MisProductos() {
           {productos.map((p) => (
             <article className="tarjeta-producto" key={p.id}>
               <div className="tarjeta-media">
-                <Icono nombre="imagen" tamano={32} />
+                <MiniaturaRemota ruta={p.foto_ruta} nombre={p.nombre} />
               </div>
               <div className="tarjeta-info">
                 <div className="tarjeta-estado">
@@ -252,6 +253,35 @@ export function MisProductos() {
   )
 }
 
+/**
+ * Foto del borrador guardado en el celular. La URL se crea y se revoca en el mismo
+ * efecto: con useMemo, el doble montaje de React la revocaba y la miniatura quedaba rota.
+ */
+function MiniaturaLocal({ foto, nombre }: { foto: Blob; nombre: string }) {
+  const imagen = useRef<HTMLImageElement>(null)
+  useEffect(() => {
+    const url = URL.createObjectURL(foto)
+    if (imagen.current) imagen.current.src = url
+    return () => URL.revokeObjectURL(url)
+  }, [foto])
+  return <img ref={imagen} alt={nombre} className="tarjeta-img" />
+}
+
+/** Foto del producto ya guardado en el servidor; si no hay o falla, un ícono. */
+function MiniaturaRemota({ ruta, nombre }: { ruta: string | undefined; nombre: string }) {
+  const [fallo, setFallo] = useState(false)
+  if (!ruta || fallo) return <Icono nombre="imagen" tamano={32} />
+  return (
+    <img
+      src={obtenerSupabase().storage.from('fotos').getPublicUrl(ruta).data.publicUrl}
+      alt={nombre}
+      className="tarjeta-img"
+      loading="lazy"
+      onError={() => setFallo(true)}
+    />
+  )
+}
+
 /** Un producto publicado o retirado se edita (y elimina) desde la misma pantalla. */
 function textoEnlaceRevisar(estado: string | undefined): string {
   return estado === 'publicado' || estado === 'retirado'
@@ -272,19 +302,6 @@ function TarjetaBorrador({
   sincronizando: boolean
   alReintentar: () => void
 }) {
-  const miniaturaUrl = useMemo(() => {
-    if (!borrador.foto_blob) return null
-    return URL.createObjectURL(borrador.foto_blob)
-  }, [borrador.foto_blob])
-
-  useEffect(() => {
-    return () => {
-      if (miniaturaUrl) {
-        URL.revokeObjectURL(miniaturaUrl)
-      }
-    }
-  }, [miniaturaUrl])
-
   const renderBadgeEstado = () => {
     switch (borrador.estado_sincronizacion) {
       case 'sincronizado':
@@ -309,8 +326,8 @@ function TarjetaBorrador({
   return (
     <article className="tarjeta-producto">
       <div className="tarjeta-media">
-        {miniaturaUrl ? (
-          <img src={miniaturaUrl} alt={borrador.nombre} className="tarjeta-img" />
+        {borrador.foto_blob ? (
+          <MiniaturaLocal foto={borrador.foto_blob} nombre={borrador.nombre} />
         ) : (
           <Icono nombre="imagen" tamano={32} />
         )}
