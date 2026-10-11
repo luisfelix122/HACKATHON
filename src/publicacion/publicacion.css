@@ -1,0 +1,409 @@
+/* Estilos para el módulo de publicación y revisión de productos (CU-03) */
+
+.revisar-producto-pagina {
+  max-width: var(--ancho-lectura);
+  margin: 0 auto;
+  padding: var(--e4);
+  font-family: var(--letra-texto);
+  color: var(--noche);
+  background-color: var(--espuma);
+  min-height: 100vh;
+}
+
+.revisar-cabecera {
+  margin-bottom: var(--e5);
+  border-bottom: 2px solid var(--ola-clara);
+  padding-bottom: var(--e3);
+}
+
+.revisar-titulo {
+  font-family: var(--letra-rotulo);
+  font-size: var(--tam-h1);
+  color: var(--pacifico);
+  margin: 0 0 var(--e1) 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.revisar-bajada {
+  color: var(--noche-suave);
+  margin: 0;
+  font-size: var(--tam-chico);
+}
+
+.tarjeta-ia-panel {
+  background: var(--blanco);
+  border: 1px solid var(--ola);
+  border-radius: var(--radio-panel);
+  padding: var(--e4);
+  margin-bottom: var(--e5);
+  box-shadow: 0 2px 6px rgb(11 79 108 / 0.08);
+}
+
+.tarjeta-ia-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--e3);
+}
+
+.tarjeta-ia-titulo {
+  font-family: var(--letra-rotulo);
+  font-size: var(--tam-h3);
+  color: var(--pacifico);
+  margin: 0;
+}
+
+.boton-ia-primario {
+  background: var(--ola);
+  color: var(--blanco);
+  border: none;
+  border-radius: var(--radio-control);
+  padding: var(--e2) var(--e4);
+  font-size: var(--tam-base);
+  font-family: var(--letra-rotulo);
+  min-height: var(--tactil);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  transition: background var(--rapido) var(--salida);
+}
+
+.boton-ia-primario:hover:not(:disabled) {
+  background: var(--pacifico);
+}
+
+.boton-ia-primario:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tarjeta-alerta-rechazo {
+  background: var(--error-claro);
+  border: 1px solid var(--error);
+  border-radius: var(--radio-panel);
+  padding: var(--e4);
+  margin-bottom: var(--e5);
+  color: var(--error);
+}
+
+.titulo-rechazo {
+  margin: 0 0 var(--e2) 0;
+  font-family: var(--letra-rotulo);
+  font-size: var(--tam-h3);
+}
+
+.motivo-rechazo {
+  margin: 0 0 var(--e4) 0;
+  font-size: var(--tam-base);
+  color: var(--noche);
+}
+
+.acciones-rechazo {
+  display: flex;
+  gap: var(--e3);
+  flex-wrap: wrap;
+}
+
+.tarjeta-alerta-error {
+  background: var(--arena-clara);
+  border: 1px solid var(--arena);
+  border-radius: var(--radio-panel);
+  padding: var(--e4);
+  margin-bottom: var(--e5);
+}
+
+.tarjeta-comentario-precio {
+  background: var(--sol-claro);
+  border-left: 4px solid var(--sol);
+  padding: var(--e3) var(--e4);
+  border-radius: var(--radio-control);
+  margin-top: var(--e2);
+  font-size: var(--tam-chico);
+  color: var(--noche);
+}
+
+.etiqueta-referencia-ia {
+  font-weight: bold;
+  display: block;
+  margin-bottom: var(--e1);
+  color: var(--pacifico-hondo);
+}
+
+/* Elegir Fotos */
+.seccion-elegir-fotos {
+  margin-bottom: var(--e6);
+}
+
+.elegir-fotos-cabecera {
+  margin-bottom: var(--e3);
+}
+
+.subtitulo-elegir-fotos {
+  font-family: var(--letra-rotulo);
+  font-size: var(--tam-h3);
+  color: var(--pacifico);
+  margin: 0 0 var(--e1) 0;
+}
+
+.descripcion-elegir-fotos {
+  font-size: var(--tam-chico);
+  color: var(--noche-suave);
+  margin: 0;
+}
+
+.aviso-fotos-incompletas {
+  background: var(--sol-claro);
+  color: var(--noche);
+  padding: var(--e2) var(--e3);
+  border-radius: var(--radio-control);
+  margin-bottom: var(--e3);
+  font-size: var(--tam-chico);
+}
+
+.cuadricula-fotos {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: var(--e4);
+}
+
+.tarjeta-foto {
+  background: var(--blanco);
+  border: 2px solid var(--ola-clara);
+  border-radius: var(--radio-panel);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition:
+    border-color var(--rapido) var(--salida),
+    box-shadow var(--rapido) var(--salida);
+}
+
+.tarjeta-foto.foto-seleccionada {
+  border-color: var(--ola);
+  box-shadow: 0 4px 10px rgb(26 158 151 / 0.2);
+}
+
+.tarjeta-foto.foto-no-seleccionada {
+  opacity: 0.75;
+}
+
+.contenedor-imagen-foto {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  background: #eee;
+}
+
+.imagen-vista-previa {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.insignia-origen {
+  position: absolute;
+  top: var(--e2);
+  left: var(--e2);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.insignia-original {
+  background: var(--pacifico);
+  color: var(--blanco);
+}
+
+.insignia-ia {
+  background: var(--ola);
+  color: var(--blanco);
+}
+
+.insignia-posicion {
+  position: absolute;
+  top: var(--e2);
+  right: var(--e2);
+  background: var(--sol);
+  color: var(--noche);
+  font-weight: bold;
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.acciones-foto {
+  padding: var(--e2) var(--e3);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--ola-clara);
+}
+
+.etiqueta-checkbox-publicar {
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+  font-size: var(--tam-chico);
+  cursor: pointer;
+  min-height: 36px;
+}
+
+.checkbox-publicar {
+  width: 1.25rem;
+  height: 1.25rem;
+  accent-color: var(--ola);
+}
+
+.botones-orden {
+  display: flex;
+  gap: 4px;
+}
+
+.boton-orden {
+  background: var(--espuma);
+  border: 1px solid var(--ola);
+  color: var(--pacifico);
+  border-radius: 4px;
+  width: 32px;
+  height: 32px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.boton-orden:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.pie-foto-original {
+  padding: var(--e1) var(--e3) var(--e2);
+  font-size: 0.8rem;
+}
+
+.enlace-ver-original {
+  color: var(--pacifico);
+  text-decoration: underline;
+}
+
+/* Formulario de revisión */
+.formulario-revisar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e4);
+}
+
+.grupo-campo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--e1);
+}
+
+.grupo-campo label {
+  font-weight: bold;
+  color: var(--pacifico-hondo);
+  font-size: var(--tam-chico);
+}
+
+.control-texto,
+.control-select,
+.control-textarea {
+  width: 100%;
+  padding: var(--e2) var(--e3);
+  font-family: var(--letra-texto);
+  font-size: var(--tam-base);
+  border: 1.5px solid var(--noche-suave);
+  border-radius: var(--radio-control);
+  background: var(--blanco);
+  color: var(--noche);
+  box-sizing: border-box;
+  min-height: var(--tactil);
+}
+
+.control-textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.control-texto:focus,
+.control-select:focus,
+.control-textarea:focus {
+  outline: none;
+  border-color: var(--ola);
+  box-shadow: 0 0 0 3px var(--ola-clara);
+}
+
+.ayuda-campo {
+  font-size: 0.85rem;
+  color: var(--noche-suave);
+}
+
+.fila-dos-columnas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--e4);
+}
+
+@media (max-width: 600px) {
+  .fila-dos-columnas {
+    grid-template-columns: 1fr;
+  }
+}
+
+.panel-publicacion-accion {
+  margin-top: var(--e6);
+  padding: var(--e4);
+  background: var(--blanco);
+  border-radius: var(--radio-panel);
+  border: 1px solid var(--ola-clara);
+}
+
+.boton-publicar {
+  width: 100%;
+  background: var(--pacifico);
+  color: var(--blanco);
+  border: none;
+  border-radius: var(--radio-control);
+  padding: var(--e3);
+  font-family: var(--letra-rotulo);
+  font-size: var(--tam-h2);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-height: var(--tactil);
+  cursor: pointer;
+  transition: background var(--rapido) var(--salida);
+}
+
+.boton-publicar:hover:not(:disabled) {
+  background: var(--pacifico-hondo);
+}
+
+.boton-publicar:disabled {
+  background: var(--noche-suave);
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.lista-errores-publicar {
+  margin: var(--e3) 0 0 0;
+  padding-left: var(--e4);
+  color: var(--error);
+  font-size: var(--tam-chico);
+}
+
+.mensaje-exito {
+  background: var(--ola-clara);
+  color: var(--pacifico-hondo);
+  border: 1px solid var(--ola);
+  padding: var(--e3);
+  border-radius: var(--radio-control);
+  margin-top: var(--e3);
+  font-weight: bold;
+}
