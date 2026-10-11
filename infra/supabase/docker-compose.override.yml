@@ -55,8 +55,15 @@ services:
       JWT_JWKS: ${JWT_JWKS:?Ejecuta add-new-auth-keys.sh}
 
   functions:
+    networks:
+      - default
+      - ayllu-ia
     environment:
       SUPABASE_JWKS: ${JWT_JWKS:?Ejecuta add-new-auth-keys.sh}
+      IA_BASE_URL: ${IA_BASE_URL:-http://litellm:4000}
+      # Sin clave, solo la IA queda no disponible (502 ia_no_disponible); Supabase arranca igual.
+      IA_API_KEY: ${IA_API_KEY:-}
+      IA_TIMEOUT_MS: ${IA_TIMEOUT_MS:-8000}
 
   # Solo lo inicia el operador durante la ventana de pruebas del candidato.
   pruebas-sql:
@@ -77,3 +84,8 @@ services:
         set -- /tests/*.sql
         test -f "$$1" || { printf '%s\n' 'No hay pruebas SQL del candidato en /tests.' >&2; exit 1; }
         exec pg_prove "$$@"
+
+networks:
+  ayllu-ia:
+    external: true
+    name: ayllu-ia

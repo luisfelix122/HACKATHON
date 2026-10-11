@@ -2,6 +2,8 @@ services:
   litellm:
     image: ghcr.io/berriai/litellm:v1.101.5
     command: ['--config', '/app/config.yaml', '--host', '0.0.0.0', '--port', '4000']
+    networks:
+      - ayllu-ia
     env_file: .env
     environment:
       LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY:?Configura la clave maestra en .env}
@@ -30,3 +32,8 @@ services:
       options:
         max-size: '10m'
         max-file: '3'
+
+networks:
+  ayllu-ia:
+    external: true
+    name: ayllu-ia

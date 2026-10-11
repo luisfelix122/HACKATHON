@@ -1,44 +1,58 @@
+# Texto y audio: 7 s por intento (cabe en IA_TIMEOUT_MS=8000 de las Edge Functions).
+# Imagen: 40 s, menos que los 45 s que espera llamarEdicionImagenIa.
+# Un reintento solo para 429/401/5xx, que fallan rápido: pasa a la otra llave
+# (el deployment fallido entra en cooldown). Los timeouts no se reintentan.
 model_list:
   - model_name: ayllu-texto
     litellm_params:
       model: gemini/gemini-3.8-flash
+      timeout: 7
       api_key: os.environ/IA_KEY_1
   - model_name: ayllu-texto
     litellm_params:
       model: gemini/gemini-3.8-flash
+      timeout: 7
       api_key: os.environ/IA_KEY_2
   - model_name: ayllu-audio
     litellm_params:
       model: gemini/gemini-3.8-flash
+      timeout: 7
       api_key: os.environ/IA_KEY_1
   - model_name: ayllu-audio
     litellm_params:
       model: gemini/gemini-3.8-flash
+      timeout: 7
       api_key: os.environ/IA_KEY_2
   - model_name: ayllu-imagen
     litellm_params:
       model: gemini/gemini-2.5-flash-image
+      timeout: 40
       api_key: os.environ/IA_KEY_1
     model_info:
       mode: image_edit
   - model_name: ayllu-imagen
     litellm_params:
       model: gemini/gemini-2.5-flash-image
+      timeout: 40
       api_key: os.environ/IA_KEY_2
     model_info:
       mode: image_edit
 router_settings:
   routing_strategy: simple-shuffle
-  num_retries: 2
+  timeout: 7
+  num_retries: 1
   allowed_fails: 0
   cooldown_time: 30
   retry_policy:
-    AuthenticationErrorRetries: 2
-    RateLimitErrorRetries: 2
+    AuthenticationErrorRetries: 1
+    RateLimitErrorRetries: 1
+    TimeoutErrorRetries: 0
+    InternalServerErrorRetries: 1
     BadRequestErrorRetries: 0
     NotFoundErrorRetries: 0
 general_settings:
   master_key: os.environ/LITELLM_MASTER_KEY
   background_health_checks: false
 litellm_settings:
+  request_timeout: 45
   set_verbose: false

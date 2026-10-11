@@ -15,7 +15,8 @@
     "format:check": "prettier --check .",
     "format": "prettier --write .",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.node.json",
-    "test": "vitest"
+    "test": "vitest",
+    "build:functions": "node scripts/empaquetar-functions.mjs"
   },
   "dependencies": {
     "@capacitor-community/speech-recognition": "^7.0.1",

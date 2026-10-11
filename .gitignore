@@ -57,3 +57,6 @@ android/local.properties
 
 # Estado temporal de la skill impeccable (páginas de decisión)
 .impeccable/questions/
+
+# Edge Functions empaquetadas para runtime Deno
+dist-functions/

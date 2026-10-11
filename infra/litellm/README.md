@@ -1,3 +1,5 @@
+> Integración vigente y pasos pendientes del servidor: [conectar IA](../../docs/entrega/conectar-ia-servidor.md). La guía reemplaza las instrucciones de red y reintentos descritas abajo.
+
 # Proxy de IA: paquete para el operador autorizado
 
 PRP 009. Preparado para `/datos/trabajo/proyectos/ayllu/litellm/`;
