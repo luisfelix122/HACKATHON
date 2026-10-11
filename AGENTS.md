@@ -77,8 +77,9 @@ Antigravity, Cursor, OpenCode, Windsurf/Devin).
 | OpenCode | `AGENTS.md` (nativo) | `.agents/skills/` o `.claude/skills/` | subagente `.opencode/agents/reviewer.md` |
 | Windsurf/Devin | `AGENTS.md` (nativo) | sin soporte documentado: leer `.agents/skills/prp-manager/SKILL.md` a mano | prompt de `.claude/agents/reviewer.md` |
 
-- La skill existe en dos copias idénticas: `.agents/skills/prp-manager` y `.claude/skills/prp-manager`.
-  Si cambias una, aplica el mismo cambio en la otra en el mismo commit.
+- Las skills existen en dos copias idénticas, en `.agents/skills/` y `.claude/skills/`: `prp-manager` y, para
+  la interfaz, `frontend-design`, `impeccable` y `taste-skill` (CC-10). Si cambias una, aplica el mismo cambio
+  en la otra en el mismo commit. No activar los hooks de `impeccable` sin aprobación del responsable de `.claude/`.
 - El prompt del revisor tiene una sola fuente: `.claude/agents/reviewer.md`. Si tu herramienta
   no tiene subagentes, abre una sesión nueva sin permisos de escritura y pásale ese archivo
   junto con PRP, contratos, diff y salida de `make verify`.

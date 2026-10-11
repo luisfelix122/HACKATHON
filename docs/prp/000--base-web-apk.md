@@ -44,6 +44,7 @@ Es la base de todos los PRP. También comprueba temprano los dos riesgos de infr
   - **Herramientas del shell:** `python` y `sd` no están instalados. Usar Node para los scripts.
   - **Supabase CLI:** no está instalada globalmente. Agregarla como dependencia de desarrollo (`supabase`) y usar `npx supabase`. `supabase test db` requiere `supabase start`, que usa Docker; Docker Desktop está instalado pero el daemon estaba apagado al revisarlo. `make test-db` falla con un mensaje claro si Docker no corre, sin fingir éxito.
   - **`.env.example`:** las reglas `deny` `Read(.env.*)` y `Edit(.env.*)` de `~/.claude/settings.json` impiden al agente leerlo o editarlo. Cristopher agrega a mano las tres variables listadas, o ajusta esas reglas para que no cubran `.env.example`. El agente no las sortea por otra vía.
+  - **Skills de terceros (CC-10):** `.agents/` y `.claude/` traen scripts `.mjs` de la skill `impeccable`. Excluir ambas carpetas en `eslint.config.js` y `.prettierignore` para que `make verify` no las revise.
   - **`supabase/seed.sql` ya existe** (CC-10). `supabase init` crea `config.toml` al lado; no borrar ni reemplazar el seed.
   - **Tiempo de CI:** el CI no compila la APK (requiere el SDK de Android). La APK se compila en local con `make apk`.
 
