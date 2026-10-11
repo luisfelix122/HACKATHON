@@ -9,7 +9,7 @@ services:
     environment:
       IA_BASE_URL: ${IA_BASE_URL:-http://litellm:4000}
       IA_API_KEY: ${IA_API_KEY:-}
-      IA_TIMEOUT_MS: ${IA_TIMEOUT_MS:-8000}
+      IA_TIMEOUT_MS: ${IA_TIMEOUT_MS:-30000}
 
 networks:
   ayllu-ia:

@@ -63,7 +63,7 @@ services:
       IA_BASE_URL: ${IA_BASE_URL:-http://litellm:4000}
       # Sin clave, solo la IA queda no disponible (502 ia_no_disponible); Supabase arranca igual.
       IA_API_KEY: ${IA_API_KEY:-}
-      IA_TIMEOUT_MS: ${IA_TIMEOUT_MS:-8000}
+      IA_TIMEOUT_MS: ${IA_TIMEOUT_MS:-30000}
 
   # Solo lo inicia el operador durante la ventana de pruebas del candidato.
   pruebas-sql:
