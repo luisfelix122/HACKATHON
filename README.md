@@ -4,7 +4,7 @@ Vitrina digital para artesanos de las playas del norte de Piura y Talara (Hackat
 
 - **Comprador y administrador:** web.
 - **Artesano:** APK de Android (Capacitor), con borradores sin conexión.
-- **Backend:** Supabase. La IA pasa por un proxy LiteLLM, con OpenRouter como respaldo.
+- **Backend:** Supabase. La IA (Gemini) pasa por un proxy LiteLLM, sin respaldo (CC-12).
 
 ## Ayllu — arranque
 
@@ -25,7 +25,7 @@ Completa en `.env.local`:
 | --- | --- |
 | `VITE_SUPABASE_URL` | cliente (web y APK) |
 | `VITE_SUPABASE_PUBLISHABLE_KEY` | cliente (web y APK); es la clave publicable, nunca la `service_role` |
-| `OPENROUTER_API_KEY` | solo en las Edge Functions, nunca en el cliente |
+| `IA_BASE_URL`, `IA_API_KEY`, `IA_TIMEOUT_MS` | solo en las Edge Functions (proxy LiteLLM), nunca en el cliente |
 
 Con Supabase local, `npx supabase start` imprime la URL y la clave publicable.
 

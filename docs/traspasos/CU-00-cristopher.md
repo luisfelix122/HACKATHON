@@ -60,20 +60,23 @@ Pruebas en `src/app/app.test.tsx`:
 `webapp-testing` no se usó porque requiere Python, que no está instalado. El recorrido web se comprobó con curl y el navegador integrado.
 
 ## Prueba de audio (sección Notas del PRP)
-**Pendiente, no se ejecutó.** Requiere la APK en un Android real (para `MediaRecorder.isTypeSupported(...)` en el WebView) y la clave de OpenRouter en una variable local, y el agente no tiene ninguna de las dos. Pasos:
+> **CC-12:** OpenRouter salió del proyecto. Aquí solo queda comprobar los formatos del WebView; la llamada a Gemini (alias `ayllu-audio`) pasa al PRP 009.
+
+**Pendiente, no se ejecutó.** Requiere la APK en un Android real (para `MediaRecorder.isTypeSupported(...)` en el WebView), y el agente no tiene uno. Pasos:
 1. Instalar la APK y abrir el inspector remoto (`chrome://inspect` con depuración USB).
 2. En la consola, comprobar `['audio/webm;codecs=opus','audio/mp4','audio/ogg;codecs=opus'].map(t => [t, MediaRecorder.isTypeSupported(t)])`.
-3. Grabar 5 s en el formato soportado y llamar a OpenRouter (`google/gemini-2.5-flash`, `input_audio` en base64) con la clave en una variable local.
-4. Anotar el resultado en la sección Notas del PRP 000.
+3. Anotar en la sección Notas del PRP 000 qué formatos devuelven `true`.
 
 ## Bloqueos
-- **`.env.example` (lo hace Cristopher a mano):** el criterio de aceptación pide estas tres variables, sin valores. Contenido exacto para pegar:
+- **`.env.example` (lo hace Cristopher a mano):** el criterio de aceptación pide estas variables, sin valores (cinco tras CC-12). Contenido exacto para pegar:
   ```
   VITE_SUPABASE_URL=
   VITE_SUPABASE_PUBLISHABLE_KEY=
-  OPENROUTER_API_KEY=
+  IA_BASE_URL=
+  IA_API_KEY=
+  IA_TIMEOUT_MS=
   ```
-  `docs/contratos.md` §Convenciones también nombra `IA_BASE_URL`, `IA_API_KEY` e `IA_TIMEOUT_MS`, que solo usan las Edge Functions. El PRP 000 no las exige; agregarlas es opcional.
+  Cristopher lo editó a mano en el PR #6 (`cu-00/ajustes-entorno`), ya sin `OPENROUTER_API_KEY` y con las variables `IA_*`, que solo usan las Edge Functions (CC-12).
 - **GitHub:** la línea «GitHub autorizado» del prompt quedó con el marcador sin resolver (`<… | ninguno>`), así que se trató como **no autorizado**. La rama no se subió y el PR no se abrió.
 
 ## Pruebas manuales pendientes

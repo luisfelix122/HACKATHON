@@ -179,7 +179,7 @@ La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y cali
   - `422 contenido_no_permitido`: la foto o el texto tienen contenido ofensivo o inapropiado. Mismo efecto.
   - `502 ia_no_disponible`: el producto queda en `borrador`; `revision_ia` no cambia.
   - `429 limite_ia`: se superó el límite de llamadas a la IA por producto **(supuesto: 3 por producto)**.
-- **Secretos:** `OPENROUTER_API_KEY`, `IA_BASE_URL`, `IA_API_KEY` e `IA_TIMEOUT_MS`, solo en el entorno de la función.
+- **Secretos:** `IA_BASE_URL`, `IA_API_KEY` e `IA_TIMEOUT_MS`, solo en el entorno de la función (CC-12).
 - **Usado por:** CU-03.
 
 ### Transiciones de orden
@@ -216,12 +216,13 @@ La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y cali
 
 ### Proxy de IA (LiteLLM)
 - **Tipo:** HTTP, compatible con OpenAI. Solo lo llaman las Edge Functions, nunca el cliente.
-- **Ruta:** `${IA_BASE_URL}/v1/chat/completions`, con la cabecera `Authorization: Bearer ${IA_API_KEY}`.
+- **Rutas:** `${IA_BASE_URL}/v1/chat/completions` (texto y audio) y `${IA_BASE_URL}/v1/images/edits` (variantes de la foto, CC-12), con la cabecera `Authorization: Bearer ${IA_API_KEY}`.
 - **Alias de modelo** (definidos en `infra/litellm/config.yaml`):
   - `ayllu-texto`: evaluación, ficha y comentario de precio (texto más la foto original como `image_url` con data URI base64, CC-09) y traducción.
   - `ayllu-audio`: audio como bloque `file` con data URI base64, más la foto original igual que `ayllu-texto`.
-- **Respaldo:** si el proxy excede `IA_TIMEOUT_MS` (por defecto 8000), devuelve 5xx o `IA_BASE_URL` no está definida, la misma petición va a OpenRouter (`https://openrouter.ai/api/v1/chat/completions`, `OPENROUTER_API_KEY`) con el modelo equivalente.
-- **Imagen:** las 4 variantes de la foto van siempre directo a OpenRouter (`POST /api/v1/images`, `google/gemini-2.5-flash-image`, con la original en `input_references`), una petición por variante y en paralelo.
+  - `ayllu-imagen` (CC-12): variantes de la foto con `gemini/gemini-2.5-flash-image`.
+- **Sin respaldo (CC-12):** no hay otro proveedor. En la llamada de texto o audio, si el proxy excede `IA_TIMEOUT_MS` (por defecto 8000), responde algo que no sea 2xx (incluidos 4xx y 429 por llaves en enfriamiento o cuota agotada) o `IA_BASE_URL` no está definida, la Edge Function responde `502 ia_no_disponible`. `429 limite_ia` sale **solo** de `ia_intentos`, nunca del 429 del proxy.
+- **Imagen (CC-12):** las 4 variantes de la foto van al proxy con `POST ${IA_BASE_URL}/v1/images/edits` (`multipart/form-data`: `model=ayllu-imagen`, la original en `image` y la instrucción de la variante en `prompt`), una petición por variante y en paralelo. La respuesta llega en `data[].b64_json`. Cada variante tiene un tiempo máximo propio de 45 s **(supuesto)**, por debajo del límite de 60 s del worker (`workerTimeoutMs` en `volumes/functions/main/index.ts` de Supabase self-hosted v0.8.2, ver PRP 003). La llamada de texto y las variantes suman hasta unos 53 s antes de guardar las fotos: se mide el tiempo total de la función en el PRP 003. Si una variante falla, ya sea por tiempo, por algo que no sea 2xx o por una respuesta inválida, se agrega una advertencia y no se responde `502`.
 - **Usado por:** CU-03, CU-08.
 - **Responsable:** Cristopher.
 
@@ -270,4 +271,4 @@ La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y cali
 - **Nombres:** `snake_case` en la base de datos y en JSON, tomados de `docs/dominio.md`. Sin sinónimos.
 - **Lugares (filtro, preliminar):** Máncora, Lobitos, Cabo Blanco, El Ñuro, Los Órganos, El Alto, Pariñas, Colán, Punta Sal. **Pendiente** confirmar con La Vaca Loca la lista definitiva y si Punta Sal tiene artesanos.
 - **Errores de la Edge Function:** `{ error: "<codigo>", mensaje: "<texto para mostrar>" }`.
-- **Variables de entorno** (solo nombres, en `.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (cliente; es la "publishable key" que nombra la guía actual de Supabase) y `OPENROUTER_API_KEY`, `IA_BASE_URL`, `IA_API_KEY`, `IA_TIMEOUT_MS` (solo en las Edge Functions). En el servidor del proxy (`infra/litellm/.env.example`): `LITELLM_MASTER_KEY` e `IA_KEY_1…n`.
+- **Variables de entorno** (solo nombres, en `.env.example`): `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` (cliente; es la "publishable key" que nombra la guía actual de Supabase) y `IA_BASE_URL`, `IA_API_KEY`, `IA_TIMEOUT_MS` (solo en las Edge Functions; sin OpenRouter desde CC-12). En el servidor del proxy (`infra/litellm/.env.example`): `LITELLM_MASTER_KEY` e `IA_KEY_1…n`.

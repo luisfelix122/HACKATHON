@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-03 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo (actualizado por CC-09 y CC-11). Módulo A; requiere el PRP 002 en `main`
+- Estado: listo (actualizado por CC-09, CC-11 y CC-12). Módulo A; requiere el PRP 002 en `main`
 - Rama: `cu-03/ia-publicacion`
 
 ## Objetivo
@@ -30,21 +30,21 @@ Es el criterio 2 del reto: optimizar con IA la imagen, la ficha y el precio. Red
 - [ ] Si no hay `descripcion_texto` pero sí `audio_ruta`, la función envía el audio en el formato validado en el PRP 000. Si ese formato no es compatible, responde `400 entrada_invalida` con el mensaje «Dicta o escribe la descripción».
 - [ ] El artesano puede editar todos los campos de la ficha, las etiquetas y el precio antes de publicar. Si su acreditación no está `aprobada`, «Publicar» se ve deshabilitado con el motivo, y la base de datos también lo rechaza.
 - [ ] Si la IA falla (`502`), la pantalla ofrece «Reintentar» y «Completar a mano». Si no hay conexión, el reintento se hace solo al volver la red.
-- [ ] Las claves (`IA_API_KEY`, `OPENROUTER_API_KEY`) solo existen como secretos de la función. Una búsqueda de `OPENROUTER` o `IA_API_KEY` en `src/` y `dist-*/` no encuentra nada.
-- [ ] El texto y el audio van al proxy LiteLLM (`${IA_BASE_URL}/v1/chat/completions`, alias `ayllu-texto` o `ayllu-audio`). Si el proxy no responde en `IA_TIMEOUT_MS` o devuelve 5xx, se reintenta **una vez** directo con OpenRouter. Si `IA_BASE_URL` no está definida, se usa OpenRouter directo. Hay pruebas para los tres caminos.
-- [ ] Las fotos van directo a OpenRouter (`/api/v1/images`), según la decisión 0002.
+- [ ] La clave `IA_API_KEY` solo existe como secreto de la función. Una búsqueda de `IA_API_KEY` en `src/` y `dist-*/` no encuentra nada.
+- [ ] El texto y el audio van al proxy LiteLLM (`${IA_BASE_URL}/v1/chat/completions`, alias `ayllu-texto` o `ayllu-audio`). **Sin respaldo (CC-12):** si el proxy no responde en `IA_TIMEOUT_MS`, responde algo que no sea 2xx (incluidos 4xx y 429; nunca `limite_ia`) o `IA_BASE_URL` no está definida, la función responde `502 ia_no_disponible` y el producto queda en `borrador`. Hay pruebas para cada camino.
+- [ ] Las fotos van al proxy con `POST ${IA_BASE_URL}/v1/images/edits` (`multipart/form-data`, `model=ayllu-imagen`, la original en `image`, la instrucción de la variante en `prompt`), y la respuesta se lee de `data[].b64_json` (CC-12).
 - [ ] Los textos de la IA se muestran como texto plano (sin `dangerouslySetInnerHTML`).
 
 ## Contexto necesario
 - **Dominio:** Ficha, Etiqueta, Revisión de la IA, Foto original, Foto de IA, Foto publicada, Comentario de precio, Descripción hablada; estados del Producto; reglas 1, 3, 4 y 5.
 - **Contratos:** `docs/contratos.md` §Procesar producto con IA (evaluación, seguridad del prompt), §`producto` (`revision_ia`, `comentario_precio_ia`, `ia_error`, `ia_intentos`), §Ficha, §`foto_producto`, §Archivos, §Proxy de IA.
-- **Decisiones:** `0001-stack.md`, `0002-proxy-ia-litellm.md` (CC-02), `CC-09.md`, `CC-10.md` (Zod, injection por audio, OpenRouter se mantiene), `docs/revision-alcance.md` §5 (fidelidad de la foto).
-- **Depende de:** el PRP 009 para el camino por el proxy. Sin él, el PRP 003 funciona con OpenRouter directo y no se bloquea.
+- **Decisiones:** `0001-stack.md`, `0002-proxy-ia-litellm.md` (CC-02), `CC-09.md`, `CC-10.md` (Zod, injection por audio), `CC-12.md` (sin OpenRouter), `docs/revision-alcance.md` §5 (fidelidad de la foto).
+- **Depende de:** el PRP 009 (CC-12). Sin el proxy desplegado no hay IA: el código y sus pruebas con `fetch` simulado se pueden escribir antes, pero la prueba de punta a punta espera al proxy.
 - **Código existente a imitar:** `src/borradores/sincronizar.ts` (PRP 002): llamadas a Supabase y manejo de errores.
 - **Documentación externa:**
-  - https://openrouter.ai/docs/features/multimodal/image-generation: `POST /api/v1/images`, `input_references`, `google/gemini-2.5-flash-image`, respuesta `data[].b64_json`.
-  - https://openrouter.ai/docs/features/multimodal/audio: `input_audio` en base64.
-  - https://openrouter.ai/docs/features/multimodal/images: imagen de entrada como `image_url` con data URI.
+  - https://docs.litellm.ai/docs/image_edits: `POST /v1/images/edits` en multipart con `model`, `image` y `prompt`; con Gemini la respuesta llega solo en base64 (CC-12).
+  - https://docs.litellm.ai/docs/providers/gemini: audio e imagen de entrada con Gemini a través de LiteLLM.
+  - https://ai.google.dev/gemini-api/docs/audio: formatos de audio que acepta Gemini (incluye `audio/webm` y `audio/ogg`).
   - https://supabase.com/docs/guides/functions: estructura, secretos (`supabase secrets set`), CORS, `supabase functions deploy`.
 - **Trampas conocidas:**
   - **El modelo de imagen regenera píxeles.** Cada prompt de variante debe pedir explícitamente conservar el color, la forma, la textura y los detalles, y cambiar solo la luz, el fondo o el entorno. Aun así, la decisión final la toma el artesano (regla 3).
@@ -65,8 +65,8 @@ Es el criterio 2 del reto: optimizar con IA la imagen, la ficha y el precio. Red
 | crear | `supabase/functions/procesar-producto/ficha.test.ts` | Vitest: JSON válido, inválido, tipo fuera de la lista, etiquetas a normalizar, evaluación rechazada, intentos de prompt injection |
 | crear | `supabase/functions/procesar-producto/fotos.ts` | prompts de las 4 variantes y armado de las peticiones de imagen (sin APIs de Deno) |
 | crear | `supabase/functions/procesar-producto/fotos.test.ts` | Vitest: 4 peticiones con la original como referencia; fallas parciales → advertencias |
-| crear | `supabase/functions/_compartido/ia.ts` | cliente de IA: proxy con timeout y respaldo a OpenRouter para texto y audio (con imagen de entrada); imagen directo a OpenRouter (con `fetch`). Lo reutiliza el PRP 008 |
-| crear | `supabase/functions/_compartido/ia.test.ts` | Vitest con `fetch` simulado: proxy correcto; proxy con timeout → respaldo; proxy con 5xx → respaldo; sin `IA_BASE_URL` |
+| crear | `supabase/functions/_compartido/ia.ts` | cliente de IA: proxy con timeout para texto y audio (con imagen de entrada) y para las variantes de imagen (`/v1/images/edits`), sin respaldo (CC-12), con `fetch`. Lo reutiliza el PRP 008 |
+| crear | `supabase/functions/_compartido/ia.test.ts` | Vitest con `fetch` simulado: proxy correcto; proxy con timeout → `ia_no_disponible`; proxy con 5xx, 4xx o 429 → `ia_no_disponible` (nunca `limite_ia`); sin `IA_BASE_URL` → `ia_no_disponible`; imagen en multipart con `b64_json`; timeout de una variante → advertencia |
 | crear | `src/publicacion/procesar.ts` | invocación, errores 422 y reintento al reconectar |
 | crear | `src/publicacion/RevisarProducto.tsx` | ficha y etiquetas editables, evaluación, comentario de precio, precio, disponibilidad y botón Publicar |
 | crear | `src/publicacion/ElegirFotos.tsx` | original y variantes en cuadrícula; marcar cuáles publicar y su orden |
@@ -78,7 +78,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Tareas (en orden)
 1. `ficha.ts` y `fotos.ts`, con sus pruebas escritas primero (TDD).
-2. `_compartido/ia.ts` con sus pruebas, e `index.ts`. Cristopher configura los secretos con `supabase secrets set OPENROUTER_API_KEY=... IA_BASE_URL=... IA_API_KEY=... IA_TIMEOUT_MS=8000` (los valores no van al repo). Desplegar.
+2. `_compartido/ia.ts` con sus pruebas, e `index.ts`. Cristopher configura los secretos con `supabase secrets set IA_BASE_URL=... IA_API_KEY=... IA_TIMEOUT_MS=8000` (los valores no van al repo). Desplegar.
 3. La migración 0102 y su prueba pgTAP (Zod y la configuración de Vitest ya vienen del PRP 012).
 4. `procesar.ts`, `ElegirFotos`, `RevisarProducto`, y `publicar.ts` con sus pruebas.
 5. Probar de punta a punta en el Android con un producto real y con un objeto industrial (debe rechazarse). Medir el tiempo de la función.
@@ -92,7 +92,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 3. **Prueba manual:**
    - Borrador sincronizado → «Preparar con IA» → ver la ficha, las etiquetas y las 5 fotos → elegir 2 → corregir el precio → Publicar → aparece en la vitrina con carrusel (PRP 004).
    - Foto de un vaso de plástico comercial → `no_es_artesania` con motivo → «Publicar» deshabilitado.
-   - Con la clave inválida → error, «Completar a mano» → publicar igual con la foto original.
+   - Con la clave inválida o el proxy apagado → error, «Completar a mano» → publicar igual con la foto original.
 
 ## Fuera de alcance
 - Traducción de la ficha a otros idiomas.

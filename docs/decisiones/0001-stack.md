@@ -9,7 +9,7 @@ CosteARTE tiene dos experiencias:
 - **Comprador y administrador:** una página web.
 - **Artesano:** una **APK de Android** (CC-01).
 
-El artesano tiene que poder crear un borrador sin conexión, con foto y voz, y la IA lo procesa cuando vuelve la señal. La IA disponible es Gemini vía OpenRouter, restricción oficial de la hackatón.
+El artesano tiene que poder crear un borrador sin conexión, con foto y voz, y la IA lo procesa cuando vuelve la señal. La IA disponible es Gemini, restricción oficial de la hackatón. Al principio se usaba vía OpenRouter; desde CC-12 es Gemini directo por LiteLLM (confirmado por Cristopher el 2026-10-10: usar Gemini directo no incumple la restricción de la hackatón).
 
 Comprador y artesano entran con Google. Quedan 15 h y somos 5 personas: conviene no escribir ni desplegar un servidor propio y no mantener dos bases de código.
 
@@ -39,11 +39,11 @@ Alcance aprobado: `docs/revision-alcance.md`.
   - Auth con el proveedor Google.
   - Postgres con RLS.
   - Storage para fotos y audios.
-  - Edge Functions para las llamadas a OpenRouter. La clave nunca llega al cliente.
+  - Edge Functions para las llamadas a la IA (proxy LiteLLM con Gemini desde CC-12). La clave nunca llega al cliente.
 - **Login del artesano en la APK:** correo y contraseña (`signInWithPassword`). La cuenta se crea con Google en la web y ahí se define la contraseña (**reemplazado por CC-03**; antes era Google por deep link). **Vigente:** CC-06, CC-08 y CC-09, todo en la APK; ver PRP 001.
 - **Descripción hablada (vía combinada):**
-  - **Con conexión:** dictado en vivo con el reconocimiento de voz nativo de Android mediante el plugin `@capacitor-community/speech-recognition`. A OpenRouter solo llega **texto**.
-  - **Sin conexión:** se graba el audio y se guarda en el borrador. Al recuperar la señal, el artesano lo dicta de nuevo o la Edge Function envía el audio a OpenRouter. Esta segunda opción solo se usa si la prueba de formato de la hora 1 funciona.
+  - **Con conexión:** dictado en vivo con el reconocimiento de voz nativo de Android mediante el plugin `@capacitor-community/speech-recognition`. A la IA solo llega **texto**.
+  - **Sin conexión:** se graba el audio y se guarda en el borrador. Al recuperar la señal, el artesano lo dicta de nuevo o la Edge Function envía el audio a Gemini por el proxy (CC-12). Esta segunda opción solo se usa si la prueba de formato de la hora 1 funciona.
   - **Siempre:** el artesano puede escribir o corregir el texto a mano.
 - **Dispositivo prioritario:** Android para el artesano. La web del comprador debe funcionar bien en celular y en laptop.
 - **Distribución de la APK:** instalación directa (sideload) en los celulares de la demo. Google Play queda fuera del MVP.
@@ -86,7 +86,7 @@ El trabajo sin conexión se acota a un borrador por dispositivo, con un solo sen
 | Google OAuth vía Supabase (web) | Cliente OAuth tipo *Web application*; redirect al callback de Supabase; con scopes básicos se evita la verificación larga; sin dominio propio se muestra `<project-id>.supabase.co` | https://supabase.com/docs/guides/auth/social-login/auth-google | Solo scopes básicos. Registrar las cuentas de la demo si la app queda en modo de prueba. |
 | OAuth en la app móvil (deep link) | Scheme propio, "Additional Redirect URLs" en Supabase, `intent-filter` VIEW/BROWSABLE y procesar la URL de regreso para fijar la sesión. Los ejemplos son de Expo y Kotlin; **no menciona Capacitor** | https://supabase.com/docs/guides/auth/native-mobile-deep-linking | El patrón es aplicable, pero la implementación con Capacitor (`@capacitor/app` y `@capacitor/browser`) **no está verificada**: probarla en la hora 2. |
 | Voz nativa (Capacitor) | El plugin `@capacitor-community/speech-recognition` soporta Android y escucha el micrófono en vivo; el idioma se elige entre los que devuelve `getSupportedLanguages()`, que "is not available on Android 13 and newer" | https://github.com/capacitor-community/speech-recognition | No documenta el modo sin conexión ni la transcripción de archivos: se usa solo con conexión. Fijar `es-PE` o `es-ES` y probarlo en el dispositivo. |
-| Audio vía OpenRouter | Lista wav, mp3, aiff, aac, ogg, flac, m4a, pcm16 y pcm24 (**no lista webm**); "varían según el proveedor" | https://openrouter.ai/docs/features/multimodal/audio | Es el respaldo sin conexión: probar en la hora 1 el formato que graba el WebView. Si falla, solo queda volver a dictar o escribir. |
-| Audio en Gemini | Acepta `audio/webm` y `audio/ogg`, entre otros | https://ai.google.dev/gemini-api/docs/audio | Gemini lo soporta; la duda está en OpenRouter. |
+| Audio vía OpenRouter | Lista wav, mp3, aiff, aac, ogg, flac, m4a, pcm16 y pcm24 (**no lista webm**); "varían según el proveedor" | https://openrouter.ai/docs/features/multimodal/audio | Ya no aplica: OpenRouter salió con CC-12. |
+| Audio en Gemini | Acepta `audio/webm` y `audio/ogg`, entre otros | https://ai.google.dev/gemini-api/docs/audio | Gemini lo soporta. Desde CC-12 el audio va a Gemini por LiteLLM; queda por probar el bloque que traduce el proxy. |
 | Dictado en el navegador (Web Speech API) | Por defecto usa un servidor y "won't work offline" | https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API/Using_the_Web_Speech_API | Reemplazado por el plugin nativo en la APK. |
 | Transcripción en el dispositivo (Transformers.js) | No documenta el modo sin conexión ni el tamaño de los modelos | https://huggingface.co/docs/transformers.js/index | Descartado para el MVP. |

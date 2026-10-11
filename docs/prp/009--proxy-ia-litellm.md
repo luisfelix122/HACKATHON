@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-09 (`docs/plan.md`, infraestructura de CU-03 y CU-08)
 - Responsable: Cristopher (archivos) · Operador del despliegue: laptop autorizada por Johann · Revisor: Johann + subagente `reviewer`
-- Estado: listo para preparar archivos; **despliegue pendiente** de las decisiones de la sección Notas
+- Estado: listo para preparar archivos (actualizado por CC-12: imprescindible, sin respaldo); **despliegue pendiente** de las decisiones de la sección Notas
 - Módulo: B (`docs/modulos.md`, CC-11).
 - Rama: `cu-09/proxy-ia-litellm`
 
@@ -14,7 +14,7 @@ Al aplicarlo, LiteLLM Proxy:
 - Corre en Docker y escucha solo en `127.0.0.1:4000`.
 - Se publica por el túnel existente de Cloudflare en `https://ayllu-ia.likadev.com` (subdominio confirmado).
 - Exige la clave de LiteLLM en cada llamada.
-- Reparte los alias `ayllu-texto` y `ayllu-audio` entre las llaves configuradas.
+- Reparte los alias `ayllu-texto`, `ayllu-audio` y `ayllu-imagen` entre las llaves configuradas (CC-12).
 
 ## Por qué
 Es la decisión `0002-proxy-ia-litellm.md` (CC-02).
@@ -39,7 +39,7 @@ Es la decisión `0002-proxy-ia-litellm.md` (CC-02).
   - `restart: unless-stopped`.
   - `healthcheck` contra el endpoint de salud del proxy (verificar la ruta en la documentación de LiteLLM al escribirlo).
   - Sin Postgres ni interfaz de administración.
-- [ ] `config.yaml` define los alias `ayllu-texto` y `ayllu-audio` con una deployment por llave (`api_key: os.environ/IA_KEY_n`). `router_settings` usa `routing_strategy: simple-shuffle`, `num_retries` y cooldown ante 429.
+- [ ] `config.yaml` define los alias `ayllu-texto`, `ayllu-audio` e `ayllu-imagen` (`gemini/gemini-2.5-flash-image`, CC-12), con una deployment por llave (`api_key: os.environ/IA_KEY_n`). `router_settings` usa `routing_strategy: simple-shuffle`, `num_retries` y cooldown ante 429.
 - [ ] `README.md` documenta:
   - Requisitos.
   - Ruta elegida y permisos del `.env` (`chmod 600`).
@@ -52,9 +52,11 @@ Es la decisión `0002-proxy-ia-litellm.md` (CC-02).
   - Llamada sin clave → 401.
   - Llamada con clave a `ayllu-texto` → 200.
   - Llamada con clave a `ayllu-texto` con una imagen de entrada (`image_url` con data URI base64) → 200, porque el PRP 003 envía la foto original para el filtro de artesanía (CC-09).
+  - Con clave, `POST /v1/images/edits` con `model=ayllu-imagen` y una foto → 200 con `data[].b64_json` (CC-12).
+  - Con clave, `ayllu-audio` con un audio de 5 s en el formato que graba el WebView (anotado en el PRP 000) → 200 con la transcripción. Si falla, anotar qué formato sí acepta (CC-12).
   - Con una llave inválida en la lista, las llamadas siguen respondiendo 200.
   - El proxy vuelve a funcionar tras un reinicio.
-- [ ] La Edge Function sigue funcionando con OpenRouter directo si el proxy está apagado (lo prueba el PRP 003).
+- [ ] Con el proxy apagado, la Edge Function responde `502 ia_no_disponible` y el artesano puede completar la ficha a mano (lo prueba el PRP 003; sin respaldo desde CC-12).
 
 ## Contexto necesario
 - **Contratos:** `docs/contratos.md` §Proxy de IA y §Convenciones.
@@ -63,12 +65,13 @@ Es la decisión `0002-proxy-ia-litellm.md` (CC-02).
   - https://docs.litellm.ai/docs/proxy/docker_quick_start: `--config`, puerto 4000, `os.environ/...`, clave maestra, `/v1/chat/completions`.
   - https://docs.litellm.ai/docs/proxy/deploy: fijar la versión de la imagen; sin Postgres solo funciona la clave maestra; Redis solo con varias instancias.
   - https://docs.litellm.ai/docs/routing: `simple-shuffle`, `num_retries`, `allowed_fails`, `cooldown_time`.
-  - https://docs.litellm.ai/docs/providers/openrouter y https://docs.litellm.ai/docs/providers/gemini: prefijos `openrouter/` y `gemini/`.
+  - https://docs.litellm.ai/docs/providers/gemini: prefijo `gemini/` (CC-12: sin OpenRouter).
+  - https://docs.litellm.ai/docs/image_edits: `/v1/images/edits` con `gemini/gemini-2.5-flash-image`; respuesta solo en base64.
 - **Trampas conocidas:**
   - **Cloudflare Access interactivo:** una pantalla de login rompería un cliente de API, según el informe. La autenticación obligatoria es la clave de LiteLLM (`Authorization: Bearer`). Si Johann exige Access, usar un **service token** de Cloudflare, cuyas cabeceras enviaría la Edge Function (**sin verificar**: revisar la documentación de Cloudflare Access antes).
   - **Permisos en el servidor:** no pedir acceso a los grupos `sudo` ni `docker` para colaboradores; el grupo `docker` equivale a control del host. Las operaciones privilegiadas las decide Johann.
   - **Llaves:** las escribe el propietario en el `.env` del servidor. Nunca van en git, chat ni logs.
-  - **Proveedor:** varias llaves de una misma cuenta no multiplican la cuota. Si se usan llaves de Gemini directo, confirmar con los organizadores la restricción «Gemini con OpenRouter».
+  - **Proveedor (CC-12):** Gemini directo. Varias llaves de un mismo proyecto de Google no multiplican la cuota; usar proyectos distintos. Restricción de la hackatón resuelta: confirmado por Cristopher el 2026-10-10: usar Gemini directo no incumple la restricción de la hackatón.
   - **Puerto 8080:** está ocupado; no usarlo.
 
 ## Archivos (alcance cerrado)
@@ -96,18 +99,17 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 ## Fuera de alcance
 - Postgres, interfaz de LiteLLM, claves virtuales y seguimiento de gasto.
 - Redis y más de una instancia.
-- Edición de imágenes por el proxy (va directo a OpenRouter).
 - Acceso de este agente al servidor.
 
 ## Notas / riesgos
 **Decisiones pendientes:**
 1. **Equipo Ayllu:**
-   - Proveedor (OpenRouter, Gemini directo o ambos).
    - Cuentas o proyectos **distintos** y a qué cuenta pertenece cada llave.
-   - Modelos exactos de texto y audio.
+   - Modelos exactos de texto y audio (imagen: `gemini-2.5-flash-image`, CC-12).
    - Presupuesto o cuota por cuenta y qué pasa cuando se agota.
 2. **Johann:**
    - Autenticación: solo la clave de LiteLLM, o además un service token de Access.
    - Ruta (`/opt` o `/datos`).
    - Política de logs y respaldos.
-3. **Disponibilidad:** sin UPS ni internet de respaldo confirmados. El respaldo a OpenRouter directo es obligatorio para la demo.
+3. **Disponibilidad:** sin UPS ni internet de respaldo confirmados. Desde CC-12 no hay respaldo: si el proxy cae, no hay IA. Revisar el servidor antes de la demo y tener el video de respaldo.
+4. **Proveedor:** decidido en CC-12 (Gemini directo, sin OpenRouter).

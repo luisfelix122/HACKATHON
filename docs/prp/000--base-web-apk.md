@@ -13,7 +13,7 @@ Un solo proyecto React + TypeScript + Vite que produce dos salidas, más la veri
 Al terminar, `make verify` ejecuta comprobaciones reales y pasa.
 
 ## Por qué
-Es la base de todos los PRP. También comprueba temprano los dos riesgos de infraestructura de `docs/plan.md`: compilar Android en esta máquina y que la API de OpenRouter acepte el formato de audio.
+Es la base de todos los PRP. También comprueba temprano los dos riesgos de infraestructura de `docs/plan.md`: compilar Android en esta máquina y que la IA acepte el formato de audio (Gemini por LiteLLM desde CC-12).
 
 ## Criterios de aceptación
 - [ ] `npm run build:web` genera `dist-web/` y `npm run build:artesano` genera `dist-artesano/`. Cada salida monta solo sus rutas: la APK no incluye la vitrina ni el panel del administrador.
@@ -23,8 +23,8 @@ Es la base de todos los PRP. También comprueba temprano los dos riesgos de infr
 - [ ] `make apk` genera `android/app/build/outputs/apk/debug/app-debug.apk`.
 - [ ] La APK instalada en un Android real (≥ 7) **en modo avión** abre la pantalla «Mis productos» (vacía).
 - [ ] `npm run preview -- --mode web` sirve `dist-web/` y una ruta profunda (`/producto/x`) no da 404. El despliegue por HTTPS se comprueba en el PRP 010.
-- [ ] `supabase/` existe, inicializado con `supabase init`. `.env.example` lista `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` y `OPENROUTER_API_KEY`, sin valores.
-- [ ] Queda anotado en este PRP (sección Notas) el resultado de la prueba de humo de audio en OpenRouter: qué formato graba el WebView de Android y si OpenRouter lo acepta.
+- [ ] `supabase/` existe, inicializado con `supabase init`. `.env.example` lista `VITE_SUPABASE_URL` y `VITE_SUPABASE_PUBLISHABLE_KEY` (más `IA_BASE_URL`, `IA_API_KEY` e `IA_TIMEOUT_MS` de las Edge Functions), sin valores. Sin `OPENROUTER_API_KEY` desde CC-12.
+- [ ] Queda anotado en este PRP (sección Notas) el resultado de la prueba de humo de audio: qué formato graba el WebView de Android. Desde CC-12, la comprobación de que Gemini lo acepta (alias `ayllu-audio`) pasa al PRP 009.
 
 ## Contexto necesario
 - **Dominio:** no aplica todavía.
@@ -35,7 +35,7 @@ Es la base de todos los PRP. También comprueba temprano los dos riesgos de infr
   - https://capacitorjs.com/docs/android: `npm install @capacitor/android`, `npx cap add android`; API 24+; se gestiona con Android Studio.
   - https://capacitorjs.com/docs/getting-started: `npx cap init`, `webDir`.
   - https://vitejs.dev/guide/env-and-mode: modos de Vite (`--mode artesano`).
-  - https://openrouter.ai/docs/features/multimodal/audio: `input_audio` en base64.
+  - https://ai.google.dev/gemini-api/docs/audio: formatos de audio de Gemini (CC-12).
   - https://supabase.com/docs/guides/local-development/cli/getting-started: `supabase init`.
 - **Trampas conocidas:**
   - **Java:** no está en el PATH. Usar Temurin JDK 21 (`C:/Program Files/Eclipse Adoptium/jdk-21.0.12.101-hotspot`, ver Notas): el JDK 25 de Android Studio no sirve con Capacitor 8. Exportar `JAVA_HOME` y `ANDROID_HOME=$LOCALAPPDATA/Android/Sdk` solo en la receta de `make apk`.
@@ -88,7 +88,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 6. Ejecutar `supabase init` y actualizar `.env.example` y `.gitignore`. El despliegue de la web queda para el PRP 010.
 7. Prueba de humo de audio, sin commitear código:
    - En la APK, ejecutar `MediaRecorder.isTypeSupported(...)` para `audio/webm;codecs=opus`, `audio/mp4` y `audio/ogg;codecs=opus`.
-   - Con la clave en una variable local, hacer una llamada a OpenRouter (`google/gemini-2.5-flash`) con un audio de 5 s en el formato soportado.
+   - La llamada a la IA con un audio de 5 s pasa al PRP 009 (alias `ayllu-audio`, CC-12).
    - Anotar el resultado en Notas.
 
 ## Validación

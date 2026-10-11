@@ -8,7 +8,7 @@ Tres personas implementan sus PRP al mismo tiempo, cada una en su laptop y su se
 | --- | --- | --- | --- |
 | **Fase 0 — Núcleo** | Cristopher | 000 → 011 → 012 | raíz del proyecto, `src/app/`, `src/compartido/`, `android/`, migraciones `0001–0099` |
 | **A — Artesano** (APK y admin) | Persona A: <nombre> | 001 → 002 → 003 | `src/acceso/`, `src/admin/`, `src/borradores/`, `src/publicacion/`, `supabase/functions/procesar-producto/`, `supabase/functions/_compartido/`, migraciones `0101–0199` |
-| **B — Vitrina e infraestructura** | Persona B: <nombre> | 004 → 007, y 010 → 009 | `src/vitrina/`, `supabase/seed.sql`, `supabase/seed/`, `infra/`, `README.md`, migraciones `0201–0299` |
+| **B — Vitrina e infraestructura** | Persona B: <nombre> | 004 → 007, y 009 → 010 (CC-12) | `src/vitrina/`, `supabase/seed.sql`, `supabase/seed/`, `infra/`, `README.md`, migraciones `0201–0299` |
 | **C — Pedidos** | Persona C: <nombre> | 005 → 006 → 008 | `src/pedidos/`, `supabase/functions/traducir-mensaje/`, migraciones `0301–0399` |
 
 Cristopher puede ser también la Persona A cuando termine la Fase 0.
@@ -28,12 +28,13 @@ Cristopher puede ser también la Persona A cuando termine la Fase 0.
 
 ## Dependencias entre módulos
 
-Por diseño, solo quedan dos, y ninguna obliga a tocar archivos ajenos:
+Por diseño, solo quedan tres, y ninguna obliga a tocar archivos ajenos:
 
 | Quién | Usa | De | Cómo |
 | --- | --- | --- | --- |
 | B (PRP 004, `FichaProducto`) | `BotonPedir` | C | Lo importa desde `src/pedidos/BotonPedir.tsx`. Hasta que C lo implemente, se ve el stub deshabilitado de la Fase 0 |
 | C (PRP 008, opcional) | `supabase/functions/_compartido/ia.ts` | A (PRP 003) | Solo lo importa, sin modificarlo. El PRP 008 empieza después de que el PRP 003 esté en `main` |
+| A (PRP 003) | proxy LiteLLM desplegado | B (PRP 009) | Sin respaldo desde CC-12. El código y las pruebas con `fetch` simulado del 003 no esperan; la prueba de punta a punta sí. Por eso B hace el 009 antes que el 010 |
 
 **Pruebas de punta a punta entre módulos** (por ejemplo, que el artesano real vea un pedido en la APK): cada módulo las deja como prueba manual pendiente en su traspaso. Se hacen al integrar, con los datos de `supabase/seed.sql`.
 
@@ -82,6 +83,6 @@ git switch -c <rama>
 
 ```
 Cristopher: 000 ─ 011 ─ 012 ─┬─ (Persona A) 001 ─ 002 ─ 003
-                             ├─ Persona B:   004 ─ 007    y en paralelo 010 ─ 009
+                             ├─ Persona B:   004 ─ 007    y en paralelo 009 ─ 010
                              └─ Persona C:   005 ─ 006 ─ (008 cuando 003 esté en main)
 ```

@@ -23,8 +23,8 @@ Atiende a los compradores extranjeros (Lobitos recibe turismo receptivo según [
 - **Dominio:** Mensaje de la orden; regla 13.
 - **Contratos:** `docs/contratos.md` §Traducir mensaje, §`mensaje_orden`.
 - **Decisiones:** `revision-alcance.md` §5 (traducción de acuerdos); `0005-traduccion.md` (la interfaz y la vitrina las traduce el navegador; el hilo, Gemini bajo demanda con caché; LibreTranslate queda como alternativa).
-- **Código existente a imitar:** `supabase/functions/_compartido/ia.ts` (cliente con proxy y respaldo, PRP 003) y su manejo de errores; `src/pedidos/HiloMensajes.tsx`.
-- **Documentación externa:** https://openrouter.ai/docs (chat completions).
+- **Código existente a imitar:** `supabase/functions/_compartido/ia.ts` (cliente con proxy y sin respaldo, PRP 003 y CC-12) y su manejo de errores; `src/pedidos/HiloMensajes.tsx`.
+- **Documentación externa:** https://docs.litellm.ai/docs/providers/gemini (chat completions por el proxy; sin OpenRouter desde CC-12).
 - **Trampas conocidas:**
   - **Detección del idioma:** la hace el modelo y puede fallar. Mostrar la traducción solo si el texto devuelto es distinto del original.
   - **Costo:** traducir solo al abrir el hilo, nunca en segundo plano.
