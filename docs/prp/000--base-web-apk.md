@@ -104,5 +104,5 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 - PWA instalable para el comprador (CC-01).
 
 ## Notas / riesgos
-- Resultado de la prueba de audio: <pendiente>.
+- Resultado de la prueba de audio: probado el 2026-10-10 en la APK de debug, en un Android 14 (modelo 24094RAD4G) con WebView Chrome 153, mediante `MediaRecorder.isTypeSupported`: `audio/webm;codecs=opus` sí, `audio/webm` sí, `audio/mp4` y `audio/mp4;codecs=mp4a.40.2` (AAC) sí; `audio/ogg;codecs=opus` no y `audio/aac` no. Gemini acepta `webm` y también AAC/MP4; la llamada real con `ayllu-audio` se prueba en el PRP 009 (CC-12).
 - JDK comprobado el 2026-10-10: Capacitor 8 genera Gradle 8.14.3, que no acepta el JDK 25 de Android Studio. Con Temurin JDK 21 (`C:/Program Files/Eclipse Adoptium/jdk-21.0.12.101-hotspot`) la APK compila.

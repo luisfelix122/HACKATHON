@@ -62,7 +62,7 @@ Pruebas en `src/app/app.test.tsx`:
 ## Prueba de audio (sección Notas del PRP)
 > **CC-12:** OpenRouter salió del proyecto. Aquí solo queda comprobar los formatos del WebView; la llamada a Gemini (alias `ayllu-audio`) pasa al PRP 009.
 
-**Pendiente, no se ejecutó.** Requiere la APK en un Android real (para `MediaRecorder.isTypeSupported(...)` en el WebView), y el agente no tiene uno. Pasos:
+**Hecho (formatos):** probado el 2026-10-10 en la APK de debug, en un Android 14 (modelo 24094RAD4G) con WebView Chrome 153, mediante `MediaRecorder.isTypeSupported`: `audio/webm;codecs=opus` sí, `audio/webm` sí, `audio/mp4` y `audio/mp4;codecs=mp4a.40.2` (AAC) sí; `audio/ogg;codecs=opus` no y `audio/aac` no. Gemini acepta `webm` y también AAC/MP4; la llamada real con `ayllu-audio` se prueba en el PRP 009 (CC-12). Se evaluó por `adb` con el protocolo de DevTools sobre el WebView de la app, sin cambiar nada en ella. Pasos usados:
 1. Instalar la APK y abrir el inspector remoto (`chrome://inspect` con depuración USB).
 2. En la consola, comprobar `['audio/webm;codecs=opus','audio/mp4','audio/ogg;codecs=opus'].map(t => [t, MediaRecorder.isTypeSupported(t)])`.
 3. Anotar en la sección Notas del PRP 000 qué formatos devuelven `true`.
