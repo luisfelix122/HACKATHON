@@ -1,0 +1,10 @@
+name: ayllu-web
+services:
+  web:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:8090:80'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./dist-web:/srv:ro

@@ -1,0 +1,79 @@
+# Supabase self-hosted/v0.8.2. Compose >= 2.24.4 para !override.
+services:
+  # Studio sigue detrás de la autenticación del gateway, accesible por túnel SSH.
+  api-gw:
+    ports: !override
+      - '127.0.0.1:8001:8000'
+
+  # Cloudflare publica este puerto; nunca el gateway privado que incluye Studio.
+  api-publica:
+    image: caddy:2.10.2-alpine
+    restart: unless-stopped
+    depends_on:
+      api-gw:
+        condition: service_healthy
+    ports:
+      - '127.0.0.1:8000:8000'
+    entrypoint: ['/bin/sh', '-ec']
+    command:
+      - |
+        printf '%s\n' ':8000 {' \
+          '  @api path /auth/v1 /auth/v1/* /rest/v1 /rest/v1/* /storage/v1 /storage/v1/* /realtime/v1 /realtime/v1/* /functions/v1 /functions/v1/* /graphql/v1 /graphql/v1/*' \
+          '  handle @api {' \
+          '    reverse_proxy api-gw:8000' \
+          '  }' \
+          '  handle {' \
+          '    respond "Not found" 404' \
+          '  }' \
+          '}' > /tmp/Caddyfile
+        exec caddy run --config /tmp/Caddyfile --adapter caddyfile
+
+  db:
+    ports: !override
+      - '127.0.0.1:5432:5432'
+
+  supavisor:
+    ports: !override []
+
+  auth:
+    environment:
+      GOTRUE_EXTERNAL_GOOGLE_ENABLED: ${GOOGLE_ENABLED:-false}
+      GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOTRUE_EXTERNAL_GOOGLE_SECRET: ${GOOGLE_SECRET:-}
+      GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: ${API_EXTERNAL_URL:?Configura API_EXTERNAL_URL}/callback
+      GOTRUE_EXTERNAL_EMAIL_ENABLED: 'true'
+      GOTRUE_MAILER_AUTOCONFIRM: 'true'
+      GOTRUE_DISABLE_SIGNUP: 'false'
+      GOTRUE_JWT_KEYS: ${JWT_KEYS:?Ejecuta add-new-auth-keys.sh}
+
+  realtime:
+    environment:
+      API_JWT_JWKS: ${JWT_JWKS:?Ejecuta add-new-auth-keys.sh}
+
+  storage:
+    environment:
+      JWT_JWKS: ${JWT_JWKS:?Ejecuta add-new-auth-keys.sh}
+
+  functions:
+    environment:
+      SUPABASE_JWKS: ${JWT_JWKS:?Ejecuta add-new-auth-keys.sh}
+
+  # Solo lo inicia el operador durante la ventana de pruebas del candidato.
+  pruebas-sql:
+    image: ghcr.io/supabase/pg_prove:3.36
+    profiles: ['pruebas']
+    environment:
+      PGHOST: db
+      PGPORT: '5432'
+      PGDATABASE: postgres
+      PGUSER: postgres
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Configura POSTGRES_PASSWORD}
+      PGOPTIONS: '-c search_path=public,extensions'
+    volumes:
+      - ../../pruebas:/tests:ro
+    entrypoint: ['/bin/sh', '-ec']
+    command:
+      - |
+        set -- /tests/*.sql
+        test -f "$$1" || { printf '%s\n' 'No hay pruebas SQL del candidato en /tests.' >&2; exit 1; }
+        exec pg_prove "$$@"
