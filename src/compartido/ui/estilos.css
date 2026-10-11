@@ -768,7 +768,8 @@ a:has(> .tablon):hover .tablon-media img {
   background: var(--blanco);
   color: var(--brea);
   box-shadow: var(--sombra-alta);
-  overflow: auto;
+  /* Solo el cuerpo se desplaza: el título y Cerrar quedan siempre a la vista. */
+  overflow: hidden;
 }
 
 .modal[open] {
@@ -819,7 +820,12 @@ a:has(> .tablon):hover .tablon-media img {
   display: grid;
   gap: var(--e4);
   align-content: start;
+  min-height: 0;
   padding: var(--e5);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* Al saltar a un campo incompleto, se ve con su etiqueta. */
+  scroll-padding-block: var(--e6);
 }
 
 .modal-acciones {
