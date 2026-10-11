@@ -22,7 +22,7 @@ Atiende a los compradores extranjeros (Lobitos recibe turismo receptivo según [
 ## Contexto necesario
 - **Dominio:** Mensaje de la orden; regla 13.
 - **Contratos:** `docs/contratos.md` §Traducir mensaje, §`mensaje_orden`.
-- **Decisiones:** `revision-alcance.md` §5 (traducción de acuerdos).
+- **Decisiones:** `revision-alcance.md` §5 (traducción de acuerdos); `0005-traduccion.md` (la interfaz y la vitrina las traduce el navegador; el hilo, Gemini bajo demanda con caché; LibreTranslate queda como alternativa).
 - **Código existente a imitar:** `supabase/functions/_compartido/ia.ts` (cliente con proxy y respaldo, PRP 003) y su manejo de errores; `src/pedidos/HiloMensajes.tsx`.
 - **Documentación externa:** https://openrouter.ai/docs (chat completions).
 - **Trampas conocidas:**
@@ -55,7 +55,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
    - Con la clave inválida → se ve el original.
 
 ## Fuera de alcance
-- Traducción de la vitrina y de las fichas.
+- Traducción de la vitrina y de las fichas: la hace el navegador (decisión 0005).
 - Selector manual de idioma.
 
 ## Notas / riesgos

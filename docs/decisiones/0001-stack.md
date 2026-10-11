@@ -40,7 +40,7 @@ Alcance aprobado: `docs/revision-alcance.md`.
   - Postgres con RLS.
   - Storage para fotos y audios.
   - Edge Functions para las llamadas a OpenRouter. La clave nunca llega al cliente.
-- **Login del artesano en la APK:** correo y contraseña (`signInWithPassword`). La cuenta se crea con Google en la web y ahí se define la contraseña (**reemplazado por CC-03**; antes era Google por deep link).
+- **Login del artesano en la APK:** correo y contraseña (`signInWithPassword`). La cuenta se crea con Google en la web y ahí se define la contraseña (**reemplazado por CC-03**; antes era Google por deep link). **Vigente:** CC-06, CC-08 y CC-09, todo en la APK; ver PRP 001.
 - **Descripción hablada (vía combinada):**
   - **Con conexión:** dictado en vivo con el reconocimiento de voz nativo de Android mediante el plugin `@capacitor-community/speech-recognition`. A OpenRouter solo llega **texto**.
   - **Sin conexión:** se graba el audio y se guarda en el borrador. Al recuperar la señal, el artesano lo dicta de nuevo o la Edge Function envía el audio a OpenRouter. Esta segunda opción solo se usa si la prueba de formato de la hora 1 funciona.

@@ -52,7 +52,7 @@ Que el artesano publique una pieza desde su celular en pocos pasos, aun sin señ
 
 ## Restricciones
 - **Plazo:** hackatón de 24 h. Al cerrar el plan quedaban unas 15 h. Equipo de 5 estudiantes; el código lo implementa Cristopher.
-- **Presupuesto:** planes gratuitos (Supabase Free, Vercel Hobby) y saldo de OpenRouter. No hay precios de suscripción aprobados.
+- **Presupuesto:** Supabase self-hosted y la web en el servidor del equipo (0003 / CC-05), y saldo de OpenRouter. No hay precios de suscripción aprobados.
 - **Técnicas o legales:**
   - IA solo Gemini vía OpenRouter (restricción oficial).
   - Vercel Hobby es de uso no comercial.

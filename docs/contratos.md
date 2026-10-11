@@ -149,6 +149,7 @@ La foto se comprime en el cliente antes de subirla: lado mayor de 1600 px y cali
   - Productos y sus fotos: lee y escribe los suyos. No puede pasar un producto a `publicado` si su acreditación no está `aprobada`, si `revision_ia = rechazada` o si no tiene al menos una foto publicada; esto lo controla el trigger `exigir_acreditacion_para_publicar`.
   - No escribe `revision_ia`, `comentario_precio_ia`, `ia_error` ni `ia_intentos`: solo la Edge Function (o el admin por SQL).
   - Órdenes: lee las de sus productos (unión con `producto.artesano_id`), pero no las actualiza directamente; los cambios de estado pasan por RPC.
+- **Montos del producto:** `precio_final` solo lo cambia su artesano (RLS por `artesano_id = auth.uid()`) y la base exige `> 0`; nadie más puede escribirlo, ni la IA (CC-10).
 - **Nadie** actualiza `orden` directamente desde el cliente: no hay política de `update`. Total, modalidad, destino y estado solo cambian por RPC.
 - **Admin:** lee todos los perfiles. Solo cambia `acreditacion` y `acreditacion_nota` mediante la RPC `resolver_acreditacion(artesano uuid, resultado acreditacion, nota text)`, que lanza `no_autorizado` si quien llama no es admin y `datos_incompletos` si un rechazo no tiene motivo (CC-04).
 

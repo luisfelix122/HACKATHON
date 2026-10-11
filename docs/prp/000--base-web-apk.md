@@ -43,7 +43,8 @@ Es la base de todos los PRP. También comprueba temprano los dos riesgos de infr
   - **Secretos:** nunca escribir valores en `.env.example` ni en `capacitor.config.ts`.
   - **Herramientas del shell:** `python` y `sd` no están instalados. Usar Node para los scripts.
   - **Supabase CLI:** no está instalada globalmente. Agregarla como dependencia de desarrollo (`supabase`) y usar `npx supabase`. `supabase test db` requiere `supabase start`, que usa Docker; Docker Desktop está instalado pero el daemon estaba apagado al revisarlo. `make test-db` falla con un mensaje claro si Docker no corre, sin fingir éxito.
-  - **`.env.example`:** una regla de permisos impide leerlo, y sin leerlo el agente no puede editarlo. Cristopher agrega a mano las tres variables listadas, o concede el permiso.
+  - **`.env.example`:** las reglas `deny` `Read(.env.*)` y `Edit(.env.*)` de `~/.claude/settings.json` impiden al agente leerlo o editarlo. Cristopher agrega a mano las tres variables listadas, o ajusta esas reglas para que no cubran `.env.example`. El agente no las sortea por otra vía.
+  - **`supabase/seed.sql` ya existe** (CC-10). `supabase init` crea `config.toml` al lado; no borrar ni reemplazar el seed.
   - **Tiempo de CI:** el CI no compila la APK (requiere el SDK de Android). La APK se compila en local con `make apk`.
 
 ## Archivos (alcance cerrado)
@@ -53,7 +54,7 @@ Es la base de todos los PRP. También comprueba temprano los dos riesgos de infr
 | crear | `vite.config.ts` | `outDir` según el modo (`dist-web` / `dist-artesano`) y configuración de Vitest |
 | crear | `tsconfig.json`, `tsconfig.node.json` | TypeScript estricto |
 | crear | `eslint.config.js`, `.prettierrc.json`, `.prettierignore` | lint y formato |
-| crear | `index.html` | punto de entrada |
+| crear | `index.html` | punto de entrada con `<html lang="es">`, para que el navegador ofrezca traducir la página (decisión 0005) |
 | crear | `src/main.tsx` | elige `AppWeb` o `AppArtesano` según `import.meta.env.MODE` |
 | crear | `src/app/AppWeb.tsx`, `src/app/AppArtesano.tsx` | router de cada salida con pantallas vacías |
 | crear | `src/compartido/supabase.ts` | cliente Supabase a partir de las variables de entorno |

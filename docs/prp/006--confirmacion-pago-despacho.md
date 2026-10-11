@@ -29,11 +29,12 @@ Cierra los criterios 3 y 4 del reto (confirmación de abono digital y despacho).
 - [ ] Al aceptar, la fecha estimada se prellena con la regla de «Estimación de entrega» de `contratos.md` y el artesano la puede corregir.
 - [ ] En una orden `enviada`, el comprador ve el número de guía y un botón «Rastrear envío» que abre `https://shalom.com.pe/rastrea` en una pestaña nueva (enlace fijo).
 - [ ] Los cambios de estado llegan a la otra parte por Realtime (PRP 005).
+- [ ] **Carga de trabajo (CC-10):** en la APK, «Mis pedidos» muestra cuántos pedidos tiene en curso (de `aceptada` a `pagada`). Al aceptar uno nuevo, si ya tiene 5 o más **(supuesto)**, aparece «Tienes N pedidos en curso. Revisa que puedas cumplir la fecha.» Solo avisa; no bloquea.
 
 ## Contexto necesario
 - **Dominio:** Orden, Enlace de pago, Abono verificado, Número de guía; estados de la Orden; reglas 8–12.
 - **Contratos:** `docs/contratos.md` §Transiciones de orden (concurrencia, Realtime), §`orden`, §Seguimiento del envío, §Estimación de entrega, §Convenciones (fechas en `America/Lima`).
-- **Decisiones:** `revision-alcance.md` §2 (pago manual); `CC-09.md` (sin reserva, botón de rastreo, estimación).
+- **Decisiones:** `revision-alcance.md` §2 (pago manual); `CC-09.md` (sin reserva, botón de rastreo, estimación); `CC-10.md` (aviso de carga de trabajo).
 - **Código existente a imitar:** `supabase/migrations/0005_orden.sql` (`crear_orden`); `src/pedidos/DetalleOrden.tsx`.
 - **Documentación externa:**
   - https://www.izipay.pe/link-de-pago/: link individual por orden; sin API ni webhook documentados.
@@ -49,7 +50,7 @@ Cierra los criterios 3 y 4 del reto (confirmación de abono digital y despacho).
 | --- | --- | --- |
 | crear | `supabase/migrations/0006_transiciones_orden.sql` | las RPC de transición restantes |
 | crear | `supabase/tests/orden_transiciones.test.sql` | pgTAP: cada transición válida e inválida; actor incorrecto; datos incompletos; doble transición |
-| crear | `src/pedidos/estadoOrden.ts`, `src/pedidos/estadoOrden.test.ts` | etiquetas y acciones visibles por rol y estado |
+| crear | `src/pedidos/estadoOrden.ts`, `src/pedidos/estadoOrden.test.ts` | etiquetas y acciones visibles por rol y estado; conteo de pedidos en curso y umbral del aviso |
 | crear | `src/pedidos/estimarEntrega.ts`, `src/pedidos/estimarEntrega.test.ts` | fecha estimada por plazo, modalidad y departamento |
 | crear | `src/pedidos/acciones.ts` | invocaciones de las RPC y mensajes de error legibles |
 | crear | `src/pedidos/AccionesArtesano.tsx` | aceptar (total, envío y fecha prellenada), rechazar, enlace, verificar, enviado/recojo, entregado |

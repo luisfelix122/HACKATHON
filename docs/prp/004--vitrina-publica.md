@@ -26,6 +26,7 @@ Es el criterio 3 del reto: una vitrina accesible para clientes externos, con el 
 - [ ] El botón de WhatsApp abre `https://wa.me/<numero>?text=<mensaje prellenado con el nombre del producto>`, con el texto codificado.
 - [ ] Un producto inexistente o no publicado muestra «Producto no disponible», sin errores en la consola.
 - [ ] El diseño se ve bien en 360 px y en 1440 px.
+- [ ] La vitrina se puede traducir con la función del navegador (Chrome o Safari): `lang="es"` declarado y ningún `translate="no"` salvo en la marca «Ayllu» (decisión 0005).
 - [ ] Hay datos semilla ficticios (al menos 3 artesanos y 8 productos) para desarrollar, aunque los PRP 002 y 003 no estén listos.
 
 ## Contexto necesario
@@ -47,7 +48,7 @@ Es el criterio 3 del reto: una vitrina accesible para clientes externos, con el 
 | Acción | Ruta | Responsabilidad |
 | --- | --- | --- |
 | crear | `supabase/migrations/0004_vitrina.sql` | vistas `producto_publico` (producto unido a `artesano_publico`, con nombre y título normalizados y etiquetas) y `foto_publica` (fotos publicadas y la original de productos publicados); `grant select` a `anon` |
-| crear | `supabase/seed.sql` | datos semilla iniciales ficticios, con fotos y etiquetas (el PRP 007 los amplía) |
+| modificar | `supabase/seed.sql` | ya existe con la muestra de la demo (CC-10); solo se ajusta si la vista o el esquema lo exigen |
 | crear | `src/vitrina/consultas.ts` | catálogo, producto y perfil |
 | crear | `src/vitrina/filtros.ts`, `src/vitrina/filtros.test.ts` | filtros ↔ URL (incluye `etiqueta`) y normalización |
 | crear | `src/vitrina/whatsapp.ts`, `src/vitrina/whatsapp.test.ts` | construcción del enlace `wa.me` |

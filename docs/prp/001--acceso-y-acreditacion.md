@@ -39,7 +39,8 @@ La **acreditación** es la verificación de que el artesano tiene Registro Nacio
 ## Contexto necesario
 - **Dominio:** Perfil, RNA, Acreditación, Lugar, Asociación; estados de la Acreditación.
 - **Contratos:** `docs/contratos.md` §`perfil`, §Acceso, §Permisos (RLS), §Convenciones.
-- **Decisiones:** `0001-stack.md`, `CC-01.md`, `CC-03.md`, `CC-09.md` (registro con correo).
+- **Decisiones:** `0001-stack.md`, `CC-01.md`, `CC-03.md`, `CC-06.md`, `CC-08.md`, `CC-09.md` (registro con correo).
+- **Regla vigente del acceso del artesano** (resuelve la contradicción entre CC-03 y CC-06 que señaló Luis en CC-10): manda la suma de CC-06, CC-08 y CC-09. Todo ocurre en la APK; la cuenta se crea con correo y contraseña o con Google por deep link; el ingreso posterior siempre es con correo y contraseña. De CC-03 solo sigue vigente el ingreso con correo y contraseña; su registro en la web quedó eliminado.
 - **Código existente a imitar:** `src/compartido/supabase.ts` (PRP 000).
 - **Documentación externa:**
   - https://supabase.com/docs/guides/auth/social-login/auth-google: cliente OAuth *Web application*, scopes básicos, `signInWithOAuth`.
