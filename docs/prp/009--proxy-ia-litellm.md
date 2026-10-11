@@ -3,6 +3,7 @@
 - Caso de uso: CU-09 (`docs/plan.md`, infraestructura de CU-03 y CU-08)
 - Responsable: Cristopher (archivos) · Operador del despliegue: laptop autorizada por Johann · Revisor: Johann + subagente `reviewer`
 - Estado: listo para preparar archivos; **despliegue pendiente** de las decisiones de la sección Notas
+- Módulo: B (`docs/modulos.md`, CC-11).
 - Rama: `cu-09/proxy-ia-litellm`
 
 ## Objetivo

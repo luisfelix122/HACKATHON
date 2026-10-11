@@ -1,14 +1,12 @@
 # PRP 011 — Sistema visual y rediseño de las pantallas existentes
 
-- Caso de uso: CU-11 (transversal; aplica a CU-01 y sirve de base a CU-02 a CU-07)
+- Caso de uso: CU-11 (transversal; base visual de CU-01 a CU-08)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo (ajustado en CC-10). Se ejecuta después del PRP 001. Implementación anterior en la etiqueta `respaldo-implementacion`
+- Estado: listo (ajustado en CC-10 y CC-11). Fase 0: se ejecuta después del PRP 000 y antes del PRP 012. Implementación anterior en la etiqueta `respaldo-implementacion`
 - Rama: `cu-11/sistema-visual`
 
 ## Objetivo
-Aplicar la decisión `0004` como un sistema reutilizable y rediseñar las pantallas que ya existen:
-- **Web:** inicio, ingreso del comprador y panel de administración (la web no tiene registro de artesanos, CC-08).
-- **APK:** ingreso, registro con correo o Google, «Tu cuenta» y «Mis productos».
+Aplicar la decisión `0004` como un sistema reutilizable (tokens, componentes y fuentes locales) **antes** de que existan las pantallas, para que los módulos A, B y C las construyan ya con él (CC-11). Se aplica a las pantallas vacías del PRP 000.
 
 ## Por qué
 La marca parte de cero; sin un sistema común, cada PRP inventaría su propio estilo.
@@ -17,7 +15,7 @@ La marca parte de cero; sin un sistema común, cada PRP inventaría su propio es
 - [ ] Tokens CSS (color, tipografía, espacio, radios y estados) en `src/compartido/ui/tokens.css`, con la paleta de `0004`.
 - [ ] Componentes `Boton`, `Campo`, `Etiqueta`, `SelloRna`, `Aviso` y `Casilla` en `src/compartido/ui/`, con sus estados por defecto, foco visible, deshabilitado, cargando y error.
 - [ ] Fuentes empaquetadas con `@fontsource`. Nada se carga desde un CDN, así que la APK abre sin conexión con sus fuentes.
-- [ ] Las pantallas existentes usan los componentes. No se cambia ninguna regla ni contrato de CU-01.
+- [ ] Las pantallas vacías del PRP 000 usan los componentes.
 - [ ] Contraste AA en todo texto. Objetivos táctiles de al menos 48 px. Texto base de 18 px en la APK. `prefers-reduced-motion` respetado.
 - [ ] Se ven bien entre 360 px y 1440 px. Capturas de escritorio y celular adjuntas al PR (no se commitean).
 - [ ] `make verify` y `make build` en verde. Revisión del subagente `reviewer`.
@@ -25,7 +23,7 @@ La marca parte de cero; sin un sistema común, cada PRP inventaría su propio es
 
 ## Contexto necesario
 - **Decisiones:** `0004-sistema-visual.md`; `PRODUCT.md`.
-- **Código existente a imitar:** `src/compartido/ui/estilos.css`, que se reemplaza; pantallas de `src/acceso/`, `src/admin/` y `src/app/`.
+- **Código existente a imitar:** `src/compartido/ui/estilos.css`, que se reemplaza; pantallas vacías de `src/app/`.
 - **Documentación externa:**
   - https://fontsource.org/fonts/atkinson-hyperlegible
   - https://fontsource.org/fonts/barlow-condensed
@@ -40,7 +38,7 @@ La marca parte de cero; sin un sistema común, cada PRP inventaría su propio es
 | modificar | `src/compartido/ui/estilos.css` | base y utilidades con los tokens |
 | crear | `src/compartido/ui/componentes.tsx`, `src/compartido/ui/componentes.test.tsx` | Boton, Campo, Etiqueta, SelloRna, Aviso, Casilla |
 | modificar | `src/main.tsx` | importar las fuentes y los tokens |
-| modificar | `src/app/AppWeb.tsx`, `src/app/AppArtesano.tsx`, `src/acceso/*.tsx`, `src/admin/PanelAcreditacion.tsx` | usar los componentes; sin cambios de lógica |
+| modificar | `src/app/AppWeb.tsx`, `src/app/AppArtesano.tsx` | usar los componentes en las pantallas vacías |
 | modificar | `package.json`, `package-lock.json` | `@fontsource/atkinson-hyperlegible`, `@fontsource/barlow-condensed` (OFL-1.1) |
 | modificar | `DESIGN.md` | sistema documentado desde lo construido (`PRODUCT.md` y la decisión `0004` ya existen y no se tocan) |
 
@@ -49,8 +47,8 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 ## Validación
 1. `make verify` y `make build`.
 2. **Pruebas a crear:** componentes con su estado de error y deshabilitado, y su accesibilidad (etiqueta asociada al campo, `role="status"` en el aviso).
-3. **Prueba manual:** capturas en 390 px y 1280 px de la vitrina y del panel en la web, y del registro y el ingreso en la APK.
+3. **Prueba manual:** capturas en 390 px y 1280 px de las pantallas vacías de la web y de la APK.
 
 ## Fuera de alcance
-- Pantallas de los PRP 002 a 007: heredan el sistema cuando se construyen.
+- Pantallas de los PRP 001 a 008: los módulos las construyen con este sistema.
 - Logo final: se usa un logotipo tipográfico provisional.

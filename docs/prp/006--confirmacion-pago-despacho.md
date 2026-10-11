@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-06 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo (actualizado por CC-09: sin reserva de stock)
+- Estado: listo (actualizado por CC-09: sin reserva de stock; CC-11). Módulo C; requiere el PRP 005 en `main`
 - Rama: `cu-06/confirmacion-pago`
 
 ## Objetivo
@@ -35,7 +35,7 @@ Cierra los criterios 3 y 4 del reto (confirmación de abono digital y despacho).
 - **Dominio:** Orden, Enlace de pago, Abono verificado, Número de guía; estados de la Orden; reglas 8–12.
 - **Contratos:** `docs/contratos.md` §Transiciones de orden (concurrencia, Realtime), §`orden`, §Seguimiento del envío, §Estimación de entrega, §Convenciones (fechas en `America/Lima`).
 - **Decisiones:** `revision-alcance.md` §2 (pago manual); `CC-09.md` (sin reserva, botón de rastreo, estimación); `CC-10.md` (aviso de carga de trabajo).
-- **Código existente a imitar:** `supabase/migrations/0005_orden.sql` (`crear_orden`); `src/pedidos/DetalleOrden.tsx`.
+- **Código existente a imitar:** `supabase/migrations/0301_crear_orden.sql` (`crear_orden`); `src/pedidos/DetalleOrden.tsx`.
 - **Documentación externa:**
   - https://www.izipay.pe/link-de-pago/: link individual por orden; sin API ni webhook documentados.
   - https://shalom.com.pe/rastrea: página de rastreo de Shalom, abierta desde un botón con enlace fijo.
@@ -48,7 +48,7 @@ Cierra los criterios 3 y 4 del reto (confirmación de abono digital y despacho).
 ## Archivos (alcance cerrado)
 | Acción | Ruta | Responsabilidad |
 | --- | --- | --- |
-| crear | `supabase/migrations/0006_transiciones_orden.sql` | las RPC de transición restantes |
+| crear | `supabase/migrations/0302_transiciones_orden.sql` | las RPC de transición restantes |
 | crear | `supabase/tests/orden_transiciones.test.sql` | pgTAP: cada transición válida e inválida; actor incorrecto; datos incompletos; doble transición |
 | crear | `src/pedidos/estadoOrden.ts`, `src/pedidos/estadoOrden.test.ts` | etiquetas y acciones visibles por rol y estado; conteo de pedidos en curso y umbral del aviso |
 | crear | `src/pedidos/estimarEntrega.ts`, `src/pedidos/estimarEntrega.test.ts` | fecha estimada por plazo, modalidad y departamento |
@@ -61,7 +61,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Tareas (en orden)
 1. Las pruebas pgTAP de las transiciones, escritas primero (TDD).
-2. La migración 0006 hasta que pasen.
+2. La migración 0302 hasta que pasen.
 3. `estadoOrden.ts` y `estimarEntrega.ts`, con sus pruebas primero.
 4. `acciones.ts` y los componentes de acciones.
 5. Recorrido completo con dos dispositivos.

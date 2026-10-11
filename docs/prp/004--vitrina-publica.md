@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-04 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo (actualizado por CC-09)
+- Estado: listo (actualizado por CC-09 y CC-11). Módulo B; requiere el PRP 012 en `main`
 - Rama: `cu-04/vitrina`
 
 ## Objetivo
@@ -47,22 +47,23 @@ Es el criterio 3 del reto: una vitrina accesible para clientes externos, con el 
 ## Archivos (alcance cerrado)
 | Acción | Ruta | Responsabilidad |
 | --- | --- | --- |
-| crear | `supabase/migrations/0004_vitrina.sql` | vistas `producto_publico` (producto unido a `artesano_publico`, con nombre y título normalizados y etiquetas) y `foto_publica` (fotos publicadas y la original de productos publicados); `grant select` a `anon` |
+| crear | `supabase/migrations/0201_vitrina.sql` | vistas `producto_publico` (producto unido a `artesano_publico`, con nombre y título normalizados y etiquetas) y `foto_publica` (fotos publicadas y la original de productos publicados); `grant select` a `anon` |
+| crear | `supabase/tests/vitrina.test.sql` | pgTAP: el anónimo ve solo productos publicados de artesanos aprobados; no ve `retirado`, `rna_numero` ni `acreditacion_nota` |
 | modificar | `supabase/seed.sql` | ya existe con la muestra de la demo (CC-10); solo se ajusta si la vista o el esquema lo exigen |
 | crear | `src/vitrina/consultas.ts` | catálogo, producto y perfil |
 | crear | `src/vitrina/filtros.ts`, `src/vitrina/filtros.test.ts` | filtros ↔ URL (incluye `etiqueta`) y normalización |
 | crear | `src/vitrina/whatsapp.ts`, `src/vitrina/whatsapp.test.ts` | construcción del enlace `wa.me` |
 | crear | `src/vitrina/Catalogo.tsx` | búsqueda, filtros, chips de etiquetas y tarjetas |
 | crear | `src/vitrina/CarruselFotos.tsx` | fotos publicadas, enlace a la original |
-| crear | `src/vitrina/FichaProducto.tsx` | detalle con carrusel, etiquetas y botones WhatsApp y «Pedir» (el botón «Pedir» se conecta en el PRP 005) |
+| crear | `src/vitrina/FichaProducto.tsx` | detalle con carrusel, etiquetas, WhatsApp y `BotonPedir` importado de `src/pedidos/` (lo implementa el PRP 005; este PRP no lo modifica) |
 | crear | `src/vitrina/PerfilArtesano.tsx` | historia, sello y productos |
-| modificar | `src/app/AppWeb.tsx` | rutas `/`, `/producto/:id`, `/artesano/:id` |
-| modificar | `src/compartido/ui/estilos.css` | tarjetas y cuadrícula adaptable |
+| modificar | `src/vitrina/rutas.tsx` | rutas `/`, `/producto/:id`, `/artesano/:id` |
+| crear | `src/vitrina/vitrina.css` | tarjetas y cuadrícula adaptable |
 
 Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Tareas (en orden)
-1. La migración 0004 y los datos semilla. Aplicarlos.
+1. La prueba pgTAP y la migración 0201; aplicarlas con `seed.sql`.
 2. `filtros.ts` y `whatsapp.ts`, con sus pruebas primero.
 3. `consultas.ts` y las tres pantallas.
 4. Revisar el diseño en 360 px y 1440 px. Publicar `dist-web` en el servidor (PRP 010).

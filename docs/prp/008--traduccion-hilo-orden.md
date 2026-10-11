@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-08 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: borrador. Ejecutar solo si los PRP 000–007 están completos antes de la hora 12.
+- Estado: borrador. Módulo C. Ejecutar solo si los PRP 000–007 están completos antes de la hora 12, y después de que el PRP 003 (módulo A) esté en `main`: usa `supabase/functions/_compartido/ia.ts` sin modificarlo (CC-11).
 - Rama: `cu-08/traduccion-hilo`
 
 ## Objetivo

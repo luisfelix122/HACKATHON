@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-05 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo (actualizado por CC-09)
+- Estado: listo (actualizado por CC-09 y CC-11). Módulo C; requiere el PRP 012 en `main`
 - Rama: `cu-05/pedido-despacho`
 
 ## Objetivo
@@ -34,7 +34,7 @@ Es el criterio 4 del reto: estructurar la orden y los datos de despacho por agen
 - **Dominio:** Orden, Modalidad, Datos de envío, Mensaje de la orden; estados de la Orden; reglas 2 y 12.
 - **Contratos:** `docs/contratos.md` §`orden`, §Datos de envío, §`mensaje_orden`, §Transiciones de orden (`crear_orden`), §Permisos.
 - **Decisiones:** `revision-alcance.md` §2 (hilo dentro de la orden en lugar de chat libre).
-- **Código existente a imitar:** `src/vitrina/FichaProducto.tsx` (PRP 004); `src/acceso/sesion.ts` (PRP 001).
+- **Código existente a imitar:** `src/compartido/sesion.ts` y `src/pedidos/BotonPedir.tsx` (stub, PRP 012).
 - **Documentación externa:**
   - https://supabase.com/docs/guides/database/functions: funciones `security definer` y `search_path`.
   - https://supabase.com/docs/reference/javascript/rpc.
@@ -49,9 +49,8 @@ Es el criterio 4 del reto: estructurar la orden y los datos de despacho por agen
 ## Archivos (alcance cerrado)
 | Acción | Ruta | Responsabilidad |
 | --- | --- | --- |
-| crear | `supabase/migrations/0005_orden.sql` | tipos `modalidad` y `estado_orden`; tablas `orden` (sin `artesano_id`) y `mensaje_orden`; RLS por unión con `producto`; RPC `crear_orden`; `alter publication supabase_realtime add table orden, mensaje_orden` |
+| crear | `supabase/migrations/0301_crear_orden.sql` | RPC `crear_orden` (las tablas, la RLS y Realtime vienen del PRP 012) |
 | crear | `supabase/tests/orden_crear.test.sql` | pgTAP: validaciones de `crear_orden`; RLS de órdenes y mensajes |
-| crear | `src/compartido/dominio/orden.ts` | tipos TS de Orden, DatosEnvio y MensajeOrden |
 | crear | `src/pedidos/datosEnvio.ts`, `src/pedidos/datosEnvio.test.ts` | validación de los datos de envío |
 | crear | `src/pedidos/consultas.ts` | crear la orden, listar, obtener, enviar y leer mensajes |
 | crear | `src/pedidos/tiempoReal.ts` | suscripción y cancelación de los canales de la orden y su hilo |
@@ -59,15 +58,16 @@ Es el criterio 4 del reto: estructurar la orden y los datos de despacho por agen
 | crear | `src/pedidos/MisPedidos.tsx` | lista compartida entre la web y la APK |
 | crear | `src/pedidos/DetalleOrden.tsx` | datos estructurados más el hilo |
 | crear | `src/pedidos/HiloMensajes.tsx` | lista y caja de texto |
-| modificar | `src/vitrina/FichaProducto.tsx` | conectar el botón «Pedir» |
-| modificar | `src/app/AppWeb.tsx`, `src/app/AppArtesano.tsx` | rutas `/pedidos` y `/pedidos/:id` |
+| modificar | `src/pedidos/BotonPedir.tsx` | reemplaza el stub del PRP 012: pide el ingreso con Google si hace falta y abre el formulario (la vitrina ya lo importa) |
+| modificar | `src/pedidos/rutas.tsx` | rutas `/pedidos` y `/pedidos/:id` en la web y la APK, y la entrada «Mis pedidos» del menú |
+| crear | `src/pedidos/pedidos.css` | estilos propios con los tokens |
 
 Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Tareas (en orden)
-1. La migración 0005 y su prueba pgTAP.
-2. `orden.ts`, y `datosEnvio.ts` con sus pruebas.
-3. `consultas.ts`, `FormularioPedido` y la conexión del botón «Pedir».
+1. La prueba pgTAP y la migración 0301.
+2. `datosEnvio.ts` con sus pruebas (los tipos vienen del PRP 012).
+3. `consultas.ts`, `FormularioPedido` e implementar `BotonPedir`.
 4. `MisPedidos`, `DetalleOrden` y `HiloMensajes` en las dos salidas.
 5. `make apk` y probar con dos dispositivos.
 

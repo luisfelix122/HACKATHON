@@ -11,8 +11,8 @@
 --   * Los WhatsApp +5190000000N son marcadores: reemplazarlos por el número del
 --     equipo antes de la demo para que nadie escriba a un desconocido.
 --   * Cada bloque solo corre si su tabla ya existe, para que `supabase db reset`
---     funcione en cualquier PRP (perfil: 0001, producto y foto_producto: 0002,
---     orden y mensaje_orden: 0005). Se puede aplicar dos veces sin duplicar.
+--     funcione en cualquier momento (todas las tablas vienen del PRP 012: perfil 0001,
+--     producto y foto_producto 0002, orden y mensaje_orden 0003). Se puede aplicar dos veces sin duplicar.
 --   * Las fotos se suben aparte al bucket `fotos` en `{artesano_id}/{producto_id}/original.jpg`.
 -- ====================================================================================
 

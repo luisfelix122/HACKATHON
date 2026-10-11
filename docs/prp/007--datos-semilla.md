@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-07 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo (reducido por CC-09; la muestra de datos ya está en `supabase/seed.sql` desde CC-10)
+- Estado: listo (reducido por CC-09; la muestra está en `supabase/seed.sql` desde CC-10). Módulo B; requiere el PRP 004 en `main`
 - Rama: `cu-07/datos-semilla`
 
 ## Objetivo
@@ -26,7 +26,7 @@ La demo del pitch de 3 minutos necesita una vitrina con contenido desde el prime
 - [ ] Las fotos son propias del equipo o de libre uso, con su licencia anotada en `supabase/seed/fotos/LICENCIAS.md`.
 - [ ] Ningún nombre, foto o dato proviene del padrón ni de personas reales sin su consentimiento (regla 15).
 - [ ] No hay datos de prueba en `src/` ni en `AGENTS.md`: una búsqueda de los nombres semilla en `src/` no encuentra nada.
-- [ ] `seed.sql` se aplica sin errores sobre una base limpia con las migraciones 0001–0006, y se puede aplicar dos veces sin duplicar filas.
+- [ ] `seed.sql` se aplica sin errores sobre una base limpia con todas las migraciones (núcleo y módulos), y se puede aplicar dos veces sin duplicar filas.
 
 ## Contexto necesario
 - **Dominio:** todo el glosario; regla 15.
@@ -51,7 +51,7 @@ Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Tareas (en orden)
 1. Fotos semilla y su licencia.
-2. Revisar `seed.sql` contra las migraciones 0001–0006; aplicarlo dos veces sobre una base limpia.
+2. Revisar `seed.sql` contra todas las migraciones (núcleo y módulos); aplicarlo dos veces sobre una base limpia.
 3. Subir las fotos al bucket `fotos` del servidor y revisar la vitrina en 360 px y 1440 px.
 
 ## Validación

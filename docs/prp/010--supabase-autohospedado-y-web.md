@@ -3,6 +3,7 @@
 - Caso de uso: CU-10 (`docs/plan.md`, infraestructura de todos los CU)
 - Responsable: Cristopher (archivos) · Operador del despliegue: laptop autorizada por Johann · Revisor: Johann + subagente `reviewer`
 - Estado: listo para preparar archivos (actualizado por CC-09); **despliegue pendiente** de los datos de la sección Notas
+- Módulo: B (`docs/modulos.md`, CC-11). Los archivos se preparan cuando el PRP 012 está en `main`.
 - Rama: `cu-10/supabase-autohospedado`
 
 ## Objetivo

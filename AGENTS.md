@@ -24,7 +24,10 @@ Equipo: Cristopher, Chero, Luis, Marvin, Johann.
 | `docs/plan.md`, `docs/contratos.md` | <por asignar> | todo el equipo |
 | `docs/prp/NNN--*.md` | responsable indicado en cada PRP | revisor del PR |
 | `docs/entrega/` | <por asignar> | <por asignar> |
-| `src/`, `android/`, `supabase/`, `infra/` | Cristopher | revisor del PR |
+| Núcleo (Fase 0): `src/app/`, `src/compartido/`, `android/`, configuración raíz, migraciones `0001–0099` | Cristopher | revisor del PR |
+| Módulo A: `src/acceso/`, `src/admin/`, `src/borradores/`, `src/publicacion/`, `supabase/functions/procesar-producto/`, `supabase/functions/_compartido/`, migraciones `0101–0199` | Persona A (`docs/modulos.md`) | revisor del PR |
+| Módulo B: `src/vitrina/`, `supabase/seed.sql`, `supabase/seed/`, `infra/`, migraciones `0201–0299` | Persona B | revisor del PR |
+| Módulo C: `src/pedidos/`, `supabase/functions/traducir-mensaje/`, migraciones `0301–0399` | Persona C | revisor del PR |
 | pruebas (`*.test.ts(x)`, `supabase/tests/`) | autor del PRP | revisor del PR |
 
 Regla: nadie edita un archivo ajeno sin avisar a su responsable. Los agentes no

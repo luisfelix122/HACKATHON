@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-03 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo (actualizado por CC-09)
+- Estado: listo (actualizado por CC-09 y CC-11). Módulo A; requiere el PRP 002 en `main`
 - Rama: `cu-03/ia-publicacion`
 
 ## Objetivo
@@ -58,7 +58,7 @@ Es el criterio 2 del reto: optimizar con IA la imagen, la ficha y el precio. Red
 ## Archivos (alcance cerrado)
 | Acción | Ruta | Responsabilidad |
 | --- | --- | --- |
-| crear | `supabase/migrations/0003_producto_ia.sql` | trigger `transicion_producto_valida` (solo transiciones de estado del dominio) |
+| crear | `supabase/migrations/0102_producto_ia.sql` | trigger `transicion_producto_valida` (solo transiciones de estado del dominio) |
 | crear | `supabase/tests/producto_ia.test.sql` | pgTAP: transiciones válidas e inválidas; publicar con `revision_ia = rechazada` falla |
 | crear | `supabase/functions/procesar-producto/index.ts` | handler HTTP: autenticación, dueño, estados, llamadas y guardado |
 | crear | `supabase/functions/procesar-producto/ficha.ts` | prompt de evaluación + ficha + comentario de precio, delimitación del texto, esquema y validación (sin APIs de Deno) |
@@ -71,16 +71,15 @@ Es el criterio 2 del reto: optimizar con IA la imagen, la ficha y el precio. Red
 | crear | `src/publicacion/RevisarProducto.tsx` | ficha y etiquetas editables, evaluación, comentario de precio, precio, disponibilidad y botón Publicar |
 | crear | `src/publicacion/ElegirFotos.tsx` | original y variantes en cuadrícula; marcar cuáles publicar y su orden |
 | crear | `src/publicacion/publicar.ts`, `src/publicacion/publicar.test.ts` | validación previa a publicar (campos obligatorios de `contratos.md`, al menos una foto publicada, `revision_ia` no rechazada) |
-| modificar | `src/app/AppArtesano.tsx` | ruta `/revisar/:id` |
-| modificar | `vite.config.ts` | incluir `supabase/functions/**/*.test.ts` en Vitest |
-| modificar | `package.json`, `package-lock.json` | `zod` (MIT), para validar la salida de la IA; en la Edge Function se importa como `npm:zod` con la misma versión |
+| modificar | `src/publicacion/rutas.tsx` | ruta `/revisar/:id` |
+| crear | `src/publicacion/publicacion.css` | estilos propios con los tokens |
 
 Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Tareas (en orden)
 1. `ficha.ts` y `fotos.ts`, con sus pruebas escritas primero (TDD).
 2. `_compartido/ia.ts` con sus pruebas, e `index.ts`. Cristopher configura los secretos con `supabase secrets set OPENROUTER_API_KEY=... IA_BASE_URL=... IA_API_KEY=... IA_TIMEOUT_MS=8000` (los valores no van al repo). Desplegar.
-3. La migración 0003 y su prueba pgTAP.
+3. La migración 0102 y su prueba pgTAP (Zod y la configuración de Vitest ya vienen del PRP 012).
 4. `procesar.ts`, `ElegirFotos`, `RevisarProducto`, y `publicar.ts` con sus pruebas.
 5. Probar de punta a punta en el Android con un producto real y con un objeto industrial (debe rechazarse). Medir el tiempo de la función.
 

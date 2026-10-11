@@ -6,7 +6,7 @@
 - Problema y alcance: `docs/proyecto.md` · Revisión del alcance: `docs/revision-alcance.md`
 - Producto y diseño: `PRODUCT.md`, `DESIGN.md`
 - Glosario y reglas de negocio: `docs/dominio.md`
-- Plan, casos de uso e hitos: `docs/plan.md`
+- Plan, casos de uso e hitos: `docs/plan.md` · Módulos en paralelo y asignación: `docs/modulos.md`
 - Contratos compartidos: `docs/contratos.md`
 - Decisiones: `docs/decisiones/` · Cambios de alcance: `docs/cambios/`
 - PRP: `docs/prp/` (plantilla única `docs/prp/_plantilla.md`)

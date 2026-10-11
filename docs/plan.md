@@ -34,15 +34,23 @@ Preliminar; el detalle va en `docs/contratos.md`.
 - **MensajeOrden:** orden, autor, texto original, texto traducido (opcional) — pertenece a una Orden.
 
 ## Casos de uso (en orden de construcción)
-Dueño de todos los CU: Cristopher (implementación). Imprescindibles: CU-00 a CU-07 y CU-11. Opcionales: CU-08 y CU-09 (el producto funciona con OpenRouter directo si el proxy no está listo).
+Dueño de todos los CU: Cristopher (implementación). Imprescindibles: CU-00 a CU-07, CU-11 y CU-12. Opcionales: CU-08 y CU-09 (el producto funciona con OpenRouter directo si el proxy no está listo).
 
-**Orden de implementación, un PRP a la vez (CC-10):** 000 → 001 → 011 → 002 → 003 → 004 → 005 → 006 → 007 → 008 (si hay tiempo). Los archivos de infraestructura de los PRP 010 y 009 se preparan cuando el servidor esté disponible; el despliegue lo hace la laptop autorizada. Mientras tanto se desarrolla con `supabase start` en local (Docker).
+**Orden de implementación (CC-11, detalle en `docs/modulos.md`):**
+- **Fase 0**, una persona: 000 → 011 → 012.
+- **Después, tres módulos en paralelo** y sin archivos compartidos:
+  - A: 001 → 002 → 003.
+  - B: 004 → 007, y 010 → 009.
+  - C: 005 → 006 → 008, si hay tiempo y con el 003 ya en `main`.
+
+El despliegue de los PRP 009 y 010 lo hace la laptop autorizada. Mientras tanto se desarrolla con `supabase start` en local (Docker).
 
 | # | Caso de uso | Actor | Depende de | Hito |
 | --- | --- | --- | --- | --- |
 | CU-00 | Base: web desplegada con HTTPS y APK del artesano con Capacitor que se instala en un Android | equipo | — | H1 |
 | CU-01 | Acceder (comprador con Google; artesano con correo o Google) y solicitar acreditación con RNA; el admin aprueba o rechaza | artesano, admin, comprador | CU-00 | H1 |
-| CU-11 | Sistema visual (tokens, componentes, fuentes locales) aplicado a las pantallas del CU-01 | equipo | CU-01 | H1 |
+| CU-11 | Sistema visual (tokens, componentes, fuentes locales), antes de las pantallas | equipo | CU-00 | H1 |
+| CU-12 | Esquema base y costuras para trabajar en paralelo (Fase 0) | equipo | CU-00, CU-11 | H1 |
 | CU-02 | Crear un borrador de producto sin conexión (nombre, foto, audio, calculadora, disponibilidad) y sincronizarlo | artesano | CU-00, CU-01 | H1 |
 | CU-03 | Procesar el borrador con IA (filtro de artesanía, ficha, etiquetas y 4 fotos), revisarlo, corregirlo y publicarlo | artesano | CU-02 | H2 |
 | CU-04 | Explorar la vitrina pública: búsqueda, filtros y etiquetas, ficha con carrusel, perfil y WhatsApp | comprador | CU-00 (con datos semilla) | H1 |

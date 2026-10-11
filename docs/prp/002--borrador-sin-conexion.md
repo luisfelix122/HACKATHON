@@ -2,7 +2,7 @@
 
 - Caso de uso: CU-02 (`docs/plan.md`)
 - Responsable: Cristopher · Revisor: <por asignar> + subagente `reviewer`
-- Estado: listo (actualizado por CC-09)
+- Estado: listo (actualizado por CC-09 y CC-11). Módulo A; requiere el PRP 001 en `main`
 - Rama: `cu-02/borrador-sin-conexion`
 
 ## Objetivo
@@ -26,7 +26,7 @@ Es el criterio 2 del reto («digitalizar en pocos pasos») y responde a la conec
 - [ ] Con conexión, «Dictar» transcribe en vivo (español) al campo de descripción. Sin conexión, ese botón se oculta y se ofrece «Grabar audio».
 - [ ] Al sincronizar, la foto (comprimida, lado mayor de 1600 px) y el audio se suben a Storage, el `producto` queda con el mismo `id` local y la foto queda como fila `original` de `foto_producto` (con `publicada = true`). Repetir la sincronización no duplica nada (idempotente).
 - [ ] Si la subida falla a medias, el borrador local sigue `pendiente` y se reintenta. Solo se borra del celular tras la confirmación del servidor.
-- [ ] La base de datos rechaza pasar un producto a `publicado` si el artesano no tiene la acreditación `aprobada`, si `revision_ia = rechazada` o si no tiene ninguna foto publicada. Hay pruebas pgTAP que lo verifican.
+- [ ] (Esquema y pgTAP del PRP 012, no se repiten aquí.) La base de datos rechaza pasar un producto a `publicado` si el artesano no tiene la acreditación `aprobada`, si `revision_ia = rechazada` o si no tiene ninguna foto publicada. Hay pruebas pgTAP que lo verifican.
 - [ ] El artesano no puede escribir `revision_ia`, `comentario_precio_ia`, `ia_error` ni `ia_intentos`, ni borrar su foto original. Hay una prueba pgTAP que lo verifica.
 - [ ] `descripcion_texto` tiene un máximo de 2000 caracteres en la base y en el formulario.
 - [ ] Cada borrador muestra su estado en «Mis productos»: «Guardado en el celular», «Sincronizado» o «Error al sincronizar».
@@ -52,9 +52,6 @@ Es el criterio 2 del reto («digitalizar en pocos pasos») y responde a la conec
 ## Archivos (alcance cerrado)
 | Acción | Ruta | Responsabilidad |
 | --- | --- | --- |
-| crear | `supabase/migrations/0002_producto.sql` | tipos `estado_producto`, `disponibilidad`, `revision_ia`, `origen_foto` y `variante_foto`; tablas `producto` (incluye `revision_ia`, `comentario_precio_ia`, `ia_error` e `ia_intentos`) y `foto_producto` (una sola `original` por producto); RLS; trigger `proteger_producto` (columnas de la IA y foto original); trigger `exigir_acreditacion_para_publicar` (acreditación, `revision_ia` y al menos una foto publicada); buckets `fotos` y `audios` con sus políticas |
-| crear | `supabase/tests/producto.test.sql` | pgTAP: publicar sin acreditación, con `revision_ia = rechazada` o sin fotos publicadas falla; un artesano no edita productos ajenos ni columnas de la IA; la original es única y no se borra |
-| crear | `src/compartido/dominio/producto.ts` | tipos TS de Producto, FotoProducto, Ficha, Costeo y Disponibilidad (de `contratos.md`) |
 | crear | `src/borradores/costeo.ts`, `src/borradores/costeo.test.ts` | cálculo del costo y del precio sugerido, aviso de pérdida y validaciones |
 | crear | `src/borradores/db.ts` | esquema Dexie `borrador_local` |
 | crear | `src/borradores/comprimirFoto.ts` | redimensiona y convierte a JPEG 0,8 |
@@ -63,20 +60,19 @@ Es el criterio 2 del reto («digitalizar en pocos pasos») y responde a la conec
 | crear | `src/borradores/MisProductos.tsx` | lista con estados y botón «Nuevo» |
 | crear | `src/borradores/EditorBorrador.tsx` | pasos: nombre → foto → descripción → calculadora → disponibilidad → guardar |
 | crear | `src/borradores/Calculadora.tsx` | campos grandes, en soles, con el resultado y el aviso de pérdida visibles |
-| modificar | `src/app/AppArtesano.tsx` | rutas `/`, `/nuevo`, `/borrador/:id` |
-| modificar | `package.json`, `package-lock.json` | `@capacitor-community/speech-recognition`, `@capacitor/camera`, `@capacitor/network` |
-| modificar | `android/app/src/main/AndroidManifest.xml` | permisos `RECORD_AUDIO` y `CAMERA` |
+| modificar | `src/borradores/rutas.tsx` | rutas `/`, `/nuevo`, `/borrador/:id` y la entrada «Mis productos» del menú |
+| crear | `src/borradores/borradores.css` | estilos propios con los tokens |
 
 Cualquier archivo fuera de esta tabla requiere aprobación del responsable.
 
 ## Tareas (en orden)
-1. Migración del producto, buckets y prueba pgTAP.
-2. `producto.ts` con sus tipos, y `costeo.ts` con sus pruebas, empezando por las pruebas.
+1. Confirmar que el esquema y los tipos del PRP 012 están en `main`.
+2. `costeo.ts` con sus pruebas, empezando por las pruebas.
 3. `db.ts` (Dexie) y `comprimirFoto.ts`.
 4. `audio.ts`: grabación sin conexión y dictado con conexión.
 5. `EditorBorrador`, `Calculadora` y `MisProductos`. Interfaz para poca destreza digital: un paso por pantalla, botones grandes y textos cortos.
 6. `sincronizar.ts` con sus pruebas. Se dispara al recuperar la red y con el botón «Sincronizar».
-7. Instalar los plugins, agregar los permisos, ejecutar `make apk` y probar en el Android.
+7. Ejecutar `make apk` (los plugins y permisos ya vienen del PRP 012) y probar en el Android.
 
 ## Validación
 1. `make verify` y `supabase test db` (o pgTAP en remoto).
