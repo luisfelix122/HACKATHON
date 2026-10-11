@@ -259,7 +259,7 @@ export function EditorBorrador() {
   }
 
   // Guardado final en el celular (y sincronización si hay red)
-  const guardarEnCelular = async () => {
+  const guardarEnCelular = async (irAPreparar = false) => {
     setErrorPaso(null)
     if (!validarPasoActual()) return
 
@@ -300,12 +300,18 @@ export function EditorBorrador() {
 
       // Si hay red y artesano autenticado, intentar sincronización automática en segundo plano
       if (conectado && sesion?.user?.id) {
-        sincronizarBorrador(nuevoBorrador).catch(() => {
+        try {
+          await sincronizarBorrador(nuevoBorrador)
+        } catch {
           // El fallo mantendrá el estado 'error' o 'pendiente' en Dexie
-        })
+        }
       }
 
-      navigate('/')
+      if (irAPreparar) {
+        navigate(`/revisar/${borradorId}`)
+      } else {
+        navigate('/')
+      }
     } catch (err) {
       setErrorPaso(
         err instanceof Error ? err.message : 'Error al guardar el borrador en el celular',
@@ -325,6 +331,10 @@ export function EditorBorrador() {
 
   return (
     <main className="pagina editor-borrador">
+      <button type="button" onClick={() => navigate('/')} className="boton-volver-atras">
+        ← Volver a Mis productos
+      </button>
+
       <div className="barra-pasos">
         <span className="indicador-paso">
           Paso {pasoActual + 1} de {PASOS.length}: <strong>{PASOS[pasoActual]}</strong>
@@ -537,9 +547,25 @@ export function EditorBorrador() {
             )}
           </div>
 
-          <div className="acciones-finales">
-            <Boton variante="destacado" ancho cargando={guardando} onClick={guardarEnCelular}>
-              Guardar en tu celular
+          <div
+            className="acciones-finales"
+            style={{ display: 'flex', flexDirection: 'column', gap: 'var(--e3)' }}
+          >
+            <Boton
+              variante="destacado"
+              ancho
+              cargando={guardando}
+              onClick={() => void guardarEnCelular(true)}
+            >
+              Guardar y Preparar con IA para Publicar →
+            </Boton>
+            <Boton
+              variante="secundario"
+              ancho
+              cargando={guardando}
+              onClick={() => void guardarEnCelular(false)}
+            >
+              Guardar solo en tu celular
             </Boton>
           </div>
         </div>

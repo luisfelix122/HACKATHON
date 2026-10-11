@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "design-taste-frontend": {
+      "source": "nexu-io/open-design",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "computedHash": "71bfa1ae4e018797aa2d0329aca278d3ba9b8796362628c4751ea3683d6e1b01"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "106acf230014cbb43ca34e6410371321b56ca742f9ee0442e8ec05bf02eb0384"
+    },
+    "impeccable": {
+      "source": "pbakaus/impeccable",
+      "sourceType": "github",
+      "skillPath": ".agents/skills/impeccable/SKILL.md",
+      "computedHash": "dd39b18a094e4ab8c741e681ee76b02d337356f0442d822a7338fac5b12a03fb"
+    },
+    "taste-skill": {
+      "source": "nexu-io/open-design",
+      "sourceType": "github",
+      "skillPath": "skills/taste-skill/SKILL.md",
+      "computedHash": "71bfa1ae4e018797aa2d0329aca278d3ba9b8796362628c4751ea3683d6e1b01"
+    }
+  }
+}

@@ -379,6 +379,25 @@
   font-size: var(--tam-base);
 }
 
+.enlace-publicar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--tactil);
+  padding: var(--e2) var(--e3);
+  background-color: var(--tierra);
+  color: var(--blanco, #fff);
+  border-radius: var(--radio-md);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: var(--tam-letra-chica);
+  transition: opacity var(--duracion-rapida);
+}
+
+.enlace-publicar:hover {
+  opacity: 0.9;
+}
+
 /* Badges de estado */
 .badge-estado {
   display: inline-block;
@@ -407,4 +426,111 @@
 .estado-error {
   background-color: #fee2e2;
   color: #b91c1c;
+}
+
+.boton-volver-atras {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  background: none;
+  border: none;
+  color: var(--tierra);
+  font-weight: 600;
+  font-size: var(--tam-letra);
+  cursor: pointer;
+  padding: var(--e2) 0;
+  text-decoration: none;
+}
+
+.boton-volver-atras:hover {
+  text-decoration: underline;
+}
+
+/* Alertas de pedidos para el artesano */
+.aviso-pedido-nuevo-flotante {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  background-color: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #16a34a;
+  padding: var(--e3) var(--e4);
+  border-radius: var(--radio-md);
+  margin-bottom: var(--e4);
+  box-shadow: var(--sombra-md);
+  animation: pulso-aviso 2s infinite ease-in-out;
+}
+
+@keyframes pulso-aviso {
+  0%,
+  100% {
+    box-shadow:
+      0 4px 6px -1px rgba(22, 163, 74, 0.1),
+      0 2px 4px -2px rgba(22, 163, 74, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 10px 15px -3px rgba(22, 163, 74, 0.25),
+      0 4px 6px -4px rgba(22, 163, 74, 0.2);
+  }
+}
+
+.aviso-pedido-nuevo-flotante .aviso-icono {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+
+.aviso-pedido-nuevo-flotante .aviso-texto {
+  flex: 1;
+}
+
+.aviso-pedido-nuevo-flotante .aviso-texto strong {
+  display: block;
+  color: #15803d;
+  font-size: 1.05rem;
+  margin-bottom: 0.15rem;
+}
+
+.aviso-pedido-nuevo-flotante .aviso-texto p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #166534;
+}
+
+.aviso-acciones-flotante {
+  display: flex;
+  align-items: center;
+  gap: var(--e2);
+}
+
+.aviso-pedidos-pendientes-banner {
+  display: flex;
+  align-items: center;
+  gap: var(--e3);
+  background-color: #f8fafc;
+  border: 1px solid var(--borde);
+  border-left: 4px solid var(--pacifico, #0284c7);
+  padding: var(--e3) var(--e4);
+  border-radius: var(--radio-md);
+  margin-bottom: var(--e4);
+  flex-wrap: wrap;
+}
+
+.aviso-pedidos-pendientes-banner .aviso-info {
+  flex: 1;
+  min-width: 220px;
+}
+
+.aviso-pedidos-pendientes-banner .aviso-info strong {
+  display: block;
+  margin-bottom: 0.2rem;
+  font-size: 0.95rem;
+}
+
+.aviso-pedidos-pendientes-banner .aviso-info p {
+  margin: 0;
+}
+
+.enlace-ver-pedidos {
+  white-space: nowrap;
 }

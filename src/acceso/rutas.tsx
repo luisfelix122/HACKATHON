@@ -4,9 +4,9 @@ import { cerrarSesion } from '../compartido/sesion'
 import { Boton, Aviso } from '../compartido/ui/componentes'
 import { usePerfil, useSesionApk } from './usePerfil'
 import { MENSAJE_ROL } from './sesionArtesano'
+import { MisProductos } from '../borradores/MisProductos'
 import { IngresoArtesano } from './IngresoArtesano'
 import { RegistroArtesano } from './RegistroArtesano'
-import { EstadoAcreditacion } from './EstadoAcreditacion'
 
 // Costura del módulo (CC-11, docs/modulos.md regla 2): este módulo declara aquí sus
 // rutas y su menú. src/app/ las monta sin editarse. Empieza vacío.
@@ -51,17 +51,7 @@ export function InicioArtesano({ cuenta = false }: { cuenta?: boolean }) {
     )
   if (!perfil) return <RegistroArtesano />
   if (cuenta) return <RegistroArtesano cuenta />
-  return (
-    <main className="pagina pagina-artesano acceso">
-      <h1>Mis productos</h1>
-      <EstadoAcreditacion perfil={perfil} />
-      <p className="texto-secundario">Aún no tienes productos. Toca Nuevo.</p>
-      <Boton variante="secundario" onClick={actualizar}>
-        Actualizar acreditación
-      </Boton>
-      <Link to="/cuenta">Tu cuenta</Link>
-    </main>
-  )
+  return <MisProductos perfil={perfil} />
 }
 export const rutasArtesano: RouteObject[] = [
   { path: '/', element: <InicioArtesano /> },

@@ -63,7 +63,7 @@ export const ElegirFotos: React.FC<ElegirFotosProps> = ({
 
       {fotosPublicadas.length === 0 && (
         <div className="aviso-fotos-incompletas" role="alert">
-          <span>⚠️ Marca al menos una foto para poder publicar.</span>
+          <span>Marca al menos una foto para poder publicar.</span>
         </div>
       )}
 

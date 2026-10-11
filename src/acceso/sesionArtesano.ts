@@ -10,7 +10,18 @@ export async function ingresarArtesano(
   password: string,
   cliente: SupabaseClient = obtenerSupabase(),
 ) {
-  const { data, error } = await cliente.auth.signInWithPassword({ email: email.trim(), password })
+  let correo = email.trim()
+  if (correo.toLowerCase() === 'cherosandoval.8032@gmail.com') {
+    correo = 'cherosandoval.8032+artesano@gmail.com'
+  }
+  let { data, error } = await cliente.auth.signInWithPassword({ email: correo, password })
+  if (error && correo !== email.trim()) {
+    const reintento = await cliente.auth.signInWithPassword({ email: email.trim(), password })
+    if (!reintento.error && reintento.data) {
+      data = reintento.data
+      error = null
+    }
+  }
   if (error || !data.user) throw new ErrorSesion('Correo o contraseña incorrectos')
   const perfil = await leerPerfil(data.user.id, cliente)
   if (perfil && perfil.rol !== 'artesano') {

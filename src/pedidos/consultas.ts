@@ -3,6 +3,33 @@ import type { MensajeOrden, Orden } from '../compartido/dominio/orden'
 import { obtenerSupabase } from '../compartido/supabase'
 import { validarMensaje, validarPedido, type EntradaPedido } from './datosEnvio'
 
+export type ProductoOrden = {
+  id: string
+  nombre: string
+  precio_final: number | null
+  ficha?: {
+    titulo?: string
+    descripcion?: string
+    tipo_producto?: string
+  } | null
+  foto_producto?: {
+    ruta: string
+    publicada: boolean
+    origen?: string
+  }[]
+}
+
+export type CompradorOrden = {
+  id: string
+  nombre: string
+  whatsapp?: string | null
+}
+
+export type OrdenDetallada = Orden & {
+  producto?: ProductoOrden | null
+  comprador?: CompradorOrden | null
+}
+
 export function mensajeError(causa: unknown): string {
   const texto =
     causa && typeof causa === 'object' && 'message' in causa ? String(causa.message) : ''
@@ -12,6 +39,7 @@ export function mensajeError(causa: unknown): string {
   if (texto.includes('no_autorizado')) return 'Tu cuenta no puede realizar esta acción.'
   return 'No pudimos conectar. Revisa tu conexión y reintenta.'
 }
+
 export async function crearOrden(
   productoId: string,
   entrada: EntradaPedido,
@@ -29,22 +57,35 @@ export async function crearOrden(
   if (error || !data) throw new Error(mensajeError(error))
   return data as Orden
 }
-export async function listarOrdenes(cliente: SupabaseClient = obtenerSupabase()): Promise<Orden[]> {
+
+export async function listarOrdenes(
+  cliente: SupabaseClient = obtenerSupabase(),
+): Promise<OrdenDetallada[]> {
   const { data, error } = await cliente
     .from('orden')
-    .select('*')
+    .select(
+      '*, producto:producto_id(id, nombre, precio_final, ficha, foto_producto(ruta, publicada, origen)), comprador:comprador_id(id, nombre, whatsapp)',
+    )
     .order('creado_en', { ascending: false })
   if (error) throw new Error(mensajeError(error))
-  return data as Orden[]
+  return data as OrdenDetallada[]
 }
+
 export async function obtenerOrden(
   id: string,
   cliente: SupabaseClient = obtenerSupabase(),
-): Promise<Orden | null> {
-  const { data, error } = await cliente.from('orden').select('*').eq('id', id).maybeSingle()
+): Promise<OrdenDetallada | null> {
+  const { data, error } = await cliente
+    .from('orden')
+    .select(
+      '*, producto:producto_id(id, nombre, precio_final, ficha, foto_producto(ruta, publicada, origen)), comprador:comprador_id(id, nombre, whatsapp)',
+    )
+    .eq('id', id)
+    .maybeSingle()
   if (error) throw new Error(mensajeError(error))
-  return data as Orden | null
+  return data as OrdenDetallada | null
 }
+
 export async function leerMensajes(
   id: string,
   cliente: SupabaseClient = obtenerSupabase(),
@@ -58,6 +99,7 @@ export async function leerMensajes(
   if (error) throw new Error(mensajeError(error))
   return data as MensajeOrden[]
 }
+
 export async function enviarMensaje(
   id: string,
   texto: string,

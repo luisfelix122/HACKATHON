@@ -14,6 +14,7 @@ import * as pedidos from '../pedidos/rutas'
 import * as publicacion from '../publicacion/rutas'
 import * as vitrina from '../vitrina/rutas'
 import { Logotipo } from '../compartido/ui/componentes'
+import { BotonCampana } from '../compartido/notificaciones/BotonCampana'
 
 // APK del artesano. Monta solo las rutas y el menú que los módulos declaran en
 // su rutas.tsx (CC-11): no incluye la vitrina ni el panel del administrador.
@@ -44,15 +45,28 @@ function Marco() {
       <header className="barra">
         <div className="barra-contenido">
           <Logotipo />
-          {MENU.length > 0 && (
-            <nav aria-label="Menú" style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--e4)' }}>
-              {MENU.map((entrada) => (
-                <NavLink key={entrada.ruta} to={entrada.ruta}>
-                  {entrada.etiqueta}
-                </NavLink>
-              ))}
-            </nav>
-          )}
+          <div
+            style={{ display: 'flex', alignItems: 'center', gap: 'var(--e3)', marginLeft: 'auto' }}
+          >
+            {MENU.length > 0 && (
+              <nav
+                aria-label="Menú"
+                style={{
+                  display: 'flex',
+                  flexWrap: 'wrap',
+                  gap: 'var(--e4)',
+                  alignItems: 'center',
+                }}
+              >
+                {MENU.map((entrada) => (
+                  <NavLink key={entrada.ruta} to={entrada.ruta}>
+                    {entrada.etiqueta}
+                  </NavLink>
+                ))}
+              </nav>
+            )}
+            <BotonCampana />
+          </div>
         </div>
       </header>
       <Outlet />

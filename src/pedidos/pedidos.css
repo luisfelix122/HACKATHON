@@ -1,18 +1,58 @@
-/* Guía de encomienda: acuerdo separado del hilo, sin estilos fuera del módulo. */
+/* Estilos para el módulo de pedidos y coordinación artesano-comprador (DESIGN.md) */
+
 .pedidos,
 .pedido-formulario {
   display: grid;
   gap: var(--e5);
 }
+
+.pedidos-volver {
+  margin-bottom: var(--e2);
+}
+
+.enlace-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  color: var(--pacifico);
+  font-weight: 700;
+  text-decoration: none;
+  min-height: 44px;
+}
+
+.enlace-volver:hover {
+  text-decoration: underline;
+  color: var(--pacifico-hondo);
+}
+
+.cabecera-pedidos,
+.pedido-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--e4);
+  border-bottom: 2px solid var(--arena);
+  padding-bottom: var(--e4);
+}
+
+.cabecera-pedidos h1,
+.pedido-cabecera h1 {
+  margin: 0;
+  color: var(--pacifico);
+}
+
 .boton-pedir {
   display: grid;
   gap: var(--e4);
 }
+
 .pedido-formulario {
   margin-block: var(--e5);
   border-top: var(--borde) solid var(--pacifico);
   padding-top: var(--e5);
 }
+
 .pedido-formulario fieldset {
   border: 0;
   padding: 0;
@@ -20,64 +60,479 @@
   display: grid;
   gap: var(--e4);
 }
+
 .pedido-formulario legend {
   font-weight: 700;
   margin-bottom: var(--e4);
+  color: var(--pacifico-hondo);
 }
+
 .pedido-acciones {
   display: flex;
   flex-wrap: wrap;
   gap: var(--e3);
-  margin-block: var(--e4);
 }
-.pedidos-lista,
+
+/* Aviso de nuevo pedido o pedidos pendientes */
+.aviso-pedidos-pendientes {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--e3);
+  background-color: var(--arena-clara);
+  border: 2px solid var(--arena);
+  border-left: 6px solid var(--pacifico);
+  padding: var(--e4);
+  border-radius: var(--radio, 10px);
+}
+
+.aviso-pedidos-pendientes strong {
+  display: block;
+  color: var(--pacifico-hondo);
+  margin-bottom: var(--e1);
+}
+
+.aviso-pedidos-pendientes p {
+  margin: 0;
+  color: var(--noche-suave);
+  line-height: 1.45;
+}
+
+.boton-cerrar-alerta {
+  background: none;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin-left: auto;
+  color: var(--noche-suave);
+  padding: var(--e1) var(--e2);
+  min-height: 36px;
+  font-weight: 700;
+}
+
+.boton-cerrar-alerta:hover {
+  color: var(--noche);
+}
+
+/* Guía explicativa para el artesano */
+.pedido-guia-artesano {
+  background-color: var(--espuma);
+  border: 2px solid var(--arena);
+  border-left: 6px solid var(--ola);
+  padding: var(--e4);
+  border-radius: var(--radio, 10px);
+}
+
+.guia-titulo {
+  margin-bottom: var(--e3);
+}
+
+.guia-titulo h2 {
+  margin: 0 0 var(--e1) 0;
+  font-size: 1.25rem;
+  color: var(--pacifico);
+}
+
+.pedido-pasos-lista {
+  margin: var(--e3) 0 0 0;
+  padding-left: var(--e4);
+  display: grid;
+  gap: var(--e2);
+  line-height: 1.5;
+  color: var(--noche);
+}
+
+.pedido-pasos-lista li strong {
+  color: var(--pacifico-hondo);
+}
+
+/* Tarjeta del producto solicitado */
+.pedido-tarjeta-producto,
+.pedido-tarjeta-cliente,
+.pedido-acuerdo {
+  padding: var(--e4);
+  border-radius: var(--radio, 10px);
+  border: 2px solid var(--arena);
+  background-color: var(--blanco);
+}
+
+.pedido-tarjeta-producto h2,
+.pedido-tarjeta-cliente h2,
+.pedido-acuerdo h2 {
+  margin-top: 0;
+  color: var(--pacifico);
+  border-bottom: 1px solid var(--arena-clara);
+  padding-bottom: var(--e2);
+}
+
+.pedido-producto-fila {
+  display: flex;
+  gap: var(--e4);
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: var(--e3);
+}
+
+.pedido-producto-foto-contenedor {
+  width: 96px;
+  height: 96px;
+  border-radius: var(--radio, 10px);
+  overflow: hidden;
+  background-color: var(--arena-clara);
+  border: 1px solid var(--arena);
+  flex-shrink: 0;
+}
+
+.pedido-producto-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pedido-producto-sin-foto {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--tam-chico);
+  color: var(--noche-suave);
+  text-align: center;
+  padding: var(--e1);
+}
+
+.pedido-producto-detalles {
+  display: grid;
+  gap: var(--e1);
+}
+
+.pedido-producto-detalles h3 {
+  margin: 0;
+  font-size: 1.25rem;
+  color: var(--noche);
+}
+
+.badge-tipo {
+  display: inline-block;
+  font-size: 0.8rem;
+  font-family: 'Barlow Condensed', sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-weight: 700;
+  background-color: var(--arena-clara);
+  color: var(--pacifico-hondo);
+  padding: 2px 8px;
+  border-radius: 4px;
+  width: fit-content;
+}
+
+.pedido-producto-precio {
+  color: var(--noche-suave);
+  margin: 0;
+}
+
+.pedido-producto-cantidad {
+  margin: 0;
+}
+
+.pedido-producto-subtotal {
+  font-weight: 700;
+  color: var(--pacifico);
+  margin: 0;
+  font-size: 1.1rem;
+}
+
+/* Datos del cliente en DetalleOrden */
+.pedido-datos-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--e2);
+  margin-top: var(--e3);
+}
+
+.pedido-datos-grid dt {
+  font-weight: 700;
+  color: var(--pacifico-hondo);
+  font-size: 0.95rem;
+}
+
+.pedido-datos-grid dd {
+  margin: 0 0 var(--e3);
+  overflow-wrap: anywhere;
+}
+
+.enlace-contacto-cliente {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--e2);
+  background-color: var(--pacifico);
+  color: var(--blanco) !important;
+  font-weight: 600;
+  padding: var(--e2) var(--e4);
+  border-radius: var(--radio, 10px);
+  text-decoration: none;
+  font-size: 0.95rem;
+  min-height: 44px;
+  border: 2px solid var(--pacifico-hondo);
+  transition: background-color 0.18s ease;
+}
+
+.enlace-contacto-cliente:hover {
+  background-color: var(--pacifico-hondo);
+}
+
+.badge-modalidad {
+  display: inline-block;
+  font-size: 0.85rem;
+  padding: var(--e1) var(--e3);
+  border-radius: var(--radio, 10px);
+  font-weight: 700;
+  font-family: 'Barlow Condensed', sans-serif;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.modalidad-envio {
+  background-color: var(--ola-clara);
+  color: var(--pacifico-hondo);
+  border: 1px solid var(--ola);
+}
+
+.modalidad-recojo {
+  background-color: var(--arena-clara);
+  color: var(--pacifico-hondo);
+  border: 1px solid var(--arena);
+}
+
+.pedido-cita-detalle {
+  margin: 0;
+  padding: var(--e2) var(--e3);
+  background: var(--espuma);
+  border-left: 4px solid var(--pacifico);
+  border-radius: var(--radio, 10px);
+  font-style: italic;
+  color: var(--noche);
+}
+
+.monto-destacado {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--pacifico);
+}
+
+/* Lista enriquecida de pedidos en MisPedidos */
+.pedidos-tarjetas-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: var(--e4);
+}
+
+.tarjeta-pedido {
+  display: grid;
+  gap: var(--e3);
+  padding: var(--e4);
+  border-radius: var(--radio, 10px);
+  border: 2px solid var(--arena);
+  background-color: var(--blanco);
+}
+
+.pedido-item-cabecera {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--arena-clara);
+  padding-bottom: var(--e2);
+}
+
+.badge-estado {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-weight: 700;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: var(--e1) var(--e2);
+  border-radius: 4px;
+  background-color: var(--espuma);
+  color: var(--pacifico);
+  border: 1px solid var(--arena);
+}
+
+.badge-estado.estado-solicitada {
+  background-color: var(--sol-claro);
+  color: var(--pacifico-hondo);
+  border-color: var(--sol);
+}
+
+.badge-estado.estado-acuerdo_confirmado,
+.badge-estado.estado-en_preparacion {
+  background-color: var(--ola-clara);
+  color: var(--pacifico-hondo);
+  border-color: var(--ola);
+}
+
+.badge-estado.estado-despachada,
+.badge-estado.estado-entregada {
+  background-color: var(--espuma);
+  color: var(--pacifico);
+  border-color: var(--pacifico);
+}
+
+.pedido-item-cabecera time {
+  font-size: 0.85rem;
+  color: var(--noche-suave);
+}
+
+.pedido-item-cuerpo {
+  display: flex;
+  align-items: center;
+  gap: var(--e4);
+  flex-wrap: wrap;
+}
+
+.pedido-item-foto-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radio, 10px);
+  overflow: hidden;
+  background-color: var(--arena-clara);
+  border: 1px solid var(--arena);
+  flex-shrink: 0;
+}
+
+.pedido-item-foto {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pedido-item-sin-foto {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  color: var(--noche-suave);
+  text-align: center;
+  padding: 4px;
+}
+
+.pedido-item-info {
+  flex: 1;
+  min-width: 200px;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.pedido-item-titulo {
+  margin: 0;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--noche);
+}
+
+.pedido-item-comprador {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--pacifico-hondo);
+}
+
+.pedido-item-detalles {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--noche-suave);
+}
+
+.pedido-item-total {
+  margin: 0;
+  font-weight: 700;
+  color: var(--pacifico);
+  font-size: 1.05rem;
+}
+
+.pedido-item-total.pendiente {
+  color: var(--noche-suave);
+  font-weight: normal;
+  font-style: italic;
+  font-size: 0.95rem;
+}
+
+.pedido-item-acciones {
+  margin-top: var(--e2);
+}
+
+.boton-abrir-pedido {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  text-align: center;
+  min-height: 48px;
+}
+
+/* Chat e Hilo del pedido */
+.pedido-hilo-seccion {
+  padding: var(--e4);
+  border-radius: var(--radio, 10px);
+  border: 2px solid var(--arena);
+  background-color: var(--blanco);
+}
+
+.pedido-hilo-seccion h2 {
+  margin-top: 0;
+  color: var(--pacifico);
+}
+
 .pedido-hilo {
   list-style: none;
   padding: 0;
   display: grid;
-  gap: var(--e4);
+  gap: var(--e3);
+  margin-block: var(--e4);
+  max-height: 420px;
+  overflow-y: auto;
 }
-.pedidos-lista li {
-  display: grid;
-  gap: var(--e2);
-  border-bottom: var(--borde) solid var(--arena);
-  padding-block: var(--e4);
-}
-.pedido-acuerdo {
-  border-left: 4px solid var(--pacifico);
-  padding-left: var(--e4);
-}
-.pedido-acuerdo dl {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  gap: var(--e2);
-}
-.pedido-acuerdo dt {
-  font-weight: 700;
-}
-.pedido-acuerdo dd {
-  margin: 0 0 var(--e3);
-  overflow-wrap: anywhere;
-}
+
 .pedido-hilo li {
   background: var(--blanco);
-  border-left: 3px solid var(--arena);
-  padding: var(--e4);
+  border: 2px solid var(--arena-clara);
+  border-left: 5px solid var(--arena);
+  padding: var(--e3);
+  border-radius: var(--radio, 10px);
   overflow-wrap: anywhere;
 }
+
 .pedido-hilo li[data-propio='true'] {
-  border-color: var(--ola);
-  background: var(--ola-clara);
+  border-color: var(--ola-clara);
+  border-left: 5px solid var(--ola);
+  background: var(--espuma);
 }
+
+.pedido-hilo strong {
+  display: block;
+  font-size: 0.92rem;
+  margin-bottom: 0.2rem;
+  color: var(--pacifico-hondo);
+}
+
 .pedido-hilo p {
+  margin: 0;
   white-space: pre-wrap;
+  line-height: 1.45;
+  color: var(--noche);
 }
+
 .pedido-hilo time {
-  font-size: var(--tam-chico);
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.78rem;
   color: var(--noche-suave);
+  text-align: right;
 }
+
 @media (min-width: 600px) {
-  .pedido-acuerdo dl {
-    grid-template-columns: minmax(8rem, 1fr) minmax(0, 2fr);
+  .pedido-datos-grid {
+    grid-template-columns: minmax(10rem, 1fr) minmax(0, 2fr);
   }
 }

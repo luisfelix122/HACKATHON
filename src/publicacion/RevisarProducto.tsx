@@ -15,6 +15,8 @@ import { procesarProductoConIa, suscribirReintentoOnline } from './procesar'
 import { ElegirFotos, type ItemFotoUI } from './ElegirFotos'
 import { validarPublicacion, ejecutarPublicacion } from './publicar'
 import { normalizarEtiquetas } from '../../supabase/functions/procesar-producto/ficha'
+import { obtenerBorrador } from '../borradores/db'
+import { sincronizarBorrador } from '../borradores/sincronizar'
 import './publicacion.css'
 
 export const RevisarProducto: React.FC = () => {
@@ -78,6 +80,54 @@ export const RevisarProducto: React.FC = () => {
         .single()
 
       if (errProd || !prodData) {
+        const borradorLocal = await obtenerBorrador(id)
+        if (borradorLocal) {
+          const prodMock: Producto = {
+            id: borradorLocal.id,
+            artesano_id: borradorLocal.artesano_id,
+            estado: 'borrador',
+            nombre: borradorLocal.nombre,
+            descripcion_texto: borradorLocal.descripcion_texto,
+            audio_ruta: borradorLocal.audio_ruta,
+            ficha: null,
+            costeo: borradorLocal.costeo,
+            precio_final: borradorLocal.precio_final,
+            disponibilidad: borradorLocal.disponibilidad,
+            plazo_dias: borradorLocal.plazo_dias,
+            revision_ia: 'sin_revisar',
+            comentario_precio_ia: null,
+            ia_error: null,
+            ia_intentos: 0,
+            creado_en: borradorLocal.creado_en,
+            actualizado_en: borradorLocal.actualizado_en,
+          }
+          setProducto(prodMock)
+          setTitulo(borradorLocal.nombre || '')
+          setDescripcion(borradorLocal.descripcion_texto || '')
+          setPrecioFinal(borradorLocal.precio_final)
+          setDisponibilidad(borradorLocal.disponibilidad)
+          if (borradorLocal.plazo_dias) setPlazoDias(borradorLocal.plazo_dias)
+          if (borradorLocal.foto_blob) {
+            const urlBlob = URL.createObjectURL(borradorLocal.foto_blob)
+            setFotosUI([
+              {
+                id: borradorLocal.foto_id || crypto.randomUUID(),
+                origen: 'original',
+                variante: null,
+                ruta: `fotos/${borradorLocal.foto_id || borradorLocal.id}.jpg`,
+                urlVisual: urlBlob,
+                publicada: true,
+                posicion: 0,
+              },
+            ])
+          }
+          if (enLinea && sesion?.user?.id) {
+            void sincronizarBorrador(borradorLocal)
+          }
+          setCargando(false)
+          return
+        }
+
         setErrorCarga('No se encontró el producto o no tienes acceso.')
         setCargando(false)
         return
@@ -148,7 +198,7 @@ export const RevisarProducto: React.FC = () => {
     } finally {
       setCargando(false)
     }
-  }, [id])
+  }, [id, enLinea, sesion])
 
   useEffect(() => {
     let cancelado = false
@@ -303,7 +353,7 @@ export const RevisarProducto: React.FC = () => {
     if (res.ok) {
       setPublicadoExito(true)
       setTimeout(() => {
-        navigate('/mis-productos')
+        navigate('/')
       }, 1500)
     } else {
       setErroresPublicacion([res.error || 'Error al publicar el producto'])
@@ -360,6 +410,9 @@ export const RevisarProducto: React.FC = () => {
       )}
 
       <header className="revisar-cabecera">
+        <button type="button" onClick={() => navigate('/')} className="boton-volver-atras">
+          ← Volver a Mis productos
+        </button>
         <h1 className="revisar-titulo">Revisar y publicar</h1>
         <p className="revisar-bajada">
           Optimiza la ficha comercial y las fotos con IA antes de poner tu pieza en la vitrina.
@@ -391,7 +444,7 @@ export const RevisarProducto: React.FC = () => {
           <div className="aviso-fotos-incompletas">
             {advertenciasIa.map((adv, i) => (
               <p key={i} style={{ margin: 0 }}>
-                ⚠️ {adv}
+                {adv}
               </p>
             ))}
           </div>
@@ -649,7 +702,7 @@ export const RevisarProducto: React.FC = () => {
         <section className="panel-publicacion-accion">
           {perfil?.acreditacion !== 'aprobada' && (
             <p style={{ color: 'var(--error)', margin: '0 0 1rem 0' }}>
-              🔒 Tu acreditación como artesano está{' '}
+              Tu acreditación como artesano está{' '}
               <strong>{perfil?.acreditacion || 'pendiente'}</strong>. Solo los artesanos aprobados
               por el administrador pueden publicar productos en la vitrina.
             </p>

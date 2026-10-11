@@ -1,7 +1,34 @@
 ---
 name: design-taste-frontend
-description: Anti-slop frontend skill for landing pages, portfolios, and redesigns. The agent reads the brief, infers the right design direction, and ships interfaces that do not look templated. Real design systems when applicable, audit-first on redesigns, strict pre-flight check.
+description: |
+  Anti-slop frontend skill for landing pages, portfolios, and redesigns. The agent reads the brief, infers the right design direction, and ships interfaces that do not look templated. Real design systems when applicable, audit-first on redesigns, strict pre-flight check.
+triggers:
+  - "design taste"
+  - "anti slop frontend"
+  - "premium landing page"
+  - "portfolio redesign"
+  - "visual taste"
+od:
+  mode: prototype
+  surface: web
+  platform: desktop
+  scenario: marketing
+  category: creative-direction
+  upstream: "https://github.com/Leonxlnx/taste-skill"
+  preview:
+    type: html
+  design_system:
+    requires: true
+  craft:
+    requires:
+      - typography
+      - color
+      - anti-ai-slop
+      - animation-discipline
+  example_prompt: |
+    Create a premium landing page that follows design-taste-frontend: infer the design read, set the dials, avoid AI-slop patterns, and output a polished responsive HTML artifact.
 ---
+
 
 # tasteskill: Anti-Slop Frontend Skill
 

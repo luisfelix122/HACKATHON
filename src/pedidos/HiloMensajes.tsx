@@ -9,11 +9,13 @@ export function HiloMensajes({
   usuarioId,
   mensajes,
   alEnviar,
+  nombreOtro,
 }: {
   ordenId: string
   usuarioId: string
   mensajes: MensajeOrden[]
   alEnviar: () => void
+  nombreOtro?: string
 }) {
   const [texto, setTexto] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -39,23 +41,31 @@ export function HiloMensajes({
     }
   }
   return (
-    <section aria-label="Hilo del pedido">
+    <section aria-label="Hilo del pedido" className="pedido-hilo-seccion panel">
       <h2>Hablar sobre este pedido</h2>
       <p className="texto-secundario">
         Acuerden los detalles aquí. El total y el destino válidos son los que aparecen en el pedido.
       </p>
       <ol className="pedido-hilo" aria-live="polite" aria-relevant="additions text">
-        {mensajes.map((mensaje) => (
-          <li key={mensaje.id} data-propio={mensaje.autor_id === usuarioId}>
-            <strong>{mensaje.autor_id === usuarioId ? 'Tú' : 'La otra parte'}</strong>
-            <p>{mensaje.texto_original}</p>
-            <time dateTime={mensaje.creado_en}>
-              {new Date(mensaje.creado_en).toLocaleString('es-PE', { timeZone: 'America/Lima' })}
-            </time>
-          </li>
-        ))}
+        {mensajes.map((mensaje) => {
+          const esPropio = mensaje.autor_id === usuarioId
+          const autorTexto = esPropio ? 'Tú' : nombreOtro?.trim() || 'Cliente'
+          return (
+            <li key={mensaje.id} data-propio={esPropio}>
+              <strong>{autorTexto}</strong>
+              <p>{mensaje.texto_original}</p>
+              <time dateTime={mensaje.creado_en}>
+                {new Date(mensaje.creado_en).toLocaleString('es-PE', {
+                  timeZone: 'America/Lima',
+                })}
+              </time>
+            </li>
+          )
+        })}
       </ol>
-      {mensajes.length === 0 && <p>Aún no hay mensajes. Escribe para coordinar el pedido.</p>}
+      {mensajes.length === 0 && (
+        <p className="texto-ayuda">Aún no hay mensajes. Escribe para coordinar el pedido.</p>
+      )}
       <form onSubmit={(evento) => void enviar(evento)}>
         <Campo etiqueta="Mensaje" ayuda="Entre 1 y 1000 caracteres." error={error ?? undefined}>
           {(atributos) => (
@@ -65,6 +75,7 @@ export function HiloMensajes({
               maxLength={1000}
               disabled={enviando}
               value={texto}
+              placeholder="Escribe tu mensaje para coordinar la entrega o resolver dudas..."
               onChange={(evento) => setTexto(evento.target.value)}
             />
           )}

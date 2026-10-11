@@ -166,6 +166,25 @@ export function RegistroArtesano({ cuenta = false }: { cuenta?: boolean }) {
           {cuenta ? 'Guardar cambios' : 'Enviar solicitud de acreditación'}
         </Boton>
       </form>
+      {cuenta && (
+        <Boton
+          variante="secundario"
+          cargando={cargando}
+          onClick={async () => {
+            setCargando(true)
+            try {
+              await cerrarSesion()
+              navegar('/ingresar', { replace: true })
+            } catch (err) {
+              setError(err instanceof Error ? err.message : 'Error al cerrar sesión')
+            } finally {
+              setCargando(false)
+            }
+          }}
+        >
+          Cerrar sesión
+        </Boton>
+      )}
       {!cuenta && sesion && (
         <Boton variante="secundario" cargando={cargando} onClick={() => void otraCuenta()}>
           Usar otra cuenta de Google

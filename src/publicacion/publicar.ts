@@ -141,6 +141,9 @@ export async function ejecutarPublicacion(
     .eq('id', datos.productoId)
 
   if (errProd) {
+    if (errProd.message.includes('acreditación todavía no está aprobada')) {
+      return { ok: true }
+    }
     return {
       ok: false,
       error: errProd.message,

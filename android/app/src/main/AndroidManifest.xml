@@ -43,10 +43,12 @@
         </provider>
     </application>
 
-    <!-- Permisos: red, foto del producto (PRP 002) y descripción hablada (PRP 002) -->
+    <!-- Permisos: red, foto del producto (PRP 002), descripción hablada (PRP 002) y notificaciones push -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <!-- Android 11+: el dictado necesita ver el servicio de reconocimiento de voz -->
     <queries>
