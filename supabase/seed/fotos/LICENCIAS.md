@@ -1,6 +1,6 @@
 # Fotos por producto — PRP 007
 
-Selección revisada contra los 17 productos publicados existentes (CC-16). Hay dieciséis archivos seleccionados: doce del mismo tipo de objeto y cuatro aproximados con diferencias declaradas. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
+Selección revisada contra los 15 productos publicados existentes (CC-16, CC-17). Los 15 tienen foto de referencia cargada en Storage: once del mismo tipo de objeto y cuatro aproximados con diferencias declaradas. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
 
 Estas cinco imágenes son referencias de demo del mismo tipo de objeto, no fotos originales de los artesanos ficticios. Las diferencias y los materiales no verificables se declaran a continuación. La embarcación a escala es una coincidencia visual parcial: no acredita una chalana de Cabo Blanco. No se cambian nombres, materiales ni productos de Supabase para acomodarlos a una foto.
 
@@ -15,7 +15,6 @@ Los créditos se guardan en `ficha.descripcion` al aplicar la semilla sobre una 
 | 04: Bolso Red de Pescador | `10000000-0000-0000-0000-000000000004.jpg` — Alin Luna | [Close-up shot of knitted handbag](https://www.pexels.com/photo/close-up-shot-of-knitted-handbag-6119785/) · [licencia Pexels](https://www.pexels.com/license/) (libre uso, sin atribución obligatoria) | Bolsos artesanales de macramé en fibra natural. Trama tipo red y algodón no acreditados. |
 | 06: Tapiz Olas | `10000000-0000-0000-0000-000000000006.jpg` — rocknwool | [A white macrame hanging on a wall](https://unsplash.com/photos/a-white-macrame-hanging-on-a-wall-FBhzkKxiqRs) · [licencia Unsplash](https://unsplash.com/license) (libre uso, sin atribución obligatoria) | Tapiz blanco de macramé colgado en pared. La foto muestra una etiqueta de marca del autor; patrón de olas y rama no verificados. |
 | 07: Sombrero chalán de paja toquilla fina | `10000000-0000-0000-0000-000000000007.jpg` — Hex | [Panama hat.jpg](https://commons.wikimedia.org/wiki/File:Panama_hat.jpg) · [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0) | Sombrero de paja toquilla; referencia ecuatoriana, no evidencia de origen piurano. |
-| 10: Chalana de Cabo Blanco a escala | `10000000-0000-0000-0000-000000000010.jpg` — roger4336 | [São Paulo - Jangada Fishing Boat Model](https://www.flickr.com/photos/24736216@N07/10445430445) · [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | Modelo de embarcación pesquera con vela (jangada brasileña), no una chalana de Cabo Blanco. Coincidencia visual parcial; no acredita madera balsa. |
 | 12: Balsa miniatura atada a mano | `10000000-0000-0000-0000-000000000012.jpg` — Autor desconocido | [Bolivia, Mosetenes raft, model in the Vatican Museums.jpg](https://commons.wikimedia.org/wiki/File:Bolivia,_Mosetenes_raft,_model_in_the_Vatican_Museums.jpg) · [Public domain](https://commons.wikimedia.org/wiki/File:Bolivia,_Mosetenes_raft,_model_in_the_Vatican_Museums.jpg) | Miniatura de balsa con piezas atadas. No acredita la especie de madera ni la procedencia. |
 | 13: Aretes de perla cultivada en plata | `10000000-0000-0000-0000-000000000013.jpg` — NATALIA PHOTOS | [Beautiful Handmade Sterling Silver Pearl Earrings](https://www.flickr.com/photos/71099398@N00/2208368349) · [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/) | Aretes artesanales de perla y plata. La pureza 950 y la procedencia de las perlas no están acreditadas por la imagen. |
 | 08: Cartera de mano de paja toquilla | `10000000-0000-0000-0000-000000000008.jpg` — Ebiojo | [Straw bag](https://commons.wikimedia.org/wiki/File:Straw_bag.jpg) · [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/) | Bolso redondo tejido de paja/fibra natural con correa. El asa es de fibra trenzada, no de cuero; toquilla no acreditada. |
@@ -41,7 +40,6 @@ Se verificaron los metadatos de Wikimedia y, para las fuentes de Flickr, Pexels 
 | `10000000-0000-0000-0000-000000000007.jpg` | 199105 | `00000000-0000-0000-0000-000000000003/10000000-0000-0000-0000-000000000007/original.jpg` |
 | `10000000-0000-0000-0000-000000000008.jpg` | 105031 | `00000000-0000-0000-0000-000000000003/10000000-0000-0000-0000-000000000008/original.jpg` |
 | `10000000-0000-0000-0000-000000000009.jpg` | 133261 | `00000000-0000-0000-0000-000000000003/10000000-0000-0000-0000-000000000009/original.jpg` |
-| `10000000-0000-0000-0000-000000000010.jpg` | 103648 | `00000000-0000-0000-0000-000000000004/10000000-0000-0000-0000-000000000010/original.jpg` |
 | `10000000-0000-0000-0000-000000000012.jpg` | 82072 | `00000000-0000-0000-0000-000000000004/10000000-0000-0000-0000-000000000012/original.jpg` |
 | `10000000-0000-0000-0000-000000000013.jpg` | 37809 | `00000000-0000-0000-0000-000000000005/10000000-0000-0000-0000-000000000013/original.jpg` |
 | `10000000-0000-0000-0000-000000000014.jpg` | 73033 | `00000000-0000-0000-0000-000000000005/10000000-0000-0000-0000-000000000014/original.jpg` |
@@ -50,16 +48,13 @@ Se verificaron los metadatos de Wikimedia y, para las fuentes de Flickr, Pexels 
 | `10000000-0000-0000-0000-000000000018.jpg` | 108623 | `00000000-0000-0000-0000-000000000006/10000000-0000-0000-0000-000000000018/original.jpg` |
 | `10000000-0000-0000-0000-000000000021.jpg` | 99691 | `00000000-0000-0000-0000-000000000007/10000000-0000-0000-0000-000000000021/original.jpg` |
 
-El archivo del producto 10 existe en el repo pero está excluido de la carga hasta aprobación específica de su coincidencia parcial, así que su ruta aún no tiene objeto en Storage.
-
 Todos los JPEG tienen como máximo 1000 px en su lado mayor y menos de 300 KB (300 000 bytes).
 
 ## Fotos pendientes
 
-### Candidatos pendientes de decisión
+### Sin pendientes entre los publicados
 
-Solo quedan sin foto el producto 10 (referencia parcial de jangada, requiere aprobación
-específica) y el 11 (sin foto reutilizable; se necesita foto propia). Los productos
+Los productos 10 y 11 salieron de la semilla (CC-17). Los productos
 22 (retirado) y 23 (borrador) requieren foto correspondiente.
 
 Las referencias aproximadas de 02, 15, 16 y 18 fueron aprobadas por Johann el 2026-10-11
@@ -77,13 +72,11 @@ a los vendedores ficticios. No se generaron imágenes con IA.
 
 | Producto | Estado |
 | --- | --- |
-| 01–04, 06–09, 12–16, 18, 21 (15 publicados) | Foto de referencia cargada en Storage con atribución en ficha. |
-| 10: Chalana a escala | Referencia parcial (jangada brasileña); requiere aprobación específica. Sin foto en Storage. |
-| 11: Llavero tallado Pez Espada | Sin foto reutilizable; se necesita foto propia. Sin foto en Storage. |
+| 01–04, 06–09, 12–16, 18, 21 (15 publicados) | Foto de referencia cargada en Storage con atribución en ficha. Cobertura total: ningún publicado muestra "Foto no disponible". |
 | 22: Top edición especial (retirado) | Fuera de los publicados; requiere foto correspondiente. |
 | 23: Billetera en creación (borrador) | Fuera de los publicados; requiere foto correspondiente. |
 
-Para cerrar estos pendientes se necesita la aprobación del 10 o fotos propias. No se generaron imágenes con IA.
+Los productos 05, 10, 11, 17, 19 y 20 salieron de la semilla (CC-16, CC-17). No se generaron imágenes con IA.
 
 ## Carga y validación
 
@@ -93,14 +86,15 @@ Para cerrar estos pendientes se necesita la aprobación del 10 o fotos propias. 
 4. Comprobar vitrina a 360 y 1440 px y `/admin` con una cuenta real. Los usuarios de Auth de la semilla no sirven para iniciar sesión.
 5. Los teléfonos ficticios se conservan por indicación de Johann para esta etapa. No usarlos para contactar a personas; el reemplazo por el número consentido del equipo queda para antes de la demo.
 
-La semilla conserva 10 perfiles, 19 productos (17 publicados), 19 registros SQL de fotos, dos órdenes y dos mensajes al aplicarse dos veces. Los registros SQL pendientes no implican que sus archivos existan en Storage.
+La semilla conserva 10 perfiles, 17 productos (15 publicados), 17 registros SQL de fotos, dos órdenes y dos mensajes al aplicarse dos veces.
 
 ## Estado comprobado el 11 de octubre de 2026 (segunda carga)
 
 - Carga administrativa mediante el importador restringido `ayllu-import` (SSH por clave, alcance ampliado a 01/03/04/06–09/12–14/21, `upsert=false`, sin cambios de RLS; el 10 y otros IDs siguen rechazados).
 - Tercera carga (11-oct, mediodía): 02, 15, 16 y 18 recibidos y subidos como referencias aproximadas aprobadas por Johann, con diferencias declaradas en ficha. Todo `uploaded`, POST 200 y GET público 200 con SHA256 coincidente:
   02 → 96 310 B; 15 → 165 506 B; 16 → 216 832 B; 18 → 108 623 B.
-- Totales en Storage: 15 fotos publicadas de 17 productos publicados. Sin foto: 10 (parcial, requiere aprobación específica) y 11 (sin candidata; se necesita foto propia).
+- Totales en Storage: 15 fotos publicadas de 15 productos publicados. Cobertura total.
+- CC-17 (2026-10-11): Johann retiró del servidor los productos 10 y 11 (verificado: sin fotos ni órdenes huérfanas); la semilla los elimina y quita el JPEG del 10. La semilla queda en 17 productos (15 publicados).
 - `supabase/seed.sql` contiene los créditos de las 15 fotos y coincide con las fichas del servidor.
 - Vitrina https://ayllu.likadev.com responde HTTP 200. La comprobación visual a 360 y 1440 px y del panel `/admin` con cuenta real queda para el usuario con navegador.
 - `make verify` y `make build` se reejecutan antes del merge (ver salida del PR).
