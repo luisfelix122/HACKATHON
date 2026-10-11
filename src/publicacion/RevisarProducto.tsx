@@ -303,7 +303,7 @@ export const RevisarProducto: React.FC = () => {
     if (res.ok) {
       setPublicadoExito(true)
       setTimeout(() => {
-        navigate('/mis-productos')
+        navigate('/')
       }, 1500)
     } else {
       setErroresPublicacion([res.error || 'Error al publicar el producto'])
