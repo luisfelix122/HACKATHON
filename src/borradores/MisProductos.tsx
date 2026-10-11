@@ -9,7 +9,7 @@ import './borradores.css'
 
 export function MisProductos() {
   const navigate = useNavigate()
-  const sesion = useSesion()
+  const { sesion } = useSesion()
   const artesanoId = sesion?.user?.id
 
   const [borradores, setBorradores] = useState<BorradorLocal[]>([])

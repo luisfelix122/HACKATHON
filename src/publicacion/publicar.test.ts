@@ -9,6 +9,7 @@ describe('publicar.ts - validación previa a la publicación', () => {
     materiales: ['lana'],
     tecnica: 'telar de cintura',
     tipo_producto: 'textil',
+    historia_pieza: 'Herencia familiar de artesanos andinos.',
     etiquetas: ['poncho', 'artesanal'],
   }
 
@@ -20,6 +21,7 @@ describe('publicar.ts - validación previa a la publicación', () => {
     ruta: 'u/p/original.jpg',
     publicada: true,
     posicion: 0,
+    creado_en: '2026-10-10T12:00:00.000Z',
   }
 
   const datosValidos: DatosValidacionPublicacion = {

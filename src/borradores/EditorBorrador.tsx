@@ -23,7 +23,7 @@ const PASOS = ['Nombre', 'Foto', 'Descripción', 'Precio', 'Disponibilidad', 'Gu
 export function EditorBorrador() {
   const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
-  const sesion = useSesion()
+  const { sesion } = useSesion()
 
   const [pasoActual, setPasoActual] = useState<number>(0)
   const [conectado, setConectado] = useState<boolean>(true)

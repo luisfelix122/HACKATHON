@@ -2,12 +2,14 @@ import React, { useState, useEffect, useCallback } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { obtenerSupabase } from '../compartido/supabase'
 import { usePerfil } from '../acceso/usePerfil'
+import { useSesion } from '../compartido/sesion'
 import {
   TIPOS_PRODUCTO,
   type Ficha,
   type FotoProducto,
   type Producto,
   type Disponibilidad,
+  type TipoProducto,
 } from '../compartido/dominio/producto'
 import { procesarProductoConIa, suscribirReintentoOnline } from './procesar'
 import { ElegirFotos, type ItemFotoUI } from './ElegirFotos'
@@ -20,8 +22,8 @@ export const RevisarProducto: React.FC = () => {
   const navigate = useNavigate()
 
   // Estados del producto y sesión
-  const [usuarioId, setUsuarioId] = useState<string | undefined>(undefined)
-  const { perfil } = usePerfil(usuarioId)
+  const { sesion } = useSesion()
+  const { perfil } = usePerfil(sesion)
   const [producto, setProducto] = useState<Producto | null>(null)
   const [cargando, setCargando] = useState(true)
   const [errorCarga, setErrorCarga] = useState<string | null>(null)
@@ -34,7 +36,7 @@ export const RevisarProducto: React.FC = () => {
   const [descripcion, setDescripcion] = useState('')
   const [materialesTexto, setMaterialesTexto] = useState('')
   const [tecnica, setTecnica] = useState('')
-  const [tipoProducto, setTipoProducto] = useState<string>('textil')
+  const [tipoProducto, setTipoProducto] = useState<TipoProducto>('textil')
   const [historiaPieza, setHistoriaPieza] = useState('')
   const [etiquetasTexto, setEtiquetasTexto] = useState('')
   const [precioFinal, setPrecioFinal] = useState<number | ''>('')
@@ -61,16 +63,6 @@ export const RevisarProducto: React.FC = () => {
       window.removeEventListener('online', alConectar)
       window.removeEventListener('offline', alDesconectar)
     }
-  }, [])
-
-  // Cargar usuario
-  useEffect(() => {
-    const supabase = obtenerSupabase()
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      if (user) {
-        setUsuarioId(user.id)
-      }
-    })
   }, [])
 
   // Cargar producto y fotos desde Supabase
@@ -281,6 +273,7 @@ export const RevisarProducto: React.FC = () => {
         ruta: f.ruta,
         publicada: f.publicada,
         posicion: f.posicion,
+        creado_en: new Date().toISOString(),
       })),
     })
 
@@ -511,7 +504,7 @@ export const RevisarProducto: React.FC = () => {
             <select
               id="campo-tipo"
               value={tipoProducto}
-              onChange={(e) => setTipoProducto(e.target.value)}
+              onChange={(e) => setTipoProducto(e.target.value as TipoProducto)}
               className="control-select"
               required
             >

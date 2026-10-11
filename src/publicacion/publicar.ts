@@ -5,7 +5,7 @@ import type {
   Disponibilidad,
   RevisionIa,
 } from '../compartido/dominio/producto'
-import type { Acreditacion } from '../acceso/perfil'
+import type { Acreditacion } from '../compartido/dominio/perfil'
 
 export interface DatosValidacionPublicacion {
   ficha: Ficha | null
