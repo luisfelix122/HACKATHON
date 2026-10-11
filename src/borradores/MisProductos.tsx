@@ -1,15 +1,16 @@
+import { liveQuery } from 'dexie'
 import { useCallback, useEffect, useMemo, useState, useTransition } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Aviso, Boton } from '../compartido/ui/componentes'
-import { useSesion } from '../compartido/sesion'
+import { useSesionApk } from '../acceso/usePerfil'
 import { escucharRed, hayConexion } from './audio'
-import { listarBorradores, solicitarPersistenciaStorage, type BorradorLocal } from './db'
+import { db, listarBorradores, solicitarPersistenciaStorage, type BorradorLocal } from './db'
 import { sincronizarBorrador, sincronizarTodosLosBorradores } from './sincronizar'
 import './borradores.css'
 
 export function MisProductos() {
   const navigate = useNavigate()
-  const { sesion } = useSesion()
+  const { sesion } = useSesionApk()
   const artesanoId = sesion?.user?.id
 
   const [borradores, setBorradores] = useState<BorradorLocal[]>([])
@@ -24,6 +25,17 @@ export function MisProductos() {
     startTransition(() => {
       setBorradores(items)
     })
+  }, [artesanoId])
+
+  useEffect(() => {
+    if (!artesanoId) return
+    const escucha = liveQuery(() =>
+      db.borrador_local.where('artesano_id').equals(artesanoId).toArray(),
+    ).subscribe({
+      next: setBorradores,
+      error: () => setMensajeEstado('No pudimos leer tus borradores. Reintenta.'),
+    })
+    return () => escucha.unsubscribe()
   }, [artesanoId])
 
   const ejecutarSincronizacionLote = useCallback(async () => {
@@ -210,9 +222,17 @@ function TarjetaBorrador({
         )}
 
         <div className="tarjeta-acciones">
-          <Link to={`/borrador/${borrador.id}`} className="enlace-editar">
-            Editar borrador
-          </Link>
+          {borrador.estado_sincronizacion === 'sincronizado' ? (
+            <Link to={`/revisar/${borrador.id}`} className="enlace-editar">
+              Revisar y publicar
+            </Link>
+          ) : (
+            !borrador.sincronizacion_iniciada && (
+              <Link to={`/borrador/${borrador.id}`} className="enlace-editar">
+                Editar borrador
+              </Link>
+            )
+          )}
 
           {borrador.estado_sincronizacion === 'error' && conectado && (
             <Boton variante="secundario" cargando={sincronizando} onClick={alReintentar}>

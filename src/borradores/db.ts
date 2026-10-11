@@ -4,6 +4,7 @@ import type { Costeo, Disponibilidad } from '../compartido/dominio/producto'
 export type EstadoSincronizacion = 'pendiente' | 'sincronizando' | 'sincronizado' | 'error'
 
 export interface BorradorLocal {
+  sincronizacion_iniciada?: boolean
   id: string
   artesano_id: string
   nombre: string
@@ -54,6 +55,9 @@ export async function guardarBorrador(borrador: BorradorLocal): Promise<string> 
   if (typeof indexedDB === 'undefined') {
     return borrador.id
   }
+  const anterior = await db.borrador_local.get(borrador.id)
+  if (anterior?.sincronizacion_iniciada)
+    throw new Error('Este borrador ya empezó a sincronizarse. Reintenta desde Mis productos.')
   // Propaga errores de cuota o almacenamiento para que la UI informe al artesano
   await db.borrador_local.put(borrador)
   return borrador.id
@@ -74,6 +78,7 @@ export async function listarBorradores(artesanoId?: string): Promise<BorradorLoc
   if (typeof indexedDB === 'undefined') {
     return []
   }
+  if (!artesanoId) return []
   try {
     if (artesanoId) {
       return await db.borrador_local

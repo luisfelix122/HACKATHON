@@ -90,11 +90,37 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
       error: errorFotoProducto,
     })
 
+    const downloadFotoMock = vi
+      .fn()
+      .mockResolvedValue({ data: borradorEjemplo.foto_blob, error: null })
+    const confirmarProductoMock = vi.fn().mockResolvedValue({
+      data: {
+        ...borradorEjemplo,
+        estado: 'borrador',
+        audio_ruta: 'art-uuid-1/prod-uuid-1/descripcion.webm',
+      },
+      error: null,
+    })
+    const confirmarFotoMock = vi.fn().mockResolvedValue({
+      data: {
+        id: borradorEjemplo.foto_id,
+        producto_id: borradorEjemplo.id,
+        origen: 'original',
+        ruta: 'art-uuid-1/prod-uuid-1/original.jpg',
+        variante: null,
+        publicada: true,
+        posicion: 0,
+      },
+      error: null,
+    })
+    const consulta = (single: typeof confirmarProductoMock) => ({
+      select: () => ({ eq: () => ({ single }) }),
+    })
     const supabase = {
       storage: {
         from: vi.fn((bucket: string) => {
           if (bucket === 'fotos') {
-            return { upload: uploadFotoMock }
+            return { upload: uploadFotoMock, download: downloadFotoMock }
           }
           if (bucket === 'audios') {
             return { upload: uploadAudioMock }
@@ -104,10 +130,10 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
       },
       from: vi.fn((tabla: string) => {
         if (tabla === 'producto') {
-          return { upsert: upsertProductoMock }
+          return { upsert: upsertProductoMock, ...consulta(confirmarProductoMock) }
         }
         if (tabla === 'foto_producto') {
-          return { upsert: upsertFotoProductoMock }
+          return { upsert: upsertFotoProductoMock, ...consulta(confirmarFotoMock) }
         }
         return { upsert: vi.fn() }
       }),
@@ -115,12 +141,70 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
 
     return {
       supabase,
+      downloadFotoMock,
+      confirmarFotoMock,
+      confirmarProductoMock,
       uploadFotoMock,
       uploadAudioMock,
       upsertProductoMock,
       upsertFotoProductoMock,
     }
   }
+
+  it('confirma el precio redondeado a los centavos del servidor', async () => {
+    borradorEjemplo.precio_final = 10.005
+    const e = crearMockSupabase()
+    e.confirmarProductoMock.mockResolvedValue({
+      data: {
+        ...borradorEjemplo,
+        precio_final: 10.01,
+        audio_ruta: 'art-uuid-1/prod-uuid-1/descripcion.webm',
+      },
+      error: null,
+    })
+    expect(
+      (await sincronizarBorrador(borradorEjemplo, e.supabase as unknown as SupabaseClient)).exito,
+    ).toBe(true)
+    expect(e.upsertProductoMock.mock.calls[0]?.[0].precio_final).toBe(10.01)
+  })
+
+  it('reutiliza la original idéntica tras una subida parcial, sin sobrescribirla', async () => {
+    const e = crearMockSupabase({ errorProducto: new Error('fallo temporal') })
+    const cliente = e.supabase as unknown as SupabaseClient
+    await sincronizarBorrador(borradorEjemplo, cliente)
+    e.uploadFotoMock.mockResolvedValue({
+      data: null,
+      error: { statusCode: '409', message: 'Duplicate' },
+    })
+    e.upsertProductoMock.mockResolvedValue({ data: [{ id: borradorEjemplo.id }], error: null })
+    const resultado = await sincronizarBorrador(borradorEjemplo, cliente)
+    expect(resultado.exito).toBe(true)
+    expect(e.uploadFotoMock.mock.calls.every((c) => c[2].upsert === false)).toBe(true)
+  })
+  it('no confirma una original con bytes diferentes', async () => {
+    const e = crearMockSupabase()
+    e.uploadFotoMock.mockResolvedValue({
+      data: null,
+      error: { statusCode: '409', message: 'Duplicate' },
+    })
+    e.downloadFotoMock.mockResolvedValue({ data: new Blob(['otra foto']), error: null })
+    expect(
+      (await sincronizarBorrador(borradorEjemplo, e.supabase as unknown as SupabaseClient)).exito,
+    ).toBe(false)
+    expect(mockBorradores.has(borradorEjemplo.id)).toBe(true)
+  })
+  it('conserva el borrador si el servidor no confirma ambas filas', async () => {
+    const e = crearMockSupabase()
+    e.confirmarFotoMock.mockResolvedValue({ data: null, error: new Error('sin confirmación') })
+    expect(
+      (
+        await sincronizarBorrador(borradorEjemplo, e.supabase as unknown as SupabaseClient, {
+          borrarTrasConfirmar: true,
+        })
+      ).exito,
+    ).toBe(false)
+    expect(mockBorradores.has(borradorEjemplo.id)).toBe(true)
+  })
 
   it('caso feliz: sincroniza foto, audio, producto y foto_producto sin sobreescribir campos de IA', async () => {
     const {
@@ -140,7 +224,7 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
     expect(uploadFotoMock).toHaveBeenCalledWith(
       'art-uuid-1/prod-uuid-1/original.jpg',
       borradorEjemplo.foto_blob,
-      expect.objectContaining({ upsert: true, contentType: 'image/jpeg' }),
+      expect.objectContaining({ upsert: false, contentType: 'image/jpeg' }),
     )
     expect(uploadAudioMock).toHaveBeenCalledWith(
       'art-uuid-1/prod-uuid-1/descripcion.webm',
@@ -164,6 +248,7 @@ describe('sincronización de borradores locales a Supabase (PRP 002)', () => {
         publicada: true,
         posicion: 0,
       }),
+      expect.objectContaining({ ignoreDuplicates: true }),
     )
 
     const borradorActualizado = mockBorradores.get('prod-uuid-1')

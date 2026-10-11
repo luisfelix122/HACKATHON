@@ -64,7 +64,6 @@ export function InicioArtesano({ cuenta = false }: { cuenta?: boolean }) {
   )
 }
 export const rutasArtesano: RouteObject[] = [
-  { path: '/', element: <InicioArtesano /> },
   { path: '/ingresar', element: <IngresoArtesano /> },
   { path: '/registro', element: <RegistroArtesano /> },
   { path: '/cuenta', element: <InicioArtesano cuenta /> },
