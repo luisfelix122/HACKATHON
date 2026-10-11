@@ -82,7 +82,7 @@ export function DetalleOrden() {
   const etiquetas: Record<string, string> = {
     aceptar_orden: 'Proponer total',
     confirmar_total: 'Confirmar total',
-    enviar_enlace_pago: 'Enviar enlace de pago',
+    enviar_enlace_pago: 'Pedir el pago',
     verificar_abono: 'Verificar abono',
     marcar_enviada: 'Marcar enviada',
     marcar_lista_recojo: 'Lista para recojo',
@@ -251,6 +251,7 @@ export function DetalleOrden() {
                 <AccionesComprador
                   key={`${clave}:${actual.orden.estado}`}
                   orden={actual.orden}
+                  artesanoId={actual.contexto.artesanoId}
                   alCambiar={() => setIntento((valor) => valor + 1)}
                 />
               )}

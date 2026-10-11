@@ -202,3 +202,21 @@ begin
    'Sí, claro. Ya tengo el hilo naranja. Le envié el enlace de pago.')
   on conflict (id) do nothing;
 end $$;
+
+-- ------------------------------------------------------------------------------------
+-- 5. Métodos de cobro de la artesana de la orden en pago_pendiente (migración 0305)
+--    Números y cuentas ficticios. Los QR de supabase/seed/cobros/ son ficticios
+--    (no realizan pagos) y se suben aparte al bucket `cobros` en `{artesano_id}/`.
+-- ------------------------------------------------------------------------------------
+do $$
+begin
+  if to_regclass('public.metodo_pago') is null then return; end if;
+
+  insert into public.metodo_pago (id, artesano_id, tipo, titular, numero, banco, cci, qr_ruta) values
+  ('30000000-0000-0000-0000-000000000001', '00000000-0000-0000-0000-000000000001', 'yape', 'María Juárez', '900000001', null, null,
+   '00000000-0000-0000-0000-000000000001/yape-demo.png'),
+  ('30000000-0000-0000-0000-000000000002', '00000000-0000-0000-0000-000000000001', 'plin', 'María Juárez', '900000002', null, null,
+   '00000000-0000-0000-0000-000000000001/plin-demo.png'),
+  ('30000000-0000-0000-0000-000000000003', '00000000-0000-0000-0000-000000000001', 'cuenta_bancaria', 'María Juárez', '000-0000000-0-01', 'Banco de la Nación', '00000000000000000001', null)
+  on conflict (id) do nothing;
+end $$;

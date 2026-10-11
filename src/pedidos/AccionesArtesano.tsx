@@ -5,6 +5,7 @@ import { Modal } from '../compartido/ui/Modal'
 import { accionesVisibles, avisoCarga } from './estadoOrden'
 import { enlaceHttps, useAccionOrden, type ContextoAcciones } from './acciones'
 import { estimarEntrega, hoyLima } from './estimarEntrega'
+import { GestorMetodosPago } from './PagoOrden'
 
 /*
  * Acciones del artesano sobre una orden. Los formularios cortos y las
@@ -50,6 +51,9 @@ export function AccionesArtesano({
   )
   const [enlace, setEnlace] = useState('')
   const [guia, setGuia] = useState('')
+  const [cantidadMetodos, setCantidadMetodos] = useState(0)
+  const enlaceInvalido = enlace.trim() !== '' && !enlaceHttps(enlace.trim())
+  const puedePedirPago = !enlaceInvalido && (cantidadMetodos > 0 || enlace.trim() !== '')
   const aviso = contexto.enCurso === null ? null : avisoCarga(contexto.enCurso)
   const cerrar = () => setDialogo(null)
   const errorEn = (d: Dialogo) =>
@@ -71,7 +75,7 @@ export function AccionesArtesano({
         )}
         {acciones.includes('enviar_enlace_pago') && (
           <Boton icono="pago" onClick={() => setDialogo('enviar_enlace_pago')}>
-            Enviar enlace de pago
+            Pedir el pago
           </Boton>
         )}
         {acciones.includes('verificar_abono') && (
@@ -193,38 +197,48 @@ export function AccionesArtesano({
 
       <Modal
         abierto={dialogo === 'enviar_enlace_pago'}
-        titulo="Enviar enlace de pago"
-        descripcion="Pega el enlace de cobro de tu proveedor (por ejemplo, Izipay)."
+        titulo="Pedir el pago"
+        descripcion="El comprador verá tus métodos de cobro y, si lo agregas, tu enlace de pago."
         alCerrar={cerrar}
       >
+        {dialogo === 'enviar_enlace_pago' && (
+          <GestorMetodosPago artesanoId={contexto.artesanoId} alCargar={setCantidadMetodos} />
+        )}
         <form
           className="pedido-modal-formulario"
           onSubmit={(e) => {
             e.preventDefault()
-            if (enlaceHttps(enlace)) void ejecutar('enviar_enlace_pago', { enlace_pago: enlace })
+            if (puedePedirPago)
+              void ejecutar('enviar_enlace_pago', { enlace_pago: enlace.trim() || null })
           }}
         >
           {errorEn('enviar_enlace_pago')}
-          <Campo etiqueta="Enlace de pago" ayuda="Debe comenzar con https://.">
+          <Campo
+            etiqueta="Enlace de pago (opcional)"
+            ayuda="Por ejemplo, un link de Izipay. Debe comenzar con https://."
+            error={enlaceInvalido ? 'El enlace debe comenzar con https://.' : undefined}
+          >
             {(atributos) => (
               <input
                 {...atributos}
                 type="url"
                 inputMode="url"
                 pattern="https://.*"
-                required
                 disabled={pendiente}
                 value={enlace}
                 onChange={(e) => setEnlace(e.target.value)}
               />
             )}
           </Campo>
+          {!puedePedirPago && !enlaceInvalido && cantidadMetodos === 0 && (
+            <Aviso tono="alerta">Agrega un método de cobro o un enlace de pago.</Aviso>
+          )}
           <div className="modal-acciones pedido-modal-acciones">
             <Boton variante="secundario" onClick={cerrar}>
               Volver
             </Boton>
-            <Boton type="submit" icono="pago" disabled={!enlaceHttps(enlace)} cargando={pendiente}>
-              Enviar enlace de pago
+            <Boton type="submit" icono="pago" disabled={!puedePedirPago} cargando={pendiente}>
+              Pedir el pago
             </Boton>
           </div>
         </form>

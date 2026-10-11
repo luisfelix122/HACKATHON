@@ -5,7 +5,16 @@ import { Icono } from '../compartido/ui/Icono'
 import { Modal } from '../compartido/ui/Modal'
 import { accionesVisibles } from './estadoOrden'
 import { enlaceHttps, useAccionOrden } from './acciones'
-export function AccionesComprador({ orden, alCambiar }: { orden: Orden; alCambiar: () => void }) {
+import { ComoPagar } from './PagoOrden'
+export function AccionesComprador({
+  orden,
+  artesanoId,
+  alCambiar,
+}: {
+  orden: Orden
+  artesanoId?: string | null
+  alCambiar: () => void
+}) {
   const { pendiente, error, ejecutar } = useAccionOrden(orden, alCambiar)
   const acciones = accionesVisibles('comprador', orden.estado, orden.modalidad)
   const pago = enlaceHttps(orden.enlace_pago)
@@ -29,26 +38,9 @@ export function AccionesComprador({ orden, alCambiar }: { orden: Orden; alCambia
           Confirmar total
         </Boton>
       )}
-      {orden.estado === 'pago_pendiente' &&
-        (pago ? (
-          <>
-            <a
-              href={pago}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="boton boton-destacado"
-            >
-              <Icono nombre="pago" />
-              Abrir enlace de pago
-            </a>
-            <p>
-              El pago se realiza fuera de Ayllu. El artesano verificará el abono; puedes escribirle
-              en el hilo.
-            </p>
-          </>
-        ) : (
-          <Aviso tono="alerta">El enlace no es válido. Pide al artesano que lo revise.</Aviso>
-        ))}
+      {orden.estado === 'pago_pendiente' && (
+        <ComoPagar artesanoId={artesanoId} enlace={pago} total={orden.total} />
+      )}
       {orden.estado === 'enviada' && (
         <>
           <p className="pedido-guia cifra">Número de guía: {orden.numero_guia}</p>

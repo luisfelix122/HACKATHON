@@ -193,7 +193,7 @@ describe('acciones en interfaz', () => {
       }),
     )
     expect(screen.queryByRole('button', { name: /pagué|verificar/i })).toBeNull()
-    expect(screen.getByRole('link', { name: 'Abrir enlace de pago' })).toHaveAttribute(
+    expect(screen.getByRole('link', { name: 'Pagar con enlace' })).toHaveAttribute(
       'href',
       'https://pago.example',
     )

@@ -59,6 +59,8 @@ export function useAccionOrden(orden: Orden, alCambiar: () => void) {
 }
 export type ContextoAcciones = {
   actor: ActorOrden | null
+  /** Dueño del producto: sus métodos de cobro se muestran al pedir el pago. */
+  artesanoId?: string | null
   producto:
     (Pick<Producto, 'disponibilidad' | 'plazo_dias' | 'precio_final'> & { nombre?: string }) | null
   enCurso: number | null
@@ -90,5 +92,10 @@ export async function leerContextoAcciones(
     )
   }
   const enCurso = actor === 'artesano' ? contarEnCurso(await listarOrdenes(cliente)) : null
-  return { actor, producto: data, enCurso }
+  return {
+    actor,
+    artesanoId: orden.artesano_id ?? data?.artesano_id ?? null,
+    producto: data,
+    enCurso,
+  }
 }
