@@ -1,22 +1,105 @@
-import '@testing-library/jest-dom/vitest'
-import { render, screen } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { act } from 'react'
 import type { Root } from 'react-dom/client'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { AppArtesano } from './AppArtesano'
 import { AppWeb } from './AppWeb'
 import { CLAVE_SESION, crearClienteSupabase } from '../compartido/supabase'
+import { BotonPedir } from '../pedidos/BotonPedir'
 
 // Se comprueban las opciones con las que se crea el cliente, sin red ni campos internos.
 const createClient = vi.hoisted(() => vi.fn(() => ({ auth: {} })))
 vi.mock('@supabase/supabase-js', () => ({ createClient }))
 
+// Cliente de Supabase simulado para la sesión de la web.
+const supabaseFalso = vi.hoisted(() => {
+  const estado = {
+    sesion: null as null | { user: { id: string; email: string; user_metadata: object } },
+  }
+  const insert = vi.fn(() => ({
+    select: () => ({
+      single: () => Promise.resolve({ data: { id: 'u-1', rol: 'comprador' }, error: null }),
+    }),
+  }))
+  const cliente = {
+    auth: {
+      getSession: vi.fn(() => Promise.resolve({ data: { session: estado.sesion }, error: null })),
+      onAuthStateChange: vi.fn(() => ({ data: { subscription: { unsubscribe: () => {} } } })),
+      signInWithOAuth: vi.fn(() => Promise.resolve({ data: {}, error: null })),
+      signOut: vi.fn(() => Promise.resolve({ error: null })),
+    },
+    from: vi.fn(() => ({
+      select: () => ({
+        eq: () => ({ maybeSingle: () => Promise.resolve({ data: null, error: null }) }),
+      }),
+      insert,
+    })),
+  }
+  return { estado, cliente, insert }
+})
+vi.mock('../compartido/supabase', async (original) => ({
+  ...(await original<typeof import('../compartido/supabase')>()),
+  obtenerSupabase: () => supabaseFalso.cliente,
+}))
+
+// Costuras: un módulo declara una ruta web, y otro una ruta y un menú de la APK.
+vi.mock('../vitrina/rutas', async () => {
+  const { createElement } = await import('react')
+  return {
+    rutasWeb: [{ path: '/ruta-de-modulo', element: createElement('h1', null, 'Ruta del módulo') }],
+    rutasArtesano: [],
+    menuArtesano: [],
+  }
+})
+vi.mock('../borradores/rutas', async () => {
+  const { createElement } = await import('react')
+  return {
+    rutasWeb: [],
+    rutasArtesano: [{ path: '/nuevo', element: createElement('h1', null, 'Nuevo producto') }],
+    menuArtesano: [{ ruta: '/nuevo', etiqueta: 'Nuevo' }],
+  }
+})
+
 function irA(ruta: string) {
   window.history.pushState({}, '', ruta)
 }
 
+beforeEach(() => {
+  supabaseFalso.estado.sesion = null
+  supabaseFalso.insert.mockClear()
+  supabaseFalso.cliente.auth.signInWithOAuth.mockClear()
+  supabaseFalso.cliente.auth.signOut.mockReset()
+  supabaseFalso.cliente.auth.signOut.mockResolvedValue({ error: null })
+})
+
 describe('AppWeb', () => {
   beforeEach(() => irA('/'))
+
+  it('avisa si cerrar sesión falla y permite reintentar sin doble envío', async () => {
+    supabaseFalso.estado.sesion = {
+      user: { id: 'u-1', email: 'camila@correo.test', user_metadata: {} },
+    }
+    let responder!: (respuesta: { error: null }) => void
+    supabaseFalso.cliente.auth.signOut.mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          responder = resolve
+        }),
+    )
+    render(<AppWeb />)
+    const salir = await screen.findByRole('button', { name: 'Salir' })
+    fireEvent.click(salir)
+    expect(salir).toBeDisabled()
+    fireEvent.click(salir)
+    expect(supabaseFalso.cliente.auth.signOut).toHaveBeenCalledTimes(1)
+    await act(async () => responder({ error: { message: 'Failed to fetch' } } as never))
+    expect(
+      await screen.findByText('No pudimos conectar. Revisa tu conexión y reintenta.'),
+    ).toBeInTheDocument()
+    expect(salir).toBeEnabled()
+    fireEvent.click(screen.getByRole('button', { name: 'Reintentar salida' }))
+    await vi.waitFor(() => expect(supabaseFalso.cliente.auth.signOut).toHaveBeenCalledTimes(2))
+  })
 
   it('monta la portada en /', () => {
     render(<AppWeb />)
@@ -42,6 +125,43 @@ describe('AppWeb', () => {
       screen.getByRole('heading', { level: 1, name: 'Página no encontrada' }),
     ).toBeInTheDocument()
   })
+
+  it('monta una ruta declarada en el rutas.tsx de un módulo, sin editar src/app', () => {
+    irA('/ruta-de-modulo')
+    render(<AppWeb />)
+    expect(screen.getByRole('heading', { level: 1, name: 'Ruta del módulo' })).toBeInTheDocument()
+  })
+
+  it('sin sesión, la barra ofrece «Ingresar» y vuelve a la página actual', async () => {
+    irA('/producto/x')
+    render(<AppWeb />)
+    const enlace = await screen.findByRole('link', { name: 'Ingresar' })
+    expect(enlace).toHaveAttribute('href', '/ingresar?volver=%2Fproducto%2Fx')
+  })
+
+  it('/ingresar ofrece «Continuar con Google» y vuelve a la ruta de origen', async () => {
+    irA('/ingresar?volver=/producto/x')
+    render(<AppWeb />)
+    fireEvent.click(await screen.findByRole('button', { name: 'Continuar con Google' }))
+    expect(supabaseFalso.cliente.auth.signInWithOAuth).toHaveBeenCalledWith({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/producto/x` },
+    })
+  })
+
+  it('con sesión de Google y sin perfil, crea el perfil comprador una vez', async () => {
+    supabaseFalso.estado.sesion = {
+      user: { id: 'u-1', email: 'camila@correo.test', user_metadata: { full_name: 'Camila' } },
+    }
+    render(<AppWeb />)
+    await vi.waitFor(() => expect(supabaseFalso.insert).toHaveBeenCalledTimes(1))
+    expect(supabaseFalso.insert).toHaveBeenCalledWith({
+      id: 'u-1',
+      rol: 'comprador',
+      nombre: 'Camila',
+    })
+    expect(await screen.findByRole('button', { name: 'Salir' })).toBeInTheDocument()
+  })
 })
 
 describe('AppArtesano', () => {
@@ -58,6 +178,23 @@ describe('AppArtesano', () => {
     irA('/admin')
     render(<AppArtesano />)
     expect(screen.getByRole('heading', { level: 1, name: 'Mis productos' })).toBeInTheDocument()
+  })
+
+  it('arma su ruta y su menú desde el rutas.tsx de un módulo', () => {
+    render(<AppArtesano />)
+    const menu = screen.getByRole('navigation', { name: 'Menú' })
+    expect(menu).toContainElement(screen.getByRole('link', { name: 'Nuevo' }))
+    fireEvent.click(screen.getByRole('link', { name: 'Nuevo' }))
+    expect(screen.getByRole('heading', { level: 1, name: 'Nuevo producto' })).toBeInTheDocument()
+  })
+})
+
+describe('BotonPedir (stub de la Fase 0)', () => {
+  it('muestra «Pedir» deshabilitado con el texto «Muy pronto»', () => {
+    render(<BotonPedir productoId="p-1" />)
+    const boton = screen.getByRole('button', { name: 'Pedir' })
+    expect(boton).toBeDisabled()
+    expect(boton).toHaveAccessibleDescription('Muy pronto')
   })
 })
 
