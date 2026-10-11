@@ -6,6 +6,12 @@ Vitrina digital para artesanos de las caletas del norte de Piura (Hackatón, Ret
 - **APK de Android** (artesanos): crea productos sin conexión, la IA arma la ficha y una foto mejorada.
 - **Backend:** Supabase autohospedado (https://ayllu-api.likadev.com) y proxy de IA LiteLLM con Gemini.
 
+## Descargar la APK
+
+**[ayllu-artesano.apk](https://github.com/luisfelix122/HACKATHON/releases/latest/download/ayllu-artesano.apk)** (última versión, en [Releases](https://github.com/luisfelix122/HACKATHON/releases)).
+
+Ábrela en el celular Android y permite la instalación de apps de origen desconocido. Para compilarla tú mismo: `make apk` la genera en `android/app/build/outputs/apk/debug/app-debug.apk`.
+
 ## Qué hace
 
 1. El artesano toma la foto de su pieza, la describe y calcula su precio en la APK.
