@@ -266,8 +266,8 @@ las tareas que ya existan:
 Primero crea y protege la carpeta de respaldos con `mkdir -p` y `chmod 700`.
 Registra la zona horaria del servidor, fecha del dump y prueba de restauración.
 No reinicies el host durante pruebas del equipo: Johann autoriza esa ventana.
-Registra los resultados de OAuth, autoconfirmación, Realtime, reinicio, permisos
-y respaldos en `docs/traspasos/CU-10-cristopher.md`.
+Comprueba OAuth, autoconfirmación, Realtime, reinicio, permisos y respaldos
+antes de abrir el servicio al equipo.
 
 ## Referencias
 
