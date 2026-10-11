@@ -407,14 +407,15 @@ export const RevisarProducto: React.FC = () => {
               producto.ia_error ||
               'Esta pieza parece industrial. Si la hiciste tú, toma otra foto que muestre el trabajo a mano.'}
           </p>
+          <p>La pieza anterior se conserva. La nueva foto se guardará en otro borrador.</p>
           <div className="acciones-rechazo">
             <button
               type="button"
-              onClick={() => navigate(`/borrador/${producto.id}`)}
+              onClick={() => navigate('/nuevo')}
               className="boton-orden"
               style={{ width: 'auto', padding: '0.5rem 1rem' }}
             >
-              Tomar otra foto
+              Crear borrador con otra foto
             </button>
             <button
               type="button"
