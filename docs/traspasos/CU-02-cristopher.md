@@ -53,3 +53,17 @@ Todos corresponden estrictamente a la tabla «Archivos» del PRP 002:
 
 ## Siguiente paso
 - Continuar con el Módulo A con el PRP 003 (Procesar producto con IA: Edge Function `procesar-producto`, generación de ficha técnica y variantes de imagen).
+
+
+## Correcciones de integración, 2026-10-11
+
+Rama cu-02/correcciones-integracion desde main 1a891e2, conservando código de Chero.
+Se protege inicio/editor con sesión APK y perfil; se retira / duplicado de acceso.
+Se reutiliza original.jpg sin sobrescribir, comprobando sus bytes ante duplicado.
+Las filas se insertan sin restaurar estados de IA y se confirma su contenido
+antes de borrar. El primer intento bloquea edición; la cola evita doble envío.
+La lista escucha Dexie y enlaza productos sincronizados a Revisar y publicar.
+TDD: tres fallos reproducidos antes de corregir; 29 pruebas enfocadas pasan; verify 188 pruebas, build y APK aprobados.
+Browser con mocks: guard, inicio, reintento y enlace a revisión aprobados.
+Pendientes: Android real y SQL/pgTAP con Johann, sin tocar BD compartida.
+Rollback: revertir este PR restaura únicamente guardas, cola y costura de CU02.

@@ -52,11 +52,15 @@ vi.mock('../vitrina/rutas', async () => {
     menuArtesano: [],
   }
 })
-vi.mock('../borradores/rutas', async () => {
+vi.mock('../borradores/rutas', async (original) => {
+  const reales = await original<typeof import('../borradores/rutas')>()
   const { createElement } = await import('react')
   return {
     rutasWeb: [],
-    rutasArtesano: [{ path: '/nuevo', element: createElement('h1', null, 'Nuevo producto') }],
+    rutasArtesano: [
+      ...reales.rutasArtesano.filter((r) => r.path === '/'),
+      { path: '/nuevo', element: createElement('h1', null, 'Nuevo producto') },
+    ],
     menuArtesano: [{ ruta: '/nuevo', etiqueta: 'Nuevo' }],
   }
 })

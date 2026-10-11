@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera'
 import type { Costeo, Disponibilidad } from '../compartido/dominio/producto'
 import { Aviso, Boton, Campo } from '../compartido/ui/componentes'
-import { useSesion } from '../compartido/sesion'
+import { useSesionApk } from '../acceso/usePerfil'
 import {
   hayConexion,
   iniciarDictado,
@@ -13,7 +13,12 @@ import {
 } from './audio'
 import { Calculadora } from './Calculadora'
 import { comprimirFoto } from './comprimirFoto'
-import { validarDisponibilidad, validarPrecioFinal, MENSAJES_COSTEO } from './costeo'
+import {
+  validarDisponibilidad,
+  validarPrecioFinal,
+  redondearCentavos,
+  MENSAJES_COSTEO,
+} from './costeo'
 import { guardarBorrador, obtenerBorrador, type BorradorLocal } from './db'
 import { sincronizarBorrador } from './sincronizar'
 import './borradores.css'
@@ -23,8 +28,9 @@ const PASOS = ['Nombre', 'Foto', 'Descripción', 'Precio', 'Disponibilidad', 'Gu
 export function EditorBorrador() {
   const { id } = useParams<{ id?: string }>()
   const navigate = useNavigate()
-  const { sesion } = useSesion()
+  const { sesion } = useSesionApk()
 
+  const [bloqueado, setBloqueado] = useState(false)
   const [pasoActual, setPasoActual] = useState<number>(0)
   const [conectado, setConectado] = useState<boolean>(true)
   const [cargandoBorrador, setCargandoBorrador] = useState<boolean>(!!id)
@@ -74,7 +80,9 @@ export function EditorBorrador() {
   useEffect(() => {
     if (!id) return
     obtenerBorrador(id).then((b) => {
-      if (b) {
+      if (b && (b.artesano_id !== sesion?.user.id || b.sincronizacion_iniciada)) {
+        setBloqueado(true)
+      } else if (b) {
         setFotoId(b.foto_id)
         setAudioRuta(b.audio_ruta)
         setCreadoEn(b.creado_en)
@@ -98,7 +106,7 @@ export function EditorBorrador() {
       }
       setCargandoBorrador(false)
     })
-  }, [id])
+  }, [id, sesion?.user.id])
 
   // Limpieza de URLs blob al desmontar
   useEffect(() => {
@@ -265,7 +273,8 @@ export function EditorBorrador() {
 
     setGuardando(true)
     try {
-      const artesanoId = sesion?.user?.id || 'artesano-local'
+      if (!sesion?.user.id) throw new Error('Inicia sesión para guardar en tu cuenta.')
+      const artesanoId = sesion.user.id
       const numPrecioFinal = typeof precioFinal === 'number' ? precioFinal : 0
       const numPlazo =
         disponibilidad === 'a_pedido' && typeof plazoDias === 'number' ? plazoDias : null
@@ -287,7 +296,7 @@ export function EditorBorrador() {
           gastos: costeo.gastos || 0,
           ganancia: costeo.ganancia || 0,
         },
-        precio_final: numPrecioFinal,
+        precio_final: redondearCentavos(numPrecioFinal),
         disponibilidad,
         plazo_dias: numPlazo,
         estado_sincronizacion: 'pendiente',
@@ -315,6 +324,16 @@ export function EditorBorrador() {
     }
   }
 
+  if (bloqueado)
+    return (
+      <main className="pagina">
+        <Aviso tono="alerta">
+          Este borrador pertenece a otra cuenta o ya empezó a sincronizarse. Conservamos los
+          archivos para reintentar.
+        </Aviso>
+        <Boton onClick={() => navigate('/')}>Volver a Mis productos</Boton>
+      </main>
+    )
   if (cargandoBorrador) {
     return (
       <main className="pagina">
