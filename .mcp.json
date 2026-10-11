@@ -10,7 +10,7 @@
     },
     "supabase-local": {
       "type": "http",
-      "url": "http://localhost:54321/mcp"
+      "url": "http://localhost:55321/mcp"
     }
   }
 }
